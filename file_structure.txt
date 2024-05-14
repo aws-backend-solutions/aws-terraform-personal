@@ -1,0 +1,69 @@
+./
+└── ../
+    └── aws-env/ (e.g., us-dev)
+        └── modules/
+            └── alb/
+                ├── main.tf
+                ├── variables.tf
+                └── outputs.tf    
+
+            └── vpc/
+                ├── main.tf
+                ├── variables.tf
+                └── outputs.tf    
+
+        └── aws-mongodb-get-api/
+            ├── main.tf
+            ├── variables.tf
+            ├── outputs.tf
+            └── lambda/
+                ├── main.tf
+                ├── variables.tf
+                ├── outputs.tf
+                └── code/
+                    ├── app.py
+                    ├── mongodb-roa-function.zip
+                    └── requirements.txt
+
+            └── api_gateway/
+                ├── main.tf
+                ├── variables.tf
+                └── outputs.tf
+
+            └── cloudwatch/
+                ├── main.tf
+                ├── variables.tf
+                └── outputs.tf
+                
+            └── budgets/
+                ├── main.tf
+                ├── variables.tf
+                └── outputs.tf
+
+        └── aws-integration-tenant-eu-api/
+            ├── main.tf
+            ├── variables.tf
+            └── lambda/
+                ├── main.tf
+                ├── variables.tf
+                ├── outputs.tf
+                └── code/
+                    ├── app.py
+                    ├── mongodb-roa-function.zip
+                    └── requirements.txt
+
+            └── api_gateway/
+                ├── main.tf
+                ├── variables.tf
+                └── outputs.tf
+
+            └── cloudwatch/
+                ├── main.tf
+                ├── variables.tf
+                └── outputs.tf
+                
+            └── budgets/
+                ├── main.tf
+                ├── variables.tf
+                └── outputs.tf
+
