@@ -134,11 +134,19 @@ resource "aws_route_table" "aws_backend_private_route_table2" {
   }
 }
 
-resource "aws_route_table" "aws_backend_public_route_table" {
+resource "aws_route_table" "aws_backend_public_route_table1" {
   vpc_id = aws_vpc.aws_backend_vpc.id
 
   tags = {
-    Name = "aws-backend-public-route-table"
+    Name = "aws-backend-public-route-table-1"
+  }
+}
+
+resource "aws_route_table" "aws_backend_public_route_table2" {
+  vpc_id = aws_vpc.aws_backend_vpc.id
+
+  tags = {
+    Name = "aws-backend-public-route-table-2"
   }
 }
 
@@ -158,12 +166,12 @@ resource "aws_route_table_association" "aws_backend_private_subnet2_association"
 
 resource "aws_route_table_association" "aws_backend_public_subnet1_association" {
   subnet_id      = aws_subnet.aws_backend_public_subnet1.id
-  route_table_id = aws_route_table.aws_backend_public_route_table.id
+  route_table_id = aws_route_table.aws_backend_public_route_table1.id
 }
 
 resource "aws_route_table_association" "aws_backend_public_subnet2_association" {
   subnet_id      = aws_subnet.aws_backend_public_subnet2.id
-  route_table_id = aws_route_table.aws_backend_public_route_table.id
+  route_table_id = aws_route_table.aws_backend_public_route_table2.id
 }
 
 ##### vpc peering
@@ -193,20 +201,34 @@ resource "aws_route" "aws_backend_vpc_route2" {
 
 ##### internet gateways
 
-resource "aws_internet_gateway" "aws_backend_internet_gateway" {
+resource "aws_internet_gateway" "aws_backend_internet_gateway1" {
   vpc_id = aws_vpc.aws_backend_vpc.id
 
   tags = {
-    Name = "aws-backend-internet-gateway"
+    Name = "aws-backend-internet-gateway-1"
+  }
+}
+
+resource "aws_internet_gateway" "aws_backend_internet_gateway2" {
+  vpc_id = aws_vpc.aws_backend_vpc.id
+
+  tags = {
+    Name = "aws-backend-internet-gateway-2"
   }
 }
 
 # add internet gateway to public route table
 
-resource "aws_route" "aws_backend_ig_route" {
-  route_table_id         = aws_route_table.aws_backend_public_route_table.id
+resource "aws_route" "aws_backend_ig_route1" {
+  route_table_id         = aws_route_table.aws_backend_public_route_table1.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.aws_backend_internet_gateway.id
+  gateway_id             = aws_internet_gateway.aws_backend_internet_gateway1.id
+}
+
+resource "aws_route" "aws_backend_ig_route2" {
+  route_table_id         = aws_route_table.aws_backend_public_route_table2.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.aws_backend_internet_gateway2.id
 }
 
 ##### nat gateways
