@@ -41,7 +41,7 @@ resource "aws_apigatewayv2_integration" "aws_mongodb_ga_api_integration" {
   # connection_id          = aws_apigatewayv2_vpc_link.aws_mongodb_ga_vpc_link.id
   integration_method     = "GET"
   integration_type       = "HTTP_PROXY"
-  integration_uri        = var.aws_backend_load_balancer_listener_id
+  integration_uri        = "http://${var.aws_backend_load_balancer_dns_name}"
   payload_format_version = "1.0"
 }
 

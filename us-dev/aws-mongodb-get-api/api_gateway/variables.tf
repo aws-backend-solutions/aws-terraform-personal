@@ -39,7 +39,7 @@ variable "aws_backend_security_group2_id" {
   description = "Designated security group of lambdas in aws-backend-vpc."
 }
 
-variable "aws_backend_load_balancer_listener_id" {
+variable "aws_backend_load_balancer_dns_name" {
   type        = string
-  description = "The ID of the Network Load Balancer Listener."
+  description = "The URI of the Load Balancer."
 }
