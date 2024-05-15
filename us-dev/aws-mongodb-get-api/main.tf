@@ -55,9 +55,9 @@ module "api_gateway" {
   project_tag                           = var.project_tag
   aws_environment                       = var.aws_environment
   path_part                             = var.path_part
-  aws_backend_public_subnet1_id         = data.terraform_remote_state.modules.outputs.aws_backend_public_subnet1_id
-  aws_backend_public_subnet2_id         = data.terraform_remote_state.modules.outputs.aws_backend_public_subnet2_id
-  aws_backend_security_group1_id        = data.terraform_remote_state.modules.outputs.aws_backend_security_group1_id
+  aws_backend_private_subnet1_id         = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet1_id
+  aws_backend_private_subnet2_id         = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet2_id
+  aws_backend_security_group2_id        = data.terraform_remote_state.modules.outputs.aws_backend_security_group2_id
   aws_backend_load_balancer_listener_id = data.terraform_remote_state.modules.outputs.aws_backend_load_balancer_listener_id
 }
 
