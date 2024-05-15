@@ -24,19 +24,19 @@ variable "path_part" {
   description = "Path part of the API endpoint."
 }
 
-variable "aws_backend_public_subnet1_id" {
+variable "aws_backend_private_subnet1_id" {
   type        = string
-  description = "Designated CIDR block of aws-backend-public-subnet-1 to be created."
+  description = "Designated CIDR block of aws-backend-private-subnet-1 to be created."
 }
 
-variable "aws_backend_public_subnet2_id" {
+variable "aws_backend_private_subnet2_id" {
   type        = string
-  description = "Designated CIDR block of aws-backend-public-subnet-2 to be created."
+  description = "Designated CIDR block of aws-backend-private-subnet-2 to be created."
 }
 
-variable "aws_backend_security_group1_id" {
+variable "aws_backend_security_group2_id" {
   type        = string
-  description = "Designated security group of aws-backend-alb in aws-backend-vpc."
+  description = "Designated security group of lambdas in aws-backend-vpc."
 }
 
 variable "aws_backend_load_balancer_listener_id" {

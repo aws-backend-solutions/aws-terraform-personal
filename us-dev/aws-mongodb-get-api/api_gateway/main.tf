@@ -1,11 +1,11 @@
 resource "aws_apigatewayv2_vpc_link" "aws_mongodb_ga_vpc_link" {
   name = "aws-mongodb-ga-vpc-link"
   security_group_ids = [
-    var.aws_backend_security_group1_id
+    var.aws_backend_security_group2_id
   ]
   subnet_ids = [
-    var.aws_backend_public_subnet1_id,
-    var.aws_backend_public_subnet2_id
+    var.aws_backend_private_subnet1_id,
+    var.aws_backend_private_subnet2_id
   ]
 }
 
