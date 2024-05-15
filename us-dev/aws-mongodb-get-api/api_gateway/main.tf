@@ -1,13 +1,13 @@
-resource "aws_apigatewayv2_vpc_link" "aws_mongodb_ga_vpc_link" {
-  name = "aws-mongodb-ga-vpc-link"
-  security_group_ids = [
-    var.aws_backend_security_group2_id
-  ]
-  subnet_ids = [
-    var.aws_backend_private_subnet1_id,
-    var.aws_backend_private_subnet2_id
-  ]
-}
+# resource "aws_apigatewayv2_vpc_link" "aws_mongodb_ga_vpc_link" {
+#   name = "aws-mongodb-ga-vpc-link"
+#   security_group_ids = [
+#     var.aws_backend_security_group2_id
+#   ]
+#   subnet_ids = [
+#     var.aws_backend_private_subnet1_id,
+#     var.aws_backend_private_subnet2_id
+#   ]
+# }
 
 resource "aws_apigatewayv2_api" "aws_mongodb_ga_api" {
   name          = "aws-mongodb-ga-api"
@@ -37,8 +37,8 @@ resource "aws_apigatewayv2_stage" "aws_mongodb_ga_api_stage" {
 
 resource "aws_apigatewayv2_integration" "aws_mongodb_ga_api_integration" {
   api_id                 = aws_apigatewayv2_api.aws_mongodb_ga_api.id
-  connection_type        = "VPC_LINK"
-  connection_id          = aws_apigatewayv2_vpc_link.aws_mongodb_ga_vpc_link.id
+  # connection_type        = "VPC_LINK"
+  # connection_id          = aws_apigatewayv2_vpc_link.aws_mongodb_ga_vpc_link.id
   integration_method     = "GET"
   integration_type       = "HTTP_PROXY"
   integration_uri        = var.aws_backend_load_balancer_listener_id
