@@ -93,7 +93,7 @@ variable "cidr_block_of_vpc_to_peer" {
 }
 
 variable "ip_address_of_customer" {
-  type = string
+  type        = string
   description = "Public IPv4 of the customer that has a VPN connection and needs to access the private API gateway."
 }
 

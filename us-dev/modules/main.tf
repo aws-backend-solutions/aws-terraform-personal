@@ -41,6 +41,7 @@ module "vpc" {
   vpc_id_to_peer             = var.vpc_id_to_peer
   private_ip_to_peer         = var.private_ip_to_peer
   cidr_block_of_vpc_to_peer  = var.cidr_block_of_vpc_to_peer
+  ip_address_of_customer     = var.ip_address_of_customer
   environment_tag            = var.environment_tag
 }
 
