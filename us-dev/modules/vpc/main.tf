@@ -281,10 +281,18 @@ resource "aws_customer_gateway" "aws_backend_customer_gateway" {
   bgp_asn    = 65000
   ip_address = var.ip_address_of_customer
   type       = "ipsec.1"
+
+  tags = {
+    Name = "aws-backend-customer-gateway"
+  }
 }
 
 resource "aws_vpn_gateway" "aws_backend_virtual_gateway" {
   vpc_id = aws_vpc.aws_backend_vpc.id
+
+  tags = {
+    Name = "aws-backend-virtual-gateway"
+  }
 }
 
 resource "aws_vpn_gateway_attachment" "aws_backend_virtual_gateway_attachment" {
@@ -299,4 +307,8 @@ resource "aws_vpn_connection" "aws_backend_vpn_connection" {
   customer_gateway_id = aws_customer_gateway.aws_backend_customer_gateway.id
   vpn_gateway_id      = aws_vpn_gateway.aws_backend_virtual_gateway.id
   type                = "ipsec.1"
+
+  tags = {
+    Name = "aws-backend-vpn-connection"
+  }
 }
