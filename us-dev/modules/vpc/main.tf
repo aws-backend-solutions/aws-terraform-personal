@@ -74,6 +74,28 @@ resource "aws_security_group" "aws_backend_security_group1" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   
+  ingress {
+    from_port   = 22   # SSH port
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Adjust this CIDR block to match your network's IP range
+  }
+
+  ingress {
+    from_port   = 3389   # RDP port
+    to_port     = 3389
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Adjust this CIDR block to match your network's IP range
+  }
+
+  ingress {
+    from_port   = -1   # ICMP (ping)
+    to_port     = -1
+    protocol    = "icmp"
+    cidr_blocks = ["0.0.0.0/0"]  # Adjust this CIDR block to match your network's IP range
+  }
+  
+  # Existing egress rules remain unchanged
   egress {
     from_port   = 0
     to_port     = 0
@@ -209,8 +231,17 @@ resource "aws_route" "aws_backend_ig_route1" {
   gateway_id             = aws_internet_gateway.aws_backend_internet_gateway.id
 }
 
-##### nat gateways
-# add nat gateways to public subnets
+##### NAT gateways
+
+resource "aws_eip" "aws_backend_nat_eip1" {
+  vpc = true
+}
+
+resource "aws_eip" "aws_backend_nat_eip2" {
+  vpc = true
+}
+
+# add NAT gateways to public subnets
 
 resource "aws_nat_gateway" "aws_backend_nat_gateway1" {
   allocation_id = aws_eip.aws_backend_nat_eip1.id
@@ -230,15 +261,7 @@ resource "aws_nat_gateway" "aws_backend_nat_gateway2" {
   }
 }
 
-resource "aws_eip" "aws_backend_nat_eip1" {
-  vpc = true
-}
-
-resource "aws_eip" "aws_backend_nat_eip2" {
-  vpc = true
-}
-
-# add nat gateways to private route table
+# add NAT gateways to private route table
 
 resource "aws_route" "aws_backend_ng_route1" {
   route_table_id         = aws_route_table.aws_backend_private_route_table1.id
@@ -250,4 +273,30 @@ resource "aws_route" "aws_backend_ng_route2" {
   route_table_id         = aws_route_table.aws_backend_private_route_table2.id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.aws_backend_nat_gateway2.id
+}
+
+##### adding vpn connection into vpc
+
+resource "aws_customer_gateway" "aws_backend_customer_gateway" {
+  bgp_asn    = 65000
+  ip_address = var.ip_address_of_customer
+  type       = "ipsec.1"
+}
+
+resource "aws_vpn_gateway" "aws_backend_virtual_gateway" {
+  vpc_id = aws_vpc.aws_backend_vpc.id
+}
+
+resource "aws_vpn_gateway_attachment" "aws_backend_virtual_gateway_attachment" {
+  depends_on = [ aws_vpn_gateway.aws_backend_virtual_gateway ]
+  vpc_id       = aws_vpc.aws_backend_vpc.id
+  vpn_gateway_id = aws_vpn_gateway.aws_backend_virtual_gateway.id
+}
+
+# propagated routes should be enabled manually through console
+
+resource "aws_vpn_connection" "aws_backend_vpn_connection" {
+  customer_gateway_id = aws_customer_gateway.aws_backend_customer_gateway.id
+  vpn_gateway_id      = aws_vpn_gateway.aws_backend_virtual_gateway.id
+  type                = "ipsec.1"
 }

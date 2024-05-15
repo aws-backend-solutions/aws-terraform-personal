@@ -73,3 +73,8 @@ variable "cidr_block_of_vpc_to_peer" {
   type        = string
   description = "CIDR block of the peered VPC to add for routing tables."
 }
+
+variable "ip_address_of_customer" {
+  type = string
+  description = "Public IPv4 of the customer that has a VPN connection and needs to access the private API gateway."
+}
