@@ -1,5 +1,5 @@
 resource "aws_api_gateway_rest_api" "aws_mongodb_ga_api" {
-  name          = "aws-mongodb-ga-api"
+  name          = "${var.prefix_name}-api"
   endpoint_configuration {
     types            = ["PRIVATE"]
     vpc_endpoint_ids = [var.aws_backend_vpc_endpoint_id]

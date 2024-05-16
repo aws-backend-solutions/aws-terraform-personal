@@ -1,5 +1,5 @@
 resource "aws_budgets_budget" "aws_mongodb_ga_lambda_budget" {
-  name         = "aws-mongodb-ga-lambda-budget"
+  name         = "${var.prefix_name}-lambda-budget"
   budget_type  = "COST"
   limit_amount = var.lambda_budget_limit_amount
   limit_unit   = "USD"
@@ -22,7 +22,7 @@ resource "aws_budgets_budget" "aws_mongodb_ga_lambda_budget" {
 }
 
 resource "aws_budgets_budget" "aws_mongodb_ga_api_gateway_budget" {
-  name         = "aws-mongodb-ga-api-gateway-budget"
+  name         = "${var.prefix_name}-api-gateway-budget"
   budget_type  = "COST"
   limit_amount = var.api_gateway_budget_limit_amount
   limit_unit   = "USD"
