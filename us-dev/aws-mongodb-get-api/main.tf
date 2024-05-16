@@ -46,7 +46,6 @@ module "lambda" {
   aws_backend_private_subnet1_id         = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet1_id
   aws_backend_private_subnet2_id         = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet2_id
   aws_backend_security_group2_id         = data.terraform_remote_state.modules.outputs.aws_backend_security_group2_id
-  aws_backend_load_balancer_listener_arn = data.terraform_remote_state.modules.outputs.aws_backend_load_balancer_listener_arn
 }
 
 module "api_gateway" {

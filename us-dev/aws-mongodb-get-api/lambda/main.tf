@@ -62,32 +62,3 @@ resource "aws_lambda_permission" "aws_mongodb_ga_function_invoke_permission" {
   function_name = aws_lambda_function.aws_mongodb_ga_function.arn
   principal     = "elasticloadbalancing.amazonaws.com"
 }
-
-resource "aws_lb_target_group" "aws_backend_load_balancer_target_group1" {
-  name     = "aws-backend-lb-target-group-1"
-  port     = 80
-  protocol = "HTTP"
-  target_type = "lambda"
-}
-
-resource "aws_lb_target_group_attachment" "lambda_attachment" {
-  depends_on = [ aws_lb_target_group.aws_backend_load_balancer_target_group1 ]
-  target_group_arn = aws_lb_target_group.aws_backend_load_balancer_target_group1.arn
-  target_id        = aws_lambda_function.aws_mongodb_ga_function.arn
-}
-
-resource "aws_lb_listener_rule" "aws_backend_listener_rule1" {
-  listener_arn = var.aws_backend_load_balancer_listener_arn
-  priority     = 1
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.aws_backend_load_balancer_target_group1.arn
-  }
-
-  condition {
-    path_pattern {
-      values = ["/${var.aws_environment}/${var.path_part}"]
-    }
-  }
-}
