@@ -14,7 +14,7 @@ resource "aws_api_gateway_rest_api" "aws_mongodb_ga_api" {
 
 resource "aws_api_gateway_vpc_link" "aws_mongodb_ga_vpc_link" {
   name = "aws-mongodb-ga-vpc-link"
-  target_arns = [var.aws_backend_vpc_endpoint_arn]
+  target_arns = [var.aws_backend_load_balancer_arn]
 }
 
 resource "aws_api_gateway_rest_api_policy" "api_gateway_policy" {
@@ -83,7 +83,7 @@ resource "aws_api_gateway_method" "aws_mongodb_ga_api_method" {
   rest_api_id   = aws_api_gateway_rest_api.aws_mongodb_ga_api.id
   resource_id   = aws_api_gateway_resource.aws_mongodb_ga_api_resource.id
   http_method   = "GET"
-  authorization = "IAM"
+  authorization = "AWS_IAM"
 
   request_models = {
     "application/json" = "Error"

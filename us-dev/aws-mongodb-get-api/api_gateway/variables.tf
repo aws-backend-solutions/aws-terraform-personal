@@ -39,9 +39,14 @@ variable "aws_backend_security_group2_id" {
   description = "Designated security group of lambdas in aws-backend-vpc."
 }
 
-variable "aws_backend_load_balancer_dns_name" {
+variable "aws_backend_load_balancer_arn" {
   type        = string
   description = "The ARN of the Load Balancer."
+}
+
+variable "aws_backend_load_balancer_dns_name" {
+  type        = string
+  description = "The URI of the Load Balancer."
 }
 
 variable "aws_backend_vpc_endpoint_id" {
