@@ -120,7 +120,7 @@ resource "aws_security_group" "aws_backend_security_group2" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["10.1.0.0/16"] 
+    cidr_blocks = ["0.0.0.0/0"] 
   }
 
   egress {
