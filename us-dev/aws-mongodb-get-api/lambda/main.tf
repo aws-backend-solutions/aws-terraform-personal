@@ -57,8 +57,8 @@ resource "aws_cloudwatch_log_group" "aws_mongodb_ga_function_log_group" {
 }
 
 resource "aws_lambda_permission" "aws_mongodb_ga_function_invoke_permission" {
-  statement_id  = "AllowExecutionFromELB"
+  statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.aws_mongodb_ga_function.arn
-  principal     = "elasticloadbalancing.amazonaws.com"
+  principal     = "apigateway.amazonaws.com"
 }

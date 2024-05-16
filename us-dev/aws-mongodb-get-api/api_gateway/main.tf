@@ -12,11 +12,6 @@ resource "aws_api_gateway_rest_api" "aws_mongodb_ga_api" {
   }
 }
 
-resource "aws_api_gateway_vpc_link" "aws_mongodb_ga_vpc_link" {
-  name = "aws-mongodb-ga-vpc-link"
-  target_arns = [var.aws_backend_load_balancer_arn]
-}
-
 resource "aws_api_gateway_rest_api_policy" "api_gateway_policy" {
   rest_api_id = aws_api_gateway_rest_api.aws_mongodb_ga_api.id
 
@@ -105,9 +100,7 @@ resource "aws_api_gateway_integration" "aws_mongodb_ga_api_integration" {
   http_method             = aws_api_gateway_method.aws_mongodb_ga_api_method.http_method
   resource_id             = aws_api_gateway_resource.aws_mongodb_ga_api_resource.id
   rest_api_id             = aws_api_gateway_rest_api.aws_mongodb_ga_api.id
-  type                    = "HTTP_PROXY"
+  type                    = "AWS_PROXY"
   integration_http_method = "GET"
-  connection_type         = "VPC_LINK"
-  connection_id           = aws_api_gateway_vpc_link.aws_mongodb_ga_vpc_link.id
-  uri                     = "http://${var.aws_backend_load_balancer_dns_name}"
+  uri                     = var.aws_mongodb_ga_function_arn
 }
