@@ -1,18 +1,14 @@
 resource "aws_lb" "aws_backend_load_balancer" {
-  name               = "aws-backend-lb"
-  internal           = true
-  security_groups    = [
-    var.aws_backend_security_group1_id
-    ]
-  subnets            = [
+  name        = "aws-backend-nlb"
+  internal    = true
+  load_balancer_type = "network"
+  subnets     = [
     var.aws_backend_private_subnet1_id,
-    var.aws_backend_private_subnet2_id,
-    var.aws_backend_public_subnet1_id,
-    var.aws_backend_public_subnet2_id,
+    var.aws_backend_private_subnet2_id
   ]
   tags = {
-    Name       = "aws-backend-lb"
-    CostCenter = var.cost_center_tag
+    Name        = "aws-backend-nlb"
+    CostCenter  = var.cost_center_tag
     Environment = var.environment_tag
   }
 }
@@ -20,7 +16,7 @@ resource "aws_lb" "aws_backend_load_balancer" {
 resource "aws_lb_listener" "aws_backend_load_balancer_listener" {
   load_balancer_arn = aws_lb.aws_backend_load_balancer.arn
   port              = 80
-  protocol          = "HTTP"
+  protocol          = "TCP"
 
   default_action {
     type             = "fixed-response"
