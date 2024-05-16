@@ -61,7 +61,7 @@ module "api_gateway" {
   aws_backend_load_balancer_dns_name = data.terraform_remote_state.modules.outputs.aws_backend_load_balancer_dns_name
   aws_backend_vpc_endpoint_arn       = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_arn
   aws_backend_vpc_endpoint_id        = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_id
-  aws_mongodb_ga_function_invoke_arn        = module.lambda.aws_mongodb_ga_function_invoke_arn
+  aws_mongodb_ga_function_invoke_arn = module.lambda.aws_mongodb_ga_function_invoke_arn
 }
 
 module "budgets" {
