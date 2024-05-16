@@ -36,16 +36,16 @@ data "terraform_remote_state" "modules" {
 }
 
 module "lambda" {
-  source                                 = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-mongodb-get-api/lambda"
-  environment_tag                        = var.environment_tag
-  project_tag                            = var.project_tag
-  aws_environment                        = var.aws_environment
-  path_part                              = var.path_part
-  mongodb_url                            = "mongodb://${var.private_ip_to_peer}:27017/"
-  mongodb_name                           = var.mongodb_name
-  aws_backend_private_subnet1_id         = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet1_id
-  aws_backend_private_subnet2_id         = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet2_id
-  aws_backend_security_group2_id         = data.terraform_remote_state.modules.outputs.aws_backend_security_group2_id
+  source                         = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-mongodb-get-api/lambda"
+  environment_tag                = var.environment_tag
+  project_tag                    = var.project_tag
+  aws_environment                = var.aws_environment
+  path_part                      = var.path_part
+  mongodb_url                    = "mongodb://${var.private_ip_to_peer}:27017/"
+  mongodb_name                   = var.mongodb_name
+  aws_backend_private_subnet1_id = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet1_id
+  aws_backend_private_subnet2_id = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet2_id
+  aws_backend_security_group2_id = data.terraform_remote_state.modules.outputs.aws_backend_security_group2_id
 }
 
 module "api_gateway" {
@@ -61,7 +61,7 @@ module "api_gateway" {
   aws_backend_load_balancer_dns_name = data.terraform_remote_state.modules.outputs.aws_backend_load_balancer_dns_name
   aws_backend_vpc_endpoint_arn       = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_arn
   aws_backend_vpc_endpoint_id        = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_id
-  aws_mongodb_ga_function_arn = "arn:aws:lambda:us-west-2:654654411031:function:mongodb-read-emi-dev"
+  aws_mongodb_ga_function_arn        = data.terraform_remote_state.modules.outputs.aws_mongodb_ga_function_arn
 }
 
 module "budgets" {
