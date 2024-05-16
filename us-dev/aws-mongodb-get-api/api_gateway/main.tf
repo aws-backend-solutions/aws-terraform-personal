@@ -92,7 +92,7 @@ resource "aws_api_gateway_method_settings" "aws_mongodb_ga_api_method_settings" 
 
   settings {
     metrics_enabled = true
-    logging_level   = "DEBUG"
+    logging_level   = "INFO"
   }
 }
 
