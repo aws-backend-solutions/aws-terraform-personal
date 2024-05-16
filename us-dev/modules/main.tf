@@ -45,8 +45,8 @@ module "vpc" {
   environment_tag            = var.environment_tag
 }
 
-module "nlb" {
-  source                         = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/nlb"
+module "alb" {
+  source                         = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/alb"
   environment_tag                = var.environment_tag
   aws_backend_private_subnet1_id = module.vpc.aws_backend_private_subnet1_id
   aws_backend_private_subnet2_id = module.vpc.aws_backend_private_subnet2_id
