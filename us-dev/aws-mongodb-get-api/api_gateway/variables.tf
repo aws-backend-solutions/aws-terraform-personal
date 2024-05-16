@@ -59,7 +59,7 @@ variable "aws_backend_vpc_endpoint_arn" {
   description = "The ARN of the AwsBackendVpcEndpoint."
 }
 
-variable "aws_mongodb_ga_function_arn" {
+variable "aws_mongodb_ga_function_invoke_arn" {
   type        = string
-  description = "The ARN of the underlying Lambda function."
+  description = "The Invoke ARN of the underlying Lambda function."
 }
