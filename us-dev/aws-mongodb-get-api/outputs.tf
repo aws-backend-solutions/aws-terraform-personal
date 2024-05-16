@@ -1,4 +1,7 @@
-########## aws-mongodb-get-api/api_gateway ##########
+output "aws_mongodb_ga_function_arn" {
+  description = "The ARN of the underlying Lambda function."
+  value       = module.lambda.aws_mongodb_ga_function_arn
+}
 
 output "aws_mongodb_ga_api_endpoint" {
   description = "HTTP API endpoint for aws-mongodb-ga-api"
