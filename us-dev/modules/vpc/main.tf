@@ -130,11 +130,11 @@ resource "aws_vpc_endpoint" "aws_backend_vpc_endpoint" {
   service_name        = "com.amazonaws.${var.aws_region}.execute-api"
   private_dns_enabled = true
   subnet_ids          = [
-    aws_subnet.aws_backend_public_subnet1.id, 
-    aws_subnet.aws_backend_public_subnet2.id
+    aws_subnet.aws_backend_private_subnet1.id, 
+    aws_subnet.aws_backend_private_subnet2.id
   ]
   security_group_ids  = [
-    aws_security_group.aws_backend_security_group1.id
+    aws_security_group.aws_backend_security_group2.id
   ]
 }
 
