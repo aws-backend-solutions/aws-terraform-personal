@@ -54,7 +54,7 @@ module "alb" {
 }
 
 module "sns" {
-  source                   = "github.com/aws-backend-solutions/aws-terraform-personalus-dev/modules/sns"
+  source                   = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/sns"
   environment_tag          = var.environment_tag
   recipient_for_budgets    = var.recipient_for_budgets
   recipient_for_cloudwatch = var.recipient_for_cloudwatch
