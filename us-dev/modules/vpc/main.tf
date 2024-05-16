@@ -4,7 +4,7 @@ resource "aws_vpc" "aws_backend_vpc" {
   enable_dns_hostnames = true
 
   tags = {
-    Name        = "aws-backend-vpc"
+    Name        = "${var.prefix_name}-vpc"
     CostCenter  = var.cost_center_tag
     Environment = var.environment_tag
   }
@@ -17,7 +17,7 @@ resource "aws_subnet" "aws_backend_private_subnet1" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name        = "aws-backend-private-subnet-1"
+    Name        = "${var.prefix_name}-private-subnet-1"
     CostCenter  = var.cost_center_tag
     Environment = var.environment_tag
   }
@@ -30,7 +30,7 @@ resource "aws_subnet" "aws_backend_private_subnet2" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name        = "aws-backend-private-subnet-2"
+    Name        = "${var.prefix_name}-private-subnet-2"
     CostCenter  = var.cost_center_tag
     Environment = var.environment_tag
   }
@@ -43,7 +43,7 @@ resource "aws_subnet" "aws_backend_public_subnet1" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name        = "aws-backend-public-subnet-1"
+    Name        = "${var.prefix_name}-public-subnet-1"
     CostCenter  = var.cost_center_tag
     Environment = var.environment_tag
   }
@@ -56,14 +56,14 @@ resource "aws_subnet" "aws_backend_public_subnet2" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name        = "aws-backend-public-subnet-2"
+    Name        = "${var.prefix_name}-public-subnet-2"
     CostCenter  = var.cost_center_tag
     Environment = var.environment_tag
   }
 }
 
 resource "aws_security_group" "aws_backend_security_group1" {
-  name        = "aws-backend-sg-1"
+  name        = "${var.prefix_name}-sg-1"
   description = "Enable access to ALB"
   vpc_id      = aws_vpc.aws_backend_vpc.id
 
@@ -84,7 +84,7 @@ resource "aws_security_group" "aws_backend_security_group1" {
 }
 
 resource "aws_security_group" "aws_backend_security_group2" {
-  name        = "aws-backend-sg-2"
+  name        = "${var.prefix_name}-sg-2"
   description = "Enable access to Lambda"
   vpc_id      = aws_vpc.aws_backend_vpc.id
 
@@ -104,7 +104,7 @@ resource "aws_security_group" "aws_backend_security_group2" {
 }
 
 resource "aws_security_group" "aws_backend_security_group3" {
-  name        = "aws-backend-sg-3"
+  name        = "${var.prefix_name}-sg-3"
   description = "Enable access to API Gateway"
   vpc_id      = aws_vpc.aws_backend_vpc.id
 
@@ -135,6 +135,9 @@ resource "aws_vpc_endpoint" "aws_backend_vpc_endpoint" {
   security_group_ids  = [
     aws_security_group.aws_backend_security_group3.id
   ]
+  tags = {
+    Name = "${var.prefix_name}-api-vpce"
+  }
 }
 
 ##### creation of custom route tables
@@ -143,7 +146,7 @@ resource "aws_route_table" "aws_backend_private_route_table1" {
   vpc_id = aws_vpc.aws_backend_vpc.id
 
   tags = {
-    Name = "aws-backend-private-route-table-1"
+    Name = "${var.prefix_name}-private-route-table-1"
   }
 }
 
@@ -151,7 +154,7 @@ resource "aws_route_table" "aws_backend_private_route_table2" {
   vpc_id = aws_vpc.aws_backend_vpc.id
 
   tags = {
-    Name = "aws-backend-private-route-table-2"
+    Name = "${var.prefix_name}-private-route-table-2"
   }
 }
 
@@ -159,7 +162,7 @@ resource "aws_route_table" "aws_backend_public_route_table" {
   vpc_id = aws_vpc.aws_backend_vpc.id
 
   tags = {
-    Name = "aws-backend-public-route-table"
+    Name = "${var.prefix_name}-public-route-table"
   }
 }
 
@@ -194,7 +197,7 @@ resource "aws_vpc_peering_connection" "aws_backend_vpc_peering_connection" {
   peer_vpc_id   = var.vpc_id_to_peer
 
   tags = {
-    Name = "aws-backend-vpc-peering"
+    Name = "${var.prefix_name}-vpc-peering"
   }
 }
 
@@ -218,7 +221,7 @@ resource "aws_internet_gateway" "aws_backend_internet_gateway" {
   vpc_id = aws_vpc.aws_backend_vpc.id
 
   tags = {
-    Name = "aws-backend-internet-gateway"
+    Name = "${var.prefix_name}-internet-gateway"
   }
 }
 
@@ -247,7 +250,7 @@ resource "aws_nat_gateway" "aws_backend_nat_gateway1" {
   subnet_id     = aws_subnet.aws_backend_public_subnet1.id
 
   tags = {
-    Name = "aws-backend-nat-gateway-1"
+    Name = "${var.prefix_name}-nat-gateway-1"
   }
 }
 
@@ -256,7 +259,7 @@ resource "aws_nat_gateway" "aws_backend_nat_gateway2" {
   subnet_id     = aws_subnet.aws_backend_public_subnet2.id
 
   tags = {
-    Name = "aws-backend-nat-gateway-2"
+    Name = "${var.prefix_name}-nat-gateway-2"
   }
 }
 

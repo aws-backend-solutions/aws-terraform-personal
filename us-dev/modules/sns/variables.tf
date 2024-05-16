@@ -1,3 +1,7 @@
+variable "prefix_name" {
+  type = string
+}
+
 variable "cost_center_tag" {
   type        = string
   description = "Used for tagging the resources created."

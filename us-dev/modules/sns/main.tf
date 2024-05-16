@@ -1,5 +1,5 @@
 resource "aws_sns_topic" "budget_alert_topic" {
-  name = "aws-mongodb-ga-topic-budget-threshold"
+  name = "${var.prefix_name}-topic-budget-threshold"
 
   tags = {
     CostCenter  = var.cost_center_tag
@@ -30,7 +30,7 @@ resource "aws_sns_topic_policy" "budget_alert_topic_policy" {
 }
 
 resource "aws_sns_topic" "cloudwatch_alarm_topic" {
-  name = "aws-mongodb-ga-topic-cloudwatch-errors"
+  name = "${var.prefix_name}-topic-cloudwatch-errors"
 
   tags = {
     CostCenter  = var.cost_center_tag

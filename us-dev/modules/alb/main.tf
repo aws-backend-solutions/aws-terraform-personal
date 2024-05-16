@@ -1,5 +1,5 @@
 resource "aws_lb" "aws_backend_load_balancer" {
-  name               = "aws-backend-lb"
+  name               = "${var.prefix_name}-lb"
   internal           = true
   security_groups    = [
     var.aws_backend_security_group1_id
@@ -11,7 +11,7 @@ resource "aws_lb" "aws_backend_load_balancer" {
     var.aws_backend_public_subnet2_id,
   ]
   tags = {
-    Name       = "aws-backend-lb"
+    Name       = "${var.prefix_name}-lb"
     CostCenter = var.cost_center_tag
     Environment = var.environment_tag
   }
