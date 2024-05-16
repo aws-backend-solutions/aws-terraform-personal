@@ -52,7 +52,6 @@ module "alb" {
   aws_backend_public_subnet1_id  = module.vpc.aws_backend_public_subnet1_id
   aws_backend_public_subnet2_id  = module.vpc.aws_backend_public_subnet2_id
   aws_backend_security_group1_id = module.vpc.aws_backend_security_group1_id
-  aws_backend_vpc_id = module.vpc.aws_backend_vpc_id
 }
 
 module "sns" {
