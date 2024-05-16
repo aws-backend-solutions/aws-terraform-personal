@@ -33,3 +33,8 @@ variable "aws_backend_security_group1_id" {
   type        = string
   description = "Designated security group of aws-backend-alb in aws-backend-vpc."
 }
+
+variable "aws_backend_vpc_id" {
+  type = string
+  description = "The ID of the aws-backend-vpc."
+}
