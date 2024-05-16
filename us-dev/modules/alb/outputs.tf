@@ -13,12 +13,22 @@ output "aws_backend_load_balancer_name" {
   value       = aws_lb.aws_backend_load_balancer.name
 }
 
-output "aws_backend_load_balancer_listener_id" {
+output "aws_backend_load_balancer_listener_80_id" {
   description = "The ID of the Load Balancer Listener."
-  value       = aws_lb_listener.aws_backend_load_balancer_listener.id
+  value       = aws_lb_listener.aws_backend_load_balancer_listener_80.id
 }
 
-output "aws_backend_load_balancer_listener_arn" {
+output "aws_backend_load_balancer_listener_80_arn" {
   description = "The ARN of the Load Balancer Listener."
-  value       = aws_lb_listener.aws_backend_load_balancer_listener.arn
+  value       = aws_lb_listener.aws_backend_load_balancer_listener_80.arn
+}
+
+output "aws_backend_load_balancer_listener_443_id" {
+  description = "The ID of the Load Balancer Listener."
+  value       = aws_lb_listener.aws_backend_load_balancer_listener_443.id
+}
+
+output "aws_backend_load_balancer_listener_443_arn" {
+  description = "The ARN of the Load Balancer Listener."
+  value       = aws_lb_listener.aws_backend_load_balancer_listener_443.arn
 }
