@@ -101,6 +101,6 @@ resource "aws_api_gateway_integration" "aws_mongodb_ga_api_integration" {
   resource_id             = aws_api_gateway_resource.aws_mongodb_ga_api_resource.id
   rest_api_id             = aws_api_gateway_rest_api.aws_mongodb_ga_api.id
   type                    = "AWS_PROXY"
-  integration_http_method = "GET"
+  integration_http_method = "POST"
   uri                     = var.aws_mongodb_ga_function_invoke_arn
 }
