@@ -67,33 +67,33 @@ resource "aws_security_group" "aws_backend_security_group1" {
   description = "Enable access to ALB"
   vpc_id      = aws_vpc.aws_backend_vpc.id
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  # ingress {
+  #   from_port   = 80
+  #   to_port     = 80
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
   
-  ingress {
-    from_port   = 22   # SSH port
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # Adjust this CIDR block to match your network's IP range
-  }
+  # ingress {
+  #   from_port   = 22   # SSH port
+  #   to_port     = 22
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]  # Adjust this CIDR block to match your network's IP range
+  # }
 
-  ingress {
-    from_port   = 3389   # RDP port
-    to_port     = 3389
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # Adjust this CIDR block to match your network's IP range
-  }
+  # ingress {
+  #   from_port   = 3389   # RDP port
+  #   to_port     = 3389
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]  # Adjust this CIDR block to match your network's IP range
+  # }
 
-  ingress {
-    from_port   = -1   # ICMP (ping)
-    to_port     = -1
-    protocol    = "icmp"
-    cidr_blocks = ["0.0.0.0/0"]  # Adjust this CIDR block to match your network's IP range
-  }
+  # ingress {
+  #   from_port   = -1   # ICMP (ping)
+  #   to_port     = -1
+  #   protocol    = "icmp"
+  #   cidr_blocks = ["0.0.0.0/0"]  # Adjust this CIDR block to match your network's IP range
+  # }
 
   ingress {
     from_port   = 443
@@ -116,12 +116,12 @@ resource "aws_security_group" "aws_backend_security_group2" {
   description = "Enable access to Lambda"
   vpc_id      = aws_vpc.aws_backend_vpc.id
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  # ingress {
+  #   from_port   = 80
+  #   to_port     = 80
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 
   ingress {
     from_port   = 443
@@ -143,12 +143,12 @@ resource "aws_security_group" "aws_backend_security_group3" {
   description = "Enable access to API Gateway"
   vpc_id      = aws_vpc.aws_backend_vpc.id
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
-  }
+  # ingress {
+  #   from_port   = 80
+  #   to_port     = 80
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["10.0.0.0/16"]
+  # }
 
   ingress {
     from_port   = 443
@@ -175,7 +175,7 @@ resource "aws_vpc_endpoint" "aws_backend_vpc_endpoint" {
     aws_subnet.aws_backend_private_subnet2.id
   ]
   security_group_ids  = [
-    aws_security_group.aws_backend_security_group2.id
+    aws_security_group.aws_backend_security_group3.id
   ]
 }
 
