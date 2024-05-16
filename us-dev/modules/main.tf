@@ -26,7 +26,7 @@ provider "github" {
 }
 
 module "vpc" {
-  source                     = "github.com/${var.org_name}/${var.repo_name}/us-dev/modules/vpc"
+  source                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/vpc"
   aws_region                 = var.aws_region
   vpc_cidr_block             = var.vpc_cidr_block
   private_subnet1_cidr_block = var.private_subnet1_cidr_block
@@ -44,7 +44,7 @@ module "vpc" {
 }
 
 module "alb" {
-  source                         = "github.com/${var.org_name}/${var.repo_name}/us-dev/modules/alb"
+  source                         = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/alb"
   environment_tag                = var.environment_tag
   aws_backend_private_subnet1_id = module.vpc.aws_backend_private_subnet1_id
   aws_backend_private_subnet2_id = module.vpc.aws_backend_private_subnet2_id
@@ -54,7 +54,7 @@ module "alb" {
 }
 
 module "sns" {
-  source                   = "github.com/${var.org_name}/${var.repo_name}us-dev/modules/sns"
+  source                   = "github.com/aws-backend-solutions/aws-terraform-personalus-dev/modules/sns"
   environment_tag          = var.environment_tag
   recipient_for_budgets    = var.recipient_for_budgets
   recipient_for_cloudwatch = var.recipient_for_cloudwatch
