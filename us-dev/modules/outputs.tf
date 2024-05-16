@@ -61,14 +61,24 @@ output "aws_backend_load_balancer_name" {
   value       = module.alb.aws_backend_load_balancer_name
 }
 
-output "aws_backend_load_balancer_listener_id" {
+output "aws_backend_load_balancer_listener_80_id" {
   description = "The ID of the Load Balancer Listener."
-  value       = module.alb.aws_backend_load_balancer_listener_id
+  value       = module.alb.aws_backend_load_balancer_listener_80_id
 }
 
-output "aws_backend_load_balancer_listener_arn" {
+output "aws_backend_load_balancer_listener_80_arn" {
   description = "The ARN of the Load Balancer Listener."
-  value       = module.alb.aws_backend_load_balancer_listener_arn
+  value       = module.alb.aws_backend_load_balancer_listener_80_arn
+}
+
+output "aws_backend_load_balancer_listener_443_id" {
+  description = "The ID of the Load Balancer Listener."
+  value       = module.alb.aws_backend_load_balancer_listener_443_id
+}
+
+output "aws_backend_load_balancer_listener_443_arn" {
+  description = "The ARN of the Load Balancer Listener."
+  value       = module.alb.aws_backend_load_balancer_listener_443_arn
 }
 
 ########## modules/sns ##########
