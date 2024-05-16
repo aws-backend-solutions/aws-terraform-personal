@@ -12,7 +12,7 @@ resource "aws_api_gateway_rest_api" "aws_mongodb_ga_api" {
   }
 }
 
-resource "aws_apigateway_vpc_link" "aws_mongodb_ga_vpc_link" {
+resource "aws_api_gateway_vpc_link" "aws_mongodb_ga_vpc_link" {
   name = "aws-mongodb-ga-vpc-link"
   target_arns = [var.aws_backend_vpc_endpoint_arn]
 }
