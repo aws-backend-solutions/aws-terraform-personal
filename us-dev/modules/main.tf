@@ -25,7 +25,6 @@ provider "github" {
   token = var.github_token
 }
 
-# this vpc should only be ran once for the entire repo
 module "vpc" {
   source                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/vpc"
   aws_region                 = var.aws_region
