@@ -58,7 +58,9 @@ module "api_gateway" {
   aws_backend_private_subnet1_id        = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet1_id
   aws_backend_private_subnet2_id        = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet2_id
   aws_backend_security_group2_id        = data.terraform_remote_state.modules.outputs.aws_backend_security_group2_id
-  aws_backend_load_balancer_id = data.terraform_remote_state.modules.outputs.aws_backend_load_balancer_id
+  aws_backend_load_balancer_dns_name = data.terraform_remote_state.modules.outputs.aws_backend_load_balancer_dns_name
+  aws_backend_vpc_endpoint_arn = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_arn
+  aws_backend_vpc_endpoint_id = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_id
 }
 
 module "budgets" {

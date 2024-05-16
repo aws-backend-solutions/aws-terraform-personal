@@ -37,9 +37,13 @@ output "aws_backend_security_group2_id" {
 
 output "aws_backend_vpc_endpoint_id" {
   description = "The ID of the AwsBackendVpcEndpoint."
-  value       = module.vpc.aws_backend_vpc_endpoint_id
+  value       = aws_vpc_endpoint.aws_backend_vpc_endpoint.id
 }
 
+output "aws_backend_vpc_endpoint_arn" {
+  description = "The ARN of the AwsBackendVpcEndpoint."
+  value       = aws_vpc_endpoint.aws_backend_vpc_endpoint.arn
+}
 ########## modules/alb ##########
 
 output "aws_backend_load_balancer_arn" {
