@@ -61,7 +61,7 @@ resource "aws_api_gateway_deployment" "aws_mongodb_ga_api_deployment" {
     "version" = timestamp()
   }
 
-  depends_on = [aws_api_gateway_integration.integration]
+  depends_on = [aws_api_gateway_integration.aws_mongodb_ga_api_integration]
   lifecycle {
     create_before_destroy = true
   }
@@ -90,7 +90,7 @@ resource "aws_api_gateway_method" "aws_mongodb_ga_api_method" {
   }
 }
 
-resource "aws_api_gateway_method_settings" "method_settings" {
+resource "aws_api_gateway_method_settings" "aws_mongodb_ga_api_method_settings" {
   rest_api_id = aws_api_gateway_rest_api.aws_mongodb_ga_api.id
   stage_name  = aws_api_gateway_stage.aws_mongodb_ga_api_stage.stage_name
   method_path = "*/*"
