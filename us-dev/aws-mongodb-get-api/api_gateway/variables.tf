@@ -33,11 +33,6 @@ variable "aws_backend_vpc_endpoint_id" {
   description = "The ID of the AwsBackendVpcEndpoint."
 }
 
-variable "aws_backend_vpc_endpoint_arn" {
-  type        = string
-  description = "The ARN of the AwsBackendVpcEndpoint."
-}
-
 variable "aws_mongodb_ga_function_invoke_arn" {
   type        = string
   description = "The Invoke ARN of the underlying Lambda function."
