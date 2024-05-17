@@ -41,34 +41,64 @@ variable "us_prod_domain" {
   description = "Domain address of the us-prod."
 }
 
-variable "us_dev_mongodb_url" {
+variable "us_dev_url" {
   type        = string
   description = "Connection string of the us-dev MongoDB to connect with."
 }
 
-variable "us_stage_mongodb_url" {
+variable "us_stage_url" {
   type        = string
   description = "Connection string of the us-stage MongoDB to connect with."
 }
 
-variable "us_prod_mongodb_url" {
+variable "us_prod_url" {
   type        = string
   description = "Connection string of the us-prod MongoDB to connect with."
 }
 
-variable "us_dev_mongodb_name" {
+variable "us_dev_db" {
   type        = string
   description = "Database name in us-dev for the lambda to query with."
 }
 
-variable "us_stage_mongodb_name" {
+variable "us_stage_db" {
   type        = string
   description = "Database name in us-stage for the lambda to query with."
 }
 
-variable "us_prod_mongodb_name" {
+variable "us_prod_db" {
   type        = string
   description = "Database name in us-prod for the lambda to query with."
+}
+
+variable "us_dev_usr" {
+  type        = string
+  description = "Admin tenant's username used in us-dev."
+}
+
+variable "us_stage_usr" {
+  type        = string
+  description = "Admin tenant's username used in us-stage."
+}
+
+variable "us_prod_usr" {
+  type        = string
+  description = "Admin tenant's username used in us-prod."
+}
+
+variable "us_dev_pwd" {
+  type        = string
+  description = "Admin tenant's password used in us-dev."
+}
+
+variable "us_stage_pwd" {
+  type        = string
+  description = "Admin tenant's password used in us-stage."
+}
+
+variable "us_prod_pwd" {
+  type        = string
+  description = "Admin tenant's password used in us-prod."
 }
 
 variable "us_dev_secret" {
@@ -87,6 +117,26 @@ variable "us_prod_secret" {
 }
 
 # frankfurt variables
+
+variable "eu_stage_url" {
+  type        = string
+  description = "Connection string of the eu-stage MongoDB to connect with."
+}
+
+variable "eu_prod_url" {
+  type        = string
+  description = "Connection string of the eu-prod MongoDB to connect with."
+}
+
+variable "eu_stage_db" {
+  type        = string
+  description = "Database name in eu-stage for the lambda to query with."
+}
+
+variable "eu_prod_db" {
+  type        = string
+  description = "Database name in eu-prod for the lambda to query with."
+}
 
 variable "eu_stage_domain" {
   type        = string
@@ -116,6 +166,21 @@ variable "eu_stage_pwd" {
 variable "eu_prod_pwd" {
   type        = string
   description = "Admin tenant's password used in eu-prod."
+}
+
+variable "eu_dev_secret" {
+  type        = string
+  description = "Secret eued in eu-dev."
+}
+
+variable "eu_stage_secret" {
+  type        = string
+  description = "Secret eued in eu-stage."
+}
+
+variable "eu_prod_secret" {
+  type        = string
+  description = "Secret eued in eu-prod."
 }
 
 # query variables
