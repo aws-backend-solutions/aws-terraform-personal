@@ -39,7 +39,6 @@ module "vpc" {
   source                             = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/vpc"
   prefix_name                        = var.prefix_name
   aws_region                         = var.aws_region
-  cidr_block_of_vpc_to_peer          = var.cidr_block_of_vpc_to_peer
   aws_backend_private_route_table_id = data.terraform_remote_state.modules.outputs.aws_backend_private_route_table_id
   aws_backend_public_subnet1_id      = data.terraform_remote_state.modules.outputs.aws_backend_public_subnet1_id
 }

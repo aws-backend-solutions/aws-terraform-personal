@@ -4,3 +4,5 @@ us-dev/modules/.terraform.lock.hcl
 us-dev/modules/.terraform
 us-dev/aws-mongodb-get-api/.terraform
 us-dev/aws-mongodb-get-api/.terraform.lock.hcl
+us-dev/aws-integration-tenant-mgmt-api/.terraform.lock.hcl
+us-dev/aws-integration-tenant-mgmt-api/.terraform
