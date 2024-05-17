@@ -1,17 +1,9 @@
-resource "aws_apigatewayv2_vpc_link" "aws_integration_tenant_mgmt_vpc_link" {
-  name = "${var.prefix_name}-vpc-link"
-  security_group_ids = [
-    var.aws_backend_security_group1_id
-  ]
-  subnet_ids = [
-    var.aws_backend_public_subnet1_id,
-    var.aws_backend_public_subnet2_id
-  ]
-}
-
-resource "aws_apigatewayv2_api" "aws_integration_tenant_mgmt_api" {
+resource "aws_api_gateway_rest_api" "aws_integration_tenant_mgmt_api" {
   name          = "${var.prefix_name}-api"
-  protocol_type = "HTTP"
+  endpoint_configuration {
+    types            = ["PRIVATE"]
+    vpc_endpoint_ids = [var.aws_backend_vpc_endpoint_id]
+  }
 
   tags = {
     CostCenter  = var.cost_center_tag
@@ -20,42 +12,82 @@ resource "aws_apigatewayv2_api" "aws_integration_tenant_mgmt_api" {
   }
 }
 
-resource "aws_cloudwatch_log_group" "aws_integration_tenant_mgmt_api_log_group" {
-  name = "/aws/api-gateway/${aws_apigatewayv2_api.aws_integration_tenant_mgmt_api.name}"
+resource "aws_api_gateway_rest_api_policy" "api_gateway_policy" {
+  rest_api_id = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": "execute-api:Invoke",
+        "Resource": [
+          "execute-api:/*"
+        ]
+      }
+    ]
+  }
+EOF
 }
 
-resource "aws_apigatewayv2_stage" "aws_integration_tenant_mgmt_api_stage" {
-  api_id      = aws_apigatewayv2_api.aws_integration_tenant_mgmt_api.id
-  auto_deploy = true
-  name        = var.aws_environment
+resource "aws_api_gateway_deployment" "aws_integration_tenant_mgmt_api_deployment" {
+  rest_api_id = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
 
-  access_log_settings {
-    destination_arn = aws_cloudwatch_log_group.aws_integration_tenant_mgmt_api_log_group.arn
-    format          = "{ \"requestId\": \"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"requestTime\": \"$context.requestTime\", \"httpMethod\": \"$context.httpMethod\", \"routeKey\": \"$context.routeKey\", \"status\": \"$context.status\", \"protocol\": \"$context.protocol\", \"responseLength\": \"$context.responseLength\" }"
+  triggers = {
+    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.body))
+  }
+
+  variables = {
+    "version" = timestamp()
+  }
+
+  depends_on = [aws_api_gateway_integration.aws_integration_tenant_mgmt_api_integration]
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
-resource "aws_apigatewayv2_integration" "aws_integration_tenant_mgmt_api_integration" {
-  api_id                 = aws_apigatewayv2_api.aws_integration_tenant_mgmt_api.id
-  connection_type        = "VPC_LINK"
-  connection_id          = aws_apigatewayv2_vpc_link.aws_integration_tenant_mgmt_vpc_link.id
-  integration_method     = "POST"
-  integration_type       = "HTTP_PROXY"
-  integration_uri        = var.aws_backend_load_balancer_listener_id
-  payload_format_version = "1.0"
+resource "aws_api_gateway_stage" "aws_integration_tenant_mgmt_api_stage" {
+  deployment_id = aws_api_gateway_deployment.aws_integration_tenant_mgmt_api_deployment.id
+  rest_api_id   = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
+  stage_name    = var.aws_environment
 }
 
-resource "aws_apigatewayv2_route" "aws_integration_tenant_mgmt_api_route" {
-  api_id             = aws_apigatewayv2_api.aws_integration_tenant_mgmt_api.id
-  route_key          = "POST /${var.path_part}"
-  target             = "integrations/${aws_apigatewayv2_integration.aws_integration_tenant_mgmt_api_integration.id}"
-  authorization_type = "AWS_IAM"
+resource "aws_api_gateway_resource" "aws_integration_tenant_mgmt_api_resource" {
+  rest_api_id = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
+  parent_id   = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.root_resource_id
+  path_part   = var.path_part
 }
 
-resource "aws_apigatewayv2_deployment" "aws_integration_tenant_mgmt_api_deployment" {
-  api_id = aws_apigatewayv2_api.aws_integration_tenant_mgmt_api.id
+resource "aws_api_gateway_method" "aws_integration_tenant_mgmt_api_method" {
+  rest_api_id   = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
+  resource_id   = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_resource.id
+  http_method   = "POST"
+  authorization = "AWS_IAM"
 
-  depends_on = [
-    aws_apigatewayv2_route.aws_integration_tenant_mgmt_api_route
-  ]
+  request_models = {
+    "application/json" = "Error"
+  }
+}
+
+resource "aws_api_gateway_method_settings" "aws_integration_tenant_mgmt_api_method_settings" {
+  rest_api_id = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
+  stage_name  = aws_api_gateway_stage.aws_integration_tenant_mgmt_api_stage.stage_name
+  method_path = "*/*"
+
+  settings {
+    metrics_enabled = true
+    logging_level   = "INFO"
+  }
+}
+
+resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_integration" {
+  http_method             = aws_api_gateway_method.aws_integration_tenant_mgmt_api_method.http_method
+  resource_id             = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_resource.id
+  rest_api_id             = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
+  type                    = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = var.aws_integration_tenant_mgmt_function_invoke_arn
 }

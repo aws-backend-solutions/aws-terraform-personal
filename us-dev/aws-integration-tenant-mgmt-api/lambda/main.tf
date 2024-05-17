@@ -1,5 +1,5 @@
 resource "aws_iam_role" "aws_integration_tenant_mgmt_function_role" {
-  name = "aws-integration-tenant-mgmt-function-role"
+  name = "${var.prefix_name}-function-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -21,7 +21,7 @@ resource "aws_iam_role" "aws_integration_tenant_mgmt_function_role" {
 
 resource "aws_lambda_function" "aws_integration_tenant_mgmt_function" {
   function_name    = var.lambda_function_name
-  description      = "Lambda function that creates tenant in frankfurt."
+  description      = "Lambda function that creates tenant from oregon to frankfurt and vice versa."
   handler          = "app.lambda_handler"
   runtime          = "python3.9"
   timeout          = 60
@@ -75,8 +75,8 @@ resource "aws_cloudwatch_log_group" "aws_integration_tenant_mgmt_function_log_gr
 }
 
 resource "aws_lambda_permission" "aws_integration_tenant_mgmt_function_invoke_permission" {
-  statement_id  = "AllowExecutionFromELB"
+  statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.aws_integration_tenant_mgmt_function.arn
-  principal     = "elasticloadbalancing.amazonaws.com"
+  principal     = "apigateway.amazonaws.com"
 }
