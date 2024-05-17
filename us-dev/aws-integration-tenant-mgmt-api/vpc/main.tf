@@ -3,7 +3,7 @@ resource "aws_nat_gateway" "aws_backend_nat_gateway" {
   subnet_id     = var.aws_backend_public_subnet1_id
 
   tags = {
-    Name = "${prefix_name}-nat-gateway"
+    Name = "${var.prefix_name}-nat-gateway"
   }
 }
 
