@@ -1,5 +1,5 @@
-resource "aws_budgets_budget" "aws_integration_tenant_eu_lambda_budget" {
-  name         = "aws-integration-tenant-eu-lambda-budget"
+resource "aws_budgets_budget" "aws_integration_tenant_mgmt_lambda_budget" {
+  name         = "${var.prefix_name}-lambda-budget"
   budget_type  = "COST"
   limit_amount = var.lambda_budget_limit_amount
   limit_unit   = "USD"
@@ -21,8 +21,8 @@ resource "aws_budgets_budget" "aws_integration_tenant_eu_lambda_budget" {
   }
 }
 
-resource "aws_budgets_budget" "aws_integration_tenant_eu_api_gateway_budget" {
-  name         = "aws-integration-tenant-eu-api-gateway-budget"
+resource "aws_budgets_budget" "aws_integration_tenant_mgmt_api_gateway_budget" {
+  name         = "${var.prefix_name}-api-gateway-budget"
   budget_type  = "COST"
   limit_amount = var.api_gateway_budget_limit_amount
   limit_unit   = "USD"

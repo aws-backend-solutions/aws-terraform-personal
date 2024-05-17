@@ -30,7 +30,7 @@ data "terraform_remote_state" "modules" {
 
   config = {
     bucket = "aws-backend-tfstate"
-    key    = "aws-integration-tenant-mgmt-api/terraform.tfstate"
+    key    = "modules/terraform.tfstate"
     region = "us-west-2"
   }
 }
@@ -45,6 +45,7 @@ module "vpc" {
 
 module "lambda" {
   source                                 = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/lambda"
+  prefix_name                            = var.prefix_name
   environment_tag                        = var.environment_tag
   project_tag                            = var.project_tag
   lambda_function_name                   = var.lambda_function_name
@@ -78,6 +79,7 @@ module "lambda" {
 
 module "api_gateway" {
   source                                = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/api_gateway"
+  prefix_name                           = var.prefix_name
   environment_tag                       = var.environment_tag
   project_tag                           = var.project_tag
   aws_environment                       = var.aws_environment
@@ -90,6 +92,7 @@ module "api_gateway" {
 
 module "budgets" {
   source                          = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/budgets"
+  prefix_name                     = var.prefix_name
   environment_tag                 = var.environment_tag
   project_tag                     = var.project_tag
   budget_alert_topic_arn          = data.terraform_remote_state.modules.outputs.budget_alert_topic_arn
@@ -101,6 +104,7 @@ module "budgets" {
 
 module "cloudwatch" {
   source                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/cloudwatch"
+  prefix_name                = var.prefix_name
   environment_tag            = var.environment_tag
   project_tag                = var.project_tag
   cloudwatch_alarm_topic_arn = data.terraform_remote_state.modules.outputs.cloudwatch_alarm_topic_arn

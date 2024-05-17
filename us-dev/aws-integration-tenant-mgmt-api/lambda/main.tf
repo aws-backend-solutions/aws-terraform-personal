@@ -1,5 +1,5 @@
-resource "aws_iam_role" "aws_integration_tenant_eu_function_role" {
-  name = "AwsIntegrationTenantEuFunctionRole"
+resource "aws_iam_role" "aws_integration_tenant_mgmt_function_role" {
+  name = "aws-integration-tenant-mgmt-function-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -19,13 +19,13 @@ resource "aws_iam_role" "aws_integration_tenant_eu_function_role" {
   ]
 }
 
-resource "aws_lambda_function" "aws_integration_tenant_eu_function" {
+resource "aws_lambda_function" "aws_integration_tenant_mgmt_function" {
   function_name    = var.lambda_function_name
   description      = "Lambda function that creates tenant in frankfurt."
   handler          = "app.lambda_handler"
   runtime          = "python3.9"
   timeout          = 60
-  role             = aws_iam_role.aws_integration_tenant_eu_function_role.arn
+  role             = aws_iam_role.aws_integration_tenant_mgmt_function_role.arn
   filename         = "${path.module}/code/${var.lambda_function_name}.zip"
 
   environment {
@@ -70,42 +70,13 @@ resource "aws_lambda_function" "aws_integration_tenant_eu_function" {
   }
 }
 
-resource "aws_cloudwatch_log_group" "aws_integration_tenant_eu_function_log_group" {
-  name = "/aws/lambda/${aws_lambda_function.aws_integration_tenant_eu_function.function_name}"
+resource "aws_cloudwatch_log_group" "aws_integration_tenant_mgmt_function_log_group" {
+  name = "/aws/lambda/${aws_lambda_function.aws_integration_tenant_mgmt_function.function_name}"
 }
 
-resource "aws_lambda_permission" "aws_integration_tenant_eu_function_invoke_permission" {
+resource "aws_lambda_permission" "aws_integration_tenant_mgmt_function_invoke_permission" {
   statement_id  = "AllowExecutionFromELB"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.aws_integration_tenant_eu_function.arn
+  function_name = aws_lambda_function.aws_integration_tenant_mgmt_function.arn
   principal     = "elasticloadbalancing.amazonaws.com"
-}
-
-resource "aws_lb_target_group" "aws_backend_load_balancer_target_group2" {
-  name     = "aws-backend-lb-target-group-2"
-  port     = 80
-  protocol = "HTTP"
-  target_type = "lambda"
-}
-
-resource "aws_lb_target_group_attachment" "lambda_attachment" {
-  depends_on = [ aws_lb_target_group.aws_backend_load_balancer_target_group2 ]
-  target_group_arn = aws_lb_target_group.aws_backend_load_balancer_target_group2.arn
-  target_id        = aws_lambda_function.aws_integration_tenant_eu_function.arn
-}
-
-resource "aws_lb_listener_rule" "aws_backend_listener_rule2" {
-  listener_arn = var.aws_backend_load_balancer_listener_arn
-  priority     = 2
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.aws_backend_load_balancer_target_group2.arn
-  }
-
-  condition {
-    path_pattern {
-      values = ["/${var.aws_environment}/${var.path_part}"]
-    }
-  }
 }
