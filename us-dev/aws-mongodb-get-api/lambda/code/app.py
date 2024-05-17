@@ -46,31 +46,31 @@ def lambda_handler(event, context):
         conn_status = check_conn(client)
         if conn_status['statusCode'] != 200:
             return conn_status
-            
-        db = client[mongodb_name]
+        else:
+            db = client[mongodb_name]
 
-        collection_value, other_key, other_value = extract_values_from_event(query_params)
+            collection_value, other_key, other_value = extract_values_from_event(query_params)
 
-        if collection_value is not None:
-            collection_name = db[collection_value]
+            if collection_value is not None:
+                collection_name = db[collection_value]
 
-            if collection_value not in db.list_collection_names():
-                error_message = f"Collection '{collection_value}' does not exist within the database '{mongodb_name}'"
+                if collection_value not in db.list_collection_names():
+                    error_message = f"Collection '{collection_value}' does not exist within the database '{mongodb_name}'"
+                    logger.error(error_message)
+                    traceback.print_exc()
+                    return create_response(404, {'errors': error_message})
+
+                if other_value:
+                    return query_by_id(collection_name, other_key, other_value)
+                else:
+                    error_message = "Missing or invalid value in the event"
+                    logger.error(error_message)
+                    return create_response(400, {'errors': error_message})
+            else:
+                error_message = "The collection key is not present in the paramaters."
                 logger.error(error_message)
                 traceback.print_exc()
                 return create_response(404, {'errors': error_message})
-
-            if other_value:
-                return query_by_id(collection_name, other_key, other_value)
-            else:
-                error_message = "Missing or invalid value in the event"
-                logger.error(error_message)
-                return create_response(400, {'errors': error_message})
-        else:
-            error_message = "The collection key is not present in the paramaters."
-            logger.error(error_message)
-            traceback.print_exc()
-            return create_response(404, {'errors': error_message})
     except Exception as e:
         error_message = f"An error occurred: {str(e)}"
         logger.error(error_message)
