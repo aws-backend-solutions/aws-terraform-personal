@@ -18,11 +18,11 @@ resource "aws_vpc_endpoint" "aws_backend_vpc_endpoint" {
   vpc_endpoint_type   = "Interface"
   service_name        = "com.amazonaws.${var.aws_region}.execute-api"
   private_dns_enabled = true
-  subnet_ids          = [
-    var.aws_backend_private_subnet1_id, 
+  subnet_ids = [
+    var.aws_backend_private_subnet1_id,
     var.aws_backend_private_subnet2_id
   ]
-  security_group_ids  = [
+  security_group_ids = [
     var.aws_backend_security_group3_id
   ]
   tags = {
