@@ -18,6 +18,9 @@ def lambda_handler(event, context):
         if 'queryStringParameters' in event:
             query_params = event['queryStringParameters']
 
+            if len(query_params) != 3:
+                return create_response(400, {'errors': 'Please make sure to provide the correct header keys and values.'})
+
         mongodb_url = None
         mongodb_name = None
 
@@ -25,21 +28,24 @@ def lambda_handler(event, context):
             mongodb_url = os.environ['OREGON_DEV_URI']
             mongodb_name = os.environ['OREGON_DEV_DB']
 
-        if query_params['region_env'] == 'us-stage':
+        elif query_params['region_env'] == 'us-stage':
             mongodb_url = os.environ['OREGON_STAGE_URI']
             mongodb_name = os.environ['OREGON_STAGE_DB']
 
-        if query_params['region_env'] == 'us-prod':
+        elif query_params['region_env'] == 'us-prod':
             mongodb_url = os.environ['OREGON_PROD_URI']
             mongodb_name = os.environ['OREGON_PROD_DB']
 
-        if query_params['region_env'] == 'eu-stage':
+        elif query_params['region_env'] == 'eu-stage':
             mongodb_url = os.environ['FRANKFURT_STAGE_URI']
             mongodb_name = os.environ['FRANKFURT_STAGE_DB']
 
-        if query_params['region_env'] == 'eu-prod':
+        elif query_params['region_env'] == 'eu-prod':
             mongodb_url = os.environ['FRANKFURT_PROD_URI']
             mongodb_name = os.environ['FRANKFURT_PROD_DB']
+        
+        else:
+            return create_response(400, {'errors': 'Invalid value for region_env.'})
 
         client = pymongo.MongoClient(host=mongodb_url+mongodb_name)
 
@@ -49,7 +55,7 @@ def lambda_handler(event, context):
         else:
             db = client[mongodb_name]
 
-            collection_value, other_key, other_value = extract_values_from_event(query_params)
+            collection_value, other_key, other_value  = extract_values_from_event(query_params)
 
             if collection_value is not None:
                 collection_name = db[collection_value]
@@ -86,22 +92,22 @@ def check_conn(client):
     return create_response(200 if client.admin.command('ping')['ok'] == 1 else 500, {'message': 'MongoDB server is reachable' if client.admin.command('ping')['ok'] == 1 else 'MongoDB server is not reachable'})
 
 def extract_values_from_event(body_dict):
-    collection_value = None
+    required_keys = ["collection", "region_env"]
+    missing_keys = [key for key in required_keys if key not in body_dict]
+
+    if missing_keys:
+        return create_response(404, {'errors': f"Missing required fields: {', '.join(missing_keys)}"})
+
+    collection_value = body_dict["collection"]
     other_key = None
     other_value = None
-    collection_found = False
 
     for key, value in body_dict.items():
-        if key == "collection" and not collection_found:
-            collection_value = value
-            collection_found = True
-        else:
-            if not other_key:
-                other_key = key
-                other_value = value
-            else:
-                break
-                
+        if key not in required_keys:
+            other_key = key
+            other_value = value
+            break
+
     return collection_value, other_key, other_value
     
 def query_by_id(collection, other_key, other_value):
