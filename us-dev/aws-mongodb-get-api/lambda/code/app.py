@@ -13,45 +13,41 @@ logger = logging.getLogger(__name__)
 
 def lambda_handler(event, context):
     try:
-        body_dict = json.loads(event['body'])
+        print(event)
+
+        if 'queryStringParameters' in event:
+            query_params = event['queryStringParameters']
+
         mongodb_url = None
         mongodb_name = None
 
-        if body_dict['region_env'] == 'us-dev':
+        if query_params['region_env'] == 'us-dev':
             mongodb_url = os.environ['OREGON_DEV_URI']
             mongodb_name = os.environ['OREGON_DEV_DB']
 
-        if body_dict['region_env'] == 'us-stage':
+        if query_params['region_env'] == 'us-stage':
             mongodb_url = os.environ['OREGON_STAGE_URI']
             mongodb_name = os.environ['OREGON_STAGE_DB']
 
-        if body_dict['region_env'] == 'us-prod':
+        if query_params['region_env'] == 'us-prod':
             mongodb_url = os.environ['OREGON_PROD_URI']
             mongodb_name = os.environ['OREGON_PROD_DB']
 
-        if body_dict['region_env'] == 'eu-stage':
+        if query_params['region_env'] == 'eu-stage':
             mongodb_url = os.environ['FRANKFURT_STAGE_URI']
             mongodb_name = os.environ['FRANKFURT_STAGE_DB']
 
-        if body_dict['region_env'] == 'eu-prod':
+        if query_params['region_env'] == 'eu-prod':
             mongodb_url = os.environ['FRANKFURT_PROD_URI']
             mongodb_name = os.environ['FRANKFURT_PROD_DB']
 
         client = pymongo.MongoClient(host=mongodb_url+mongodb_name)
-    except Exception as e:
-        print(f"Failed to establish MongoDB connection during initialization: {str(e)}")
 
-    try:
-        print(event)
-        
         conn_status = check_conn(client)
         if conn_status['statusCode'] != 200:
             return conn_status
             
         db = client[mongodb_name]
-
-        if 'queryStringParameters' in event:
-            query_params = event['queryStringParameters']
 
         collection_value, other_key, other_value = extract_values_from_event(query_params)
 
