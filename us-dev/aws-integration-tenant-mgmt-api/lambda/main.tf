@@ -45,6 +45,9 @@ resource "aws_lambda_function" "aws_integration_tenant_mgmt_function" {
       OREGON_DEV_PWD: var.us_dev_pwd
       OREGON_STAGING_PWD: var.us_stage_pwd
       OREGON_PROD_PWD: var.us_prod_pwd
+      OREGON_DEV_SECRET: var.us_dev_secret
+      OREGON_STAGE_SECRET: var.us_stage_secret
+      OREGON_PROD_SECRET: var.us_prod_secret
 
       FRANKFURT_STAGING: var.eu_stage_domain
       FRANKFURT_PROD: var.eu_prod_domain
@@ -56,6 +59,8 @@ resource "aws_lambda_function" "aws_integration_tenant_mgmt_function" {
       FRANKFURT_STAGING_PWD: var.eu_stage_pwd
       FRANKFURT_PROD_USR: var.eu_prod_usr
       FRANKFURT_PROD_PWD: var.eu_prod_pwd
+      FRANKFURT_STAGE_SECRET: var.eu_stage_secret
+      FRANKFURT_PROD_SECRET: var.eu_prod_secret
 
       COLLECTION_NAME: var.collection_name
       API_ENDPOINT: var.api_endpoint
