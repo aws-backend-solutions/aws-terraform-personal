@@ -26,19 +26,6 @@ resource "aws_api_gateway_rest_api_policy" "api_gateway_policy" {
         "Resource": [
           "execute-api:/*"
         ]
-      },
-      {
-        "Effect": "Deny",
-        "Principal": "*",
-        "Action": "execute-api:Invoke",
-        "Resource": [
-          "execute-api:/*"
-        ],
-        "Condition" : {
-          "StringNotEquals": {
-            "aws:SourceVpce": "${var.aws_backend_vpc_endpoint_id}"
-          }
-        }
       }
     ]
   }
