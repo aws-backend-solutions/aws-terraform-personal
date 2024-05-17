@@ -14,7 +14,7 @@ resource "aws_route" "aws_mongodb_ga_route" {
 }
 
 resource "aws_vpc_endpoint" "aws_backend_vpc_endpoint" {
-  vpc_id              = var.aws_backend_vpc.id
+  vpc_id              = var.aws_backend_vpc_id
   vpc_endpoint_type   = "Interface"
   service_name        = "com.amazonaws.${var.aws_region}.execute-api"
   private_dns_enabled = true
@@ -23,7 +23,7 @@ resource "aws_vpc_endpoint" "aws_backend_vpc_endpoint" {
     var.aws_backend_private_subnet2_id
   ]
   security_group_ids  = [
-    var.aws_backend_security_group3.id
+    var.aws_backend_security_group3_id
   ]
   tags = {
     Name = "${var.prefix_name}-api-vpce"
