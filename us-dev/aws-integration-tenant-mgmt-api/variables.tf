@@ -188,19 +188,14 @@ variable "eu_prod_pwd" {
   description = "Admin tenant's password used in eu-prod."
 }
 
-variable "eu_dev_secret" {
-  type        = string
-  description = "Secret eued in eu-dev."
-}
-
 variable "eu_stage_secret" {
   type        = string
-  description = "Secret eued in eu-stage."
+  description = "Secret in eu-stage."
 }
 
 variable "eu_prod_secret" {
   type        = string
-  description = "Secret eued in eu-prod."
+  description = "Secret in eu-prod."
 }
 
 # query variables
