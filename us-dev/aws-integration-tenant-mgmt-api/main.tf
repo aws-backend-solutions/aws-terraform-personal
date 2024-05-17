@@ -8,7 +8,7 @@ terraform {
 
   backend "s3" {
     bucket         = "aws-backend-tfstate"
-    key            = "aws-integration-tenant-eu-api/terraform.tfstate"
+    key            = "aws-integration-tenant-mgmt-api/terraform.tfstate"
     region         = "us-west-2"
     encrypt        = true
     dynamodb_table = "aws-backend-tf-lockid"
@@ -30,13 +30,22 @@ data "terraform_remote_state" "modules" {
 
   config = {
     bucket = "aws-backend-tfstate"
-    key    = "modules/terraform.tfstate"
+    key    = "aws-integration-tenant-mgmt-api/terraform.tfstate"
     region = "us-west-2"
   }
 }
 
+module "vpc" {
+  source                             = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/vpc"
+  prefix_name                        = var.prefix_name
+  aws_region                         = var.aws_region
+  cidr_block_of_vpc_to_peer          = var.cidr_block_of_vpc_to_peer
+  aws_backend_private_route_table_id = data.terraform_remote_state.modules.outputs.aws_backend_private_route_table_id
+  aws_backend_public_subnet1_id      = data.terraform_remote_state.modules.outputs.aws_backend_public_subnet1_id
+}
+
 module "lambda" {
-  source                                 = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-eu-api/lambda"
+  source                                 = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/lambda"
   environment_tag                        = var.environment_tag
   project_tag                            = var.project_tag
   lambda_function_name                   = var.lambda_function_name
@@ -69,7 +78,7 @@ module "lambda" {
 }
 
 module "api_gateway" {
-  source                                = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-eu-api/api_gateway"
+  source                                = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/api_gateway"
   environment_tag                       = var.environment_tag
   project_tag                           = var.project_tag
   aws_environment                       = var.aws_environment
@@ -81,7 +90,7 @@ module "api_gateway" {
 }
 
 module "budgets" {
-  source                          = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-eu-api/budgets"
+  source                          = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/budgets"
   environment_tag                 = var.environment_tag
   project_tag                     = var.project_tag
   budget_alert_topic_arn          = data.terraform_remote_state.modules.outputs.budget_alert_topic_arn
@@ -92,7 +101,7 @@ module "budgets" {
 }
 
 module "cloudwatch" {
-  source                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-eu-api/cloudwatch"
+  source                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/cloudwatch"
   environment_tag            = var.environment_tag
   project_tag                = var.project_tag
   cloudwatch_alarm_topic_arn = data.terraform_remote_state.modules.outputs.cloudwatch_alarm_topic_arn
