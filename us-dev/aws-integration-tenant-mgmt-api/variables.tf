@@ -36,11 +36,6 @@ variable "github_token" { # this token needs to be generated in the github's dev
 
 ########## modules/vpc ##########
 
-variable "private_ip_to_peer" {
-  type        = string
-  description = "Private IPv4 of the VPC to communicate with."
-}
-
 ########## aws-mongodb-get-api/lambda ##########
 
 variable "lambda_function_name" {
