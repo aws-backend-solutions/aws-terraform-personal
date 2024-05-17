@@ -46,7 +46,7 @@ variable "private_ip_to_peer" {
 variable "lambda_function_name" {
   type        = string
   description = "Lambda's function name."
-  default     = "aws-integration-tenant-eu-function"
+  default     = "aws-integration-tenant-mgmt-function"
 }
 
 # oregon variables
@@ -156,20 +156,20 @@ variable "path_part" {
 
 variable "lambda_budget_limit_amount" {
   type        = string
-  description = "The amount of cost or usage being measured for for the aws-integration-tenant-eu-function."
+  description = "The amount of cost or usage being measured for for the aws-integration-tenant-mgmt-function."
 }
 
 variable "lambda_budget_time_unit" {
   type        = string
-  description = "The length of time until a budget resets the actual and forecasted spend for the aws-integration-tenant-eu-function."
+  description = "The length of time until a budget resets the actual and forecasted spend for the aws-integration-tenant-mgmt-function."
 }
 
 variable "api_gateway_budget_limit_amount" {
   type        = string
-  description = "The threshold set for the aws-integration-tenant-eu-api."
+  description = "The threshold set for the aws-integration-tenant-mgmt-api."
 }
 
 variable "api_gateway_budget_time_unit" {
   type        = string
-  description = "The length of time until a budget resets the actual and forecasted spend for the aws-integration-tenant-eu-api."
+  description = "The length of time until a budget resets the actual and forecasted spend for the aws-integration-tenant-mgmt-api."
 }

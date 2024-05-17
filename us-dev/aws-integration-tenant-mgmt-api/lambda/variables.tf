@@ -21,7 +21,7 @@ variable "project_tag" {
 variable "lambda_function_name" {
   type        = string
   description = "Lambda's function name."
-  default     = "aws-integration-tenant-eu-function"
+  default     = "aws-integration-tenant-mgmt-function"
 }
 
 # oregon variables
