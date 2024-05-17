@@ -79,7 +79,6 @@ module "lambda" {
   eu_prod_usr                    = var.eu_prod_usr
   eu_stage_pwd                   = var.eu_stage_pwd
   eu_prod_pwd                    = var.eu_prod_pwd
-  eu_dev_secret                  = var.eu_dev_secret
   eu_stage_secret                = var.eu_stage_secret
   eu_prod_secret                 = var.eu_prod_secret
   collection_name                = var.collection_name
