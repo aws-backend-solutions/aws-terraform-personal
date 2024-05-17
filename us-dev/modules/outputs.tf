@@ -35,16 +35,6 @@ output "aws_backend_security_group2_id" {
   value       = module.vpc.aws_backend_security_group2_id
 }
 
-output "aws_backend_vpc_endpoint_id" {
-  description = "The ID of the AwsBackendVpcEndpoint."
-  value       = module.vpc.aws_backend_vpc_endpoint_id
-}
-
-output "aws_backend_vpc_endpoint_arn" {
-  description = "The ARN of the AwsBackendVpcEndpoint."
-  value       = module.vpc.aws_backend_vpc_endpoint_arn
-}
-
 output "aws_backend_private_route_table_id" {
   description = "The ID of private route table."
   value       = module.vpc.aws_backend_private_route_table_id
