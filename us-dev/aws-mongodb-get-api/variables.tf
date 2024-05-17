@@ -36,9 +36,56 @@ variable "github_token" { # this token needs to be generated in the github's dev
 
 ########## modules/vpc ##########
 
-variable "private_ip_to_peer" {
+########## aws-mongodb-get-api/lambda ##########
+
+variable "us_dev_url" {
   type        = string
-  description = "Private IPv4 of the VPC to communicate with."
+  description = "Connection string of the MongoDB to connect with."
+}
+
+variable "us_stage_url" {
+  type        = string
+  description = "Connection string of the MongoDB to connect with."
+}
+
+variable "us_prod_url" {
+  type        = string
+  description = "Connection string of the MongoDB to connect with."
+}
+
+variable "eu_stage_url" {
+  type        = string
+  description = "Connection string of the MongoDB to connect with."
+}
+
+variable "eu_prod_url" {
+  type        = string
+  description = "Connection string of the MongoDB to connect with."
+}
+
+variable "us_dev_db" {
+  type        = string
+  description = "Database name for the lambda to query with."
+}
+
+variable "us_stage_db" {
+  type        = string
+  description = "Database name for the lambda to query with."
+}
+
+variable "us_prod_db" {
+  type        = string
+  description = "Database name for the lambda to query with."
+}
+
+variable "eu_stage_db" {
+  type        = string
+  description = "Database name for the lambda to query with."
+}
+
+variable "eu_prod_db" {
+  type        = string
+  description = "Database name for the lambda to query with."
 }
 
 ########## aws-mongodb-get-api/api_gateway ##########
