@@ -41,13 +41,6 @@ variable "private_ip_to_peer" {
   description = "Private IPv4 of the VPC to communicate with."
 }
 
-########## aws-mongodb-get-api/lambda ##########
-
-variable "mongodb_name" {
-  type        = string
-  description = "Database name for the lambda to query with."
-}
-
 ########## aws-mongodb-get-api/api_gateway ##########
 
 variable "aws_environment" {
