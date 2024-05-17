@@ -182,3 +182,20 @@ resource "aws_route" "aws_backend_ig_route1" {
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.aws_backend_internet_gateway.id
 }
+
+resource "aws_vpc_endpoint" "aws_backend_vpc_endpoint" {
+  vpc_id              = aws_vpc.aws_backend_vpc.id
+  vpc_endpoint_type   = "Interface"
+  service_name        = "com.amazonaws.${var.aws_region}.execute-api"
+  private_dns_enabled = true
+  subnet_ids = [
+    aws_subnet.aws_backend_private_subnet1.id,
+    aws_subnet.aws_backend_private_subnet2.id
+  ]
+  security_group_ids = [
+    aws_security_group.aws_backend_security_group3.id
+  ]
+  tags = {
+    Name = "${var.prefix_name}-api-vpce"
+  }
+}

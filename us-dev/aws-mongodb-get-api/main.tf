@@ -69,8 +69,8 @@ module "api_gateway" {
   project_tag                        = var.project_tag
   aws_environment                    = var.aws_environment
   path_part                          = var.path_part
-  aws_backend_vpc_endpoint_id        = module.vpc.aws_backend_vpc_endpoint_id
   aws_mongodb_ga_function_invoke_arn = module.lambda.aws_mongodb_ga_function_invoke_arn
+  aws_backend_vpc_endpoint_id        = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_id
 }
 
 module "budgets" {
