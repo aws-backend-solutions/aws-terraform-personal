@@ -36,19 +36,9 @@ variable "github_token" { # this token needs to be generated in the github's dev
 
 ########## modules/vpc ##########
 
-variable "vpc_id_to_peer" {
-  type        = string
-  description = "ID of the VPC to peer with."
-}
-
 variable "private_ip_to_peer" {
   type        = string
   description = "Private IPv4 of the VPC to communicate with."
-}
-
-variable "cidr_block_of_vpc_to_peer" {
-  type        = string
-  description = "CIDR block of the peered VPC to add for routing tables."
 }
 
 ########## aws-mongodb-get-api/lambda ##########

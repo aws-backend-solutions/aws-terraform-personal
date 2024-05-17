@@ -35,16 +35,6 @@ data "terraform_remote_state" "modules" {
   }
 }
 
-module "vpc" {
-  source                             = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-mongodb-get-api/vpc"
-  prefix_name                        = var.prefix_name
-  aws_region                         = var.aws_region
-  vpc_id_to_peer                     = var.vpc_id_to_peer
-  cidr_block_of_vpc_to_peer          = var.cidr_block_of_vpc_to_peer
-  aws_backend_vpc_id                 = data.terraform_remote_state.modules.outputs.aws_backend_vpc_id
-  aws_backend_private_route_table_id = data.terraform_remote_state.modules.outputs.aws_backend_private_route_table_id
-}
-
 module "lambda" {
   source                         = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-mongodb-get-api/lambda"
   prefix_name                    = var.prefix_name
