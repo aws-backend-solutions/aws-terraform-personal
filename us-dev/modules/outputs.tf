@@ -45,6 +45,11 @@ output "aws_backend_private_route_table_id" {
   value       = module.vpc.aws_backend_private_route_table_id
 }
 
+output "aws_backend_vpc_endpoint_id" {
+  description = "The ID of aws-backend-api-vpce."
+  value       = module.vpc.aws_backend_vpc_endpoint_id
+}
+
 ########## modules/sns ##########
 
 output "budget_alert_topic_arn" {
