@@ -45,6 +45,11 @@ output "aws_backend_vpc_endpoint_arn" {
   value       = module.vpc.aws_backend_vpc_endpoint_arn
 }
 
+output "aws_backend_private_route_table_id" {
+  description = "The ID of private route table."
+  value       = module.vpc.aws_backend_private_route_table_id
+}
+
 ########## modules/sns ##########
 
 output "budget_alert_topic_arn" {

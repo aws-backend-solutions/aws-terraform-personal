@@ -42,3 +42,8 @@ output "aws_backend_vpc_endpoint_arn" {
   description = "The ARN of the AwsBackendVpcEndpoint."
   value       = aws_vpc_endpoint.aws_backend_vpc_endpoint.arn
 }
+
+output "aws_backend_private_route_table_id" {
+  description = "The ID of private route table."
+  value       = aws_route_table.aws_backend_private_route_table.id
+}
