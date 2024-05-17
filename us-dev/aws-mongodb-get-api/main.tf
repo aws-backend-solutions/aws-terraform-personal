@@ -71,7 +71,7 @@ module "api_gateway" {
   path_part                          = var.path_part
   aws_backend_private_subnet1_id     = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet1_id
   aws_backend_private_subnet2_id     = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet2_id
-  aws_backend_security_group2_id     = data.terraform_remote_state.modules.outputs.aws_backend_security_group2_id
+  aws_backend_security_group3_id     = data.terraform_remote_state.modules.outputs.aws_backend_security_group3_id
   aws_backend_vpc_endpoint_arn       = module.vpc.aws_backend_vpc_endpoint_arn
   aws_backend_vpc_endpoint_id        = module.vpc.aws_backend_vpc_endpoint_id
   aws_mongodb_ga_function_invoke_arn = module.lambda.aws_mongodb_ga_function_invoke_arn
