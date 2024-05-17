@@ -43,9 +43,6 @@ module "vpc" {
   cidr_block_of_vpc_to_peer          = var.cidr_block_of_vpc_to_peer
   aws_backend_vpc_id                 = data.terraform_remote_state.modules.outputs.aws_backend_vpc_id
   aws_backend_private_route_table_id = data.terraform_remote_state.modules.outputs.aws_backend_private_route_table_id
-  aws_backend_private_subnet1_id     = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet1_id
-  aws_backend_private_subnet2_id     = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet2_id
-  aws_backend_security_group3_id     = data.terraform_remote_state.modules.outputs.aws_backend_security_group3_id
 }
 
 module "lambda" {
