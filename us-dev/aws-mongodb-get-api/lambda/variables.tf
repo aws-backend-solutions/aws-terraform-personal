@@ -24,11 +24,6 @@ variable "lambda_function_name" {
   default     = "aws-mongodb-ga-function"
 }
 
-variable "mongodb_name" {
-  type        = string
-  description = "Database name for the lambda to query with."
-}
-
 variable "aws_backend_private_subnet1_id" {
   type        = string
   description = "Designated CIDR block of aws-backend-private-subnet-1 to be created."
