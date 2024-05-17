@@ -44,17 +44,6 @@ module "vpc" {
   environment_tag            = var.environment_tag
 }
 
-module "alb" {
-  source                         = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/alb"
-  prefix_name                    = var.prefix_name
-  environment_tag                = var.environment_tag
-  aws_backend_private_subnet1_id = module.vpc.aws_backend_private_subnet1_id
-  aws_backend_private_subnet2_id = module.vpc.aws_backend_private_subnet2_id
-  aws_backend_public_subnet1_id  = module.vpc.aws_backend_public_subnet1_id
-  aws_backend_public_subnet2_id  = module.vpc.aws_backend_public_subnet2_id
-  aws_backend_security_group1_id = module.vpc.aws_backend_security_group1_id
-}
-
 module "sns" {
   source                   = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/sns"
   prefix_name              = var.prefix_name
