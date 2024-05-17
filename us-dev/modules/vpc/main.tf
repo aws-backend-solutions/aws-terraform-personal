@@ -183,6 +183,7 @@ resource "aws_route" "aws_backend_ig_route1" {
   gateway_id             = aws_internet_gateway.aws_backend_internet_gateway.id
 }
 
+# create multiple of this if there are mongoDBs deployed in different VPCs
 resource "aws_vpc_endpoint" "aws_backend_vpc_endpoint" {
   vpc_id              = aws_vpc.aws_backend_vpc.id
   vpc_endpoint_type   = "Interface"
