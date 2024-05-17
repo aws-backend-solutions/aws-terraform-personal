@@ -33,6 +33,11 @@ output "aws_backend_security_group2_id" {
   value       = aws_security_group.aws_backend_security_group2.id
 }
 
+output "aws_backend_security_group3_id" {
+  description = "The ID of the AwsBackendSecurityGroup3."
+  value       = module.vpc.aws_backend_security_group3_id
+}
+
 output "aws_backend_private_route_table_id" {
   description = "The ID of private route table."
   value       = aws_route_table.aws_backend_private_route_table.id
