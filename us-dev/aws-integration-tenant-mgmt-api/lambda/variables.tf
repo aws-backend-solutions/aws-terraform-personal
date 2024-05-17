@@ -154,8 +154,3 @@ variable "aws_backend_security_group2_id" {
   type        = string
   description = "Designated security group of lambdas in aws-backend-vpc."
 }
-
-variable "aws_backend_load_balancer_listener_arn" {
-  type        = string
-  description = "The ARN of the Load Balancer Listener."
-}
