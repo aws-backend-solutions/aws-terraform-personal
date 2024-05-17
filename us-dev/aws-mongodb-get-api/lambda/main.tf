@@ -30,16 +30,8 @@ resource "aws_lambda_function" "aws_mongodb_ga_function" {
 
   environment {
     variables = {
-      OREGON_DEV_URI: var.us_dev_mongodb_url
-      OREGON_STAGING_URI: var.us_stage_mongodb_url
-      OREGON_PROD_URI: var.us_prod_mongodb_url
-      OREGON_DEV_DB: var.us_dev_mongodb_name
-      OREGON_STAGING_DB: var.us_stage_mongodb_name
-      OREGON_PROD_DB: var.us_prod_mongodb_name
-      FRANKFURT_STAGING_URI: var.eu_stage_mongodb_url
-      FRANKFURT_PROD_URI: var.eu_prod_mongodb_url
-      FRANKFURT_STAGING_DB: var.eu_stage_mongodb_name
-      FRANKFURT_PROD_DB: var.eu_prod_mongodb_name
+      MONGODB_URI   = var.mongodb_url
+      DATABASE_NAME = var.mongodb_name
     }
   }
 

@@ -11,36 +11,12 @@ from bson import Decimal128, json_util
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+try:
+    client = pymongo.MongoClient(host=os.environ['MONGODB_URI']+os.environ['DATABASE_NAME'])
+except Exception as e:
+    print(f"Failed to establish MongoDB connection during initialization: {str(e)}")
+
 def lambda_handler(event, context):
-    try:
-        body_dict = json.loads(event['body'])
-        mongodb_url = None
-        mongodb_name = None
-
-        if body_dict['region-env'] == 'us-dev':
-            mongodb_url = os.environ['OREGON_DEV_URI']
-            mongodb_name = os.environ['OREGON_DEV_DB']
-
-        if body_dict['region-env'] == 'us-stage':
-            mongodb_url = os.environ['OREGON_STAGING_URI']
-            mongodb_name = os.environ['OREGON_STAGING_DB']
-
-        if body_dict['region-env'] == 'us-prod':
-            mongodb_url = os.environ['OREGON_PROD_URI']
-            mongodb_name = os.environ['OREGON_PROD_DB']
-            
-        if body_dict['region-env'] == 'eu-dev' or body_dict['region-env'] == 'eu-stage':
-            mongodb_url = os.environ['FRANKFURT_STAGING_URI']
-            mongodb_name = os.environ['FRANKFURT_STAGING_DB']
-
-        if body_dict['region-env'] == 'eu-prod':
-            mongodb_url = os.environ['FRANKFURT_PROD_URI']
-            mongodb_name = os.environ['FRANKFURT_PROD_DB']
-
-        client = pymongo.MongoClient(host=mongodb_url+mongodb_name)
-    except Exception as e:
-        print(f"Failed to establish MongoDB connection during initialization: {str(e)}")
-
     try:
         print(event)
         
@@ -48,7 +24,9 @@ def lambda_handler(event, context):
         if conn_status['statusCode'] != 200:
             return conn_status
             
-        db = client[mongodb_name]
+        database_name = os.environ.get('DATABASE_NAME')
+        db = client[database_name]
+        # body_dict = json.loads(event['body'])
 
         if 'queryStringParameters' in event:
             query_params = event['queryStringParameters']
@@ -59,7 +37,7 @@ def lambda_handler(event, context):
             collection_name = db[collection_value]
 
             if collection_value not in db.list_collection_names():
-                error_message = f"Collection '{collection_value}' does not exist within the database '{mongodb_name}'"
+                error_message = f"Collection '{collection_value}' does not exist within the database '{database_name}'"
                 logger.error(error_message)
                 traceback.print_exc()
                 return create_response(404, {'errors': error_message})
@@ -81,7 +59,7 @@ def lambda_handler(event, context):
         traceback.print_exc()
         return create_response(500, {'errors': error_message})
     except pymongo.errors.CollectionInvalid:
-        error_message = f"Collection '{collection_name}' does not exist within the database '{mongodb_name}'"
+        error_message = f"Collection '{collection_name}' does not exist within the database '{database_name}'"
         logger.error(error_message)
         traceback.print_exc()
         return create_response(404, {'errors': error_message})

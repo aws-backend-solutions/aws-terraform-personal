@@ -41,38 +41,11 @@ variable "private_ip_to_peer" {
   description = "Private IPv4 of the VPC to communicate with."
 }
 
-########## aws-mongodb-get-api/lambda ##########
-
-variable "us_dev_mongodb_name" {
-  type        = string
-  description = "Database name in us-dev for the lambda to query with."
-}
-
-variable "us_stage_mongodb_name" {
-  type        = string
-  description = "Database name in us-stage for the lambda to query with."
-}
-
-variable "us_prod_mongodb_name" {
-  type        = string
-  description = "Database name in us-prod for the lambda to query with."
-}
-
-variable "eu_stage_mongodb_name" {
-  type        = string
-  description = "Database name in eu-stage for the lambda to query with."
-}
-
-variable "eu_prod_mongodb_name" {
-  type        = string
-  description = "Database name in eu-prod for the lambda to query with."
-}
-
 ########## aws-mongodb-get-api/api_gateway ##########
 
-variable "aws_environment" {
+variable "stage_name" {
   type        = string
-  description = "Designated AWS_ENV where this solution will be deployed."
+  description = "Stage where this solution will be deployed."
 }
 
 variable "path_part" {

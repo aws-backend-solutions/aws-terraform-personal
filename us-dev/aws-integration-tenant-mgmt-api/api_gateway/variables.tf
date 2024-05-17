@@ -18,9 +18,9 @@ variable "project_tag" {
   description = "Provide the repository name. Used for tagging the resources created."
 }
 
-variable "aws_environment" {
+variable "stage_name" {
   type        = string
-  description = "Designated AWS_ENV where this solution will be deployed."
+  description = "Stage where this solution will be deployed."
 }
 
 variable "path_part" {

@@ -49,7 +49,7 @@ module "lambda" {
   environment_tag                = var.environment_tag
   project_tag                    = var.project_tag
   lambda_function_name           = var.lambda_function_name
-  aws_environment                = var.aws_environment
+  stage_name                = var.stage_name
   path_part                      = var.path_part
   us_dev_domain                  = var.us_dev_domain
   us_stage_domain                = var.us_stage_domain
@@ -81,7 +81,7 @@ module "api_gateway" {
   prefix_name                                     = var.prefix_name
   environment_tag                                 = var.environment_tag
   project_tag                                     = var.project_tag
-  aws_environment                                 = var.aws_environment
+  stage_name                                 = var.stage_name
   path_part                                       = var.path_part
   aws_integration_tenant_mgmt_function_invoke_arn = module.lambda.aws_integration_tenant_mgmt_function_invoke_arn
   aws_backend_vpc_endpoint_id                     = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_id
