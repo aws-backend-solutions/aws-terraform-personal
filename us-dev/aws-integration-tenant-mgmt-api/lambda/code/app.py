@@ -21,44 +21,48 @@ def lambda_handler(event, context):
         print(event)
 
         body_dict = json.loads(event['body'])
-        extract_from_oregon_response = extract_from_oregon(body_dict) # 1. Extracting data from the event payload
+        validate_payload_response = validate_payload(body_dict) # 1. Extracting data from the event payload
 
-        if extract_from_oregon_response['statusCode'] == 200:
-            extract_from_oregon_response_dict = json.loads(extract_from_oregon_response['body'])
-            id_value, source_value, target_value = extract_from_oregon_response_dict['_id'], extract_from_oregon_response_dict['source_env'], extract_from_oregon_response_dict['target_env']
-            client_conn_response = client_conn(source_value) # Establishing connection to MongoDBs
+        if validate_payload_response['statusCode'] == 200:
+            validate_payload_response_dict = json.loads(validate_payload_response['body'])
+            oregon_domains = [os.environ['OREGON_DEV'], os.environ['OREGON_STAGING'], os.environ['OREGON_PROD']]
+            frankfurt_domains = [os.environ['FRANKFURT_STAGING'], os.environ['FRANKFURT_PROD']]
+
+            if validate_payload_response_dict['source_env'] in oregon_domains:
+                id_value, source_value, target_value = validate_payload_response_dict['_id'], validate_payload_response_dict['source_env'], validate_payload_response_dict['target_env']
+                client_conn_response = oregon_conn(source_value) # Establishing connection to Oregon MongoDBs
+
+            elif validate_payload_response_dict['source_env'] in frankfurt_domains:
+                id_value, source_value, target_value = validate_payload_response_dict['_id'], validate_payload_response_dict['source_env'], validate_payload_response_dict['target_env']
+                client_conn_response = frankfurt_conn(source_value) # Establishing connection to Frankfurt MongoDBs
 
             if client_conn_response:
-                client_oregon, oregon_col = client_conn_response[0], client_conn_response[1]
-                oregon_connection = oregon_conn(client_oregon) # Check oregon connection status 
+                col = client_conn_response[1]
 
-                if oregon_connection['statusCode'] == 200:
-                    read_from_oregon_response = read_from_oregon(oregon_col, id_value) # Query the oregon region
+                read_from_db_response = read_from_db(col, id_value) # Query the db based off the collection value
 
-                    if read_from_oregon_response['statusCode'] == 200:
-                        read_from_oregon_response_dict = json.loads(read_from_oregon_response['body'])
+                if read_from_db_response['statusCode'] == 200:
+                    read_from_db_response_dict = json.loads(read_from_db_response['body'])
 
-                        decrypted_tenant_response = decrypt_function(read_from_oregon_response_dict, source_value) # Decrypt the oregon response
+                    decrypted_tenant_response = decrypt_function(read_from_db_response_dict, source_value) # Decrypt the db response
 
-                        if decrypted_tenant_response['statusCode'] == 200:
-                            decrypted_tenant_response_dict = json.loads(decrypted_tenant_response['body'])
+                    if decrypted_tenant_response['statusCode'] == 200:
+                        decrypted_tenant_response_dict = json.loads(decrypted_tenant_response['body'])
 
-                            create_frankfurt_tenant_response = create_frankfurt_tenant(target_value, decrypted_tenant_response_dict['value'])
+                        create_tenant_response = create_tenant(target_value, decrypted_tenant_response_dict['value'])
 
-                            return create_frankfurt_tenant_response
-                        else:
-                            return decrypted_tenant_response
-
+                        return create_tenant_response
                     else:
-                        return read_from_oregon_response
-    
+                        return decrypted_tenant_response
+
                 else:
-                    return create_response(500, {'errors': 'Failed to establish MongoDB connection during initialization.'})
+                    return read_from_db_response
                 
             else:
                 return client_conn_response
+
         else:
-            return extract_from_oregon_response
+            return validate_payload_response
         
     except Exception as e:
         error_message = f"An error occurred: {str(e)}"
@@ -66,7 +70,7 @@ def lambda_handler(event, context):
         traceback.print_exc()
         return create_response(500, {'errors': error_message})
 
-def extract_from_oregon(body_dict):
+def validate_payload(body_dict):
     id = None
     source = None
     target = None
@@ -74,22 +78,21 @@ def extract_from_oregon(body_dict):
     required_params = ['_id', 'source_env', 'target_env']
     missing_params = []
 
-    valid_source = [os.environ['OREGON_DEV'], os.environ['OREGON_STAGING'], os.environ['OREGON_PROD']]
-    valid_target = [os.environ['FRANKFURT_STAGING'], os.environ['FRANKFURT_PROD']]
+    valid_domains = [os.environ['OREGON_DEV'], os.environ['OREGON_STAGING'], os.environ['OREGON_PROD'], os.environ['FRANKFURT_STAGING'], os.environ['FRANKFURT_PROD']]
 
     for key in required_params:
         if key not in body_dict:
-            missing_params.append(f"'{key}' is mandatory field.")
+            missing_params.append(f"'{key}' is a mandatory field.")
         else:
             value = body_dict[key]
             if key == '_id' and value:
                 id = value
-            elif key == 'source_env' and value in valid_source:
+            elif key == 'source_env' and value in valid_domains:
                 source = value
-            elif key == 'target_env' and value in valid_target:
+            elif key == 'target_env' and value in valid_domains:
                 target = value
             else:
-                missing_params.append(f"'{key}' cannot be empty or invalid.")
+                missing_params.append(f"'{key}' is invalid or empty.")
 
     if missing_params:
         return create_response(400, {'errors': missing_params})
@@ -97,7 +100,7 @@ def extract_from_oregon(body_dict):
     obj = {key: value for key, value in zip(required_params, [id, source, target])}
     return create_response(200, obj)
 
-def client_conn(source_env):
+def oregon_conn(source_env):
     source_valid = True
 
     try:
@@ -132,13 +135,29 @@ def client_conn(source_env):
         traceback.print_exc()
         return create_response(500, {'errors': error_message})
     
-def check_conn(client):
-    try:
-        client.server_info()
-        return create_response(200, {'message': 'MongoDB server is reachable.'})
+def frankfurt_conn(source_env):
+    source_valid = True
 
-    except ServerSelectionTimeoutError:
-        return create_response(500, {'errors': 'Connection to MongoDB server timed out. Check your connection settings and server availability.'})
+    try:
+        # Frankfurt
+        if source_env == os.environ['FRANKFURT_STAGING']:
+            client_frankfurt = pymongo.MongoClient(host=os.environ['FRANKFURT_STAGING_URI']+os.environ['FRANKFURT_STAGING_DB'])
+            db = os.environ.get('FRANKFURT_STAGING_DB')
+            frankfurt_db = client_frankfurt[db]
+            frankfurt_col = frankfurt_db[os.environ.get('COLLECTION_NAME')]
+        elif source_env == os.environ['FRANKFURT_PROD']:
+            client_frankfurt = pymongo.MongoClient(host=os.environ['FRANKFURT_PROD_URI']+os.environ['FRANKFURT_PROD_DB'])
+            db = os.environ.get('FRANKFURT_PROD_DB')
+            frankfurt_db = client_frankfurt[db]
+            frankfurt_col = frankfurt_db[os.environ.get('COLLECTION_NAME')]
+        else:
+            source_valid = False
+
+        # Return values
+        if not (source_valid):
+            return False
+        else:
+            return client_frankfurt, frankfurt_col
 
     except Exception as e:
         error_message = f"An error occurred: {str(e)}"
@@ -146,14 +165,7 @@ def check_conn(client):
         traceback.print_exc()
         return create_response(500, {'errors': error_message})
 
-def oregon_conn(client_oregon):
-    oregon_status = check_conn(client_oregon)
-    if oregon_status['statusCode'] == 200:
-        return oregon_status
-    else:
-        return create_response(500, {'errors': 'Failed to establish MongoDB connection with Oregon during initialization.'})
-
-def read_from_oregon(collection, id_value):
+def read_from_db(collection, id_value):
     try:
         result = collection.find_one({'_id': id_value})
 
@@ -180,6 +192,10 @@ def decrypt_function(payload, source_env):
         source_secret = os.environ['OREGON_STAGING_SECRET']
     if source_env == os.environ['OREGON_PROD']:
         source_secret = os.environ['OREGON_PROD_SECRET']
+    if source_env == os.environ['FRANKFURT_STAGING']:
+        source_secret = os.environ['FRANKFURT_STAGING_SECRET']
+    if source_env == os.environ['FRANKFURT_PROD']:
+        source_secret = os.environ['FRANKFURT_PROD_SECRET']
 
     if isinstance(payload, dict):
         try:
@@ -205,10 +221,19 @@ def decrypt_function(payload, source_env):
     else:
         return create_response(400, {'message': 'Invalid payload format. Expected dictionary.'})
 
-def create_frankfurt_tenant(target_env, payload):
+def create_tenant(target_env, payload):
     api_url = f"{target_env}{os.environ['API_ENDPOINT']}"
 
-    if target_env == os.environ['FRANKFURT_STAGING']:
+    if target_env == os.environ['OREGON_DEV']:
+        username = os.environ['OREGON_DEV_USR']
+        password = os.environ['OREGON_DEV_PWD']
+    elif target_env == os.environ['OREGON_STAGING']:
+        username = os.environ['OREGON_STAGING_USR']
+        password = os.environ['OREGON_STAGING_PWD']
+    elif target_env == os.environ['OREGON_PROD']:
+        username = os.environ['OREGON_PROD_USR']
+        password = os.environ['OREGON_PROD_PWD']
+    elif target_env == os.environ['FRANKFURT_STAGING']:
         username = os.environ['FRANKFURT_STAGING_USR']
         password = os.environ['FRANKFURT_STAGING_PWD']
     elif target_env == os.environ['FRANKFURT_PROD']:
