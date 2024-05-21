@@ -50,52 +50,12 @@ variable "path_part" {
   default     = "documents"
 }
 
-variable "us_dev_url" {
+variable "mongodb_url" {
   type        = string
   description = "Connection string of the MongoDB to connect with."
 }
 
-variable "us_stage_url" {
-  type        = string
-  description = "Connection string of the MongoDB to connect with."
-}
-
-variable "us_prod_url" {
-  type        = string
-  description = "Connection string of the MongoDB to connect with."
-}
-
-variable "eu_stage_url" {
-  type        = string
-  description = "Connection string of the MongoDB to connect with."
-}
-
-variable "eu_prod_url" {
-  type        = string
-  description = "Connection string of the MongoDB to connect with."
-}
-
-variable "us_dev_db" {
-  type        = string
-  description = "Database name for the lambda to query with."
-}
-
-variable "us_stage_db" {
-  type        = string
-  description = "Database name for the lambda to query with."
-}
-
-variable "us_prod_db" {
-  type        = string
-  description = "Database name for the lambda to query with."
-}
-
-variable "eu_stage_db" {
-  type        = string
-  description = "Database name for the lambda to query with."
-}
-
-variable "eu_prod_db" {
+variable "mongodb_name" {
   type        = string
   description = "Database name for the lambda to query with."
 }
