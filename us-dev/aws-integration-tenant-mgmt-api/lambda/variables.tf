@@ -71,52 +71,52 @@ variable "eu_prod_domain" {
   description = "Domain address of the eu-prod."
 }
 
-variable "oregon_dev_usr" {
+variable "us_dev_usr" {
   type        = string
   description = "Admin tenant's username used to create tenant in the target_env."
 }
 
-variable "oregon_dev_pwd" {
+variable "us_dev_pwd" {
   type        = string
   description = "Admin tenant's password used to create tenant in the target_env."
 }
 
-variable "oregon_staging_usr" {
+variable "us_staging_usr" {
   type        = string
   description = "Admin tenant's username used to create tenant in the target_env."
 }
 
-variable "oregon_staging_pwd" {
+variable "us_staging_pwd" {
   type        = string
   description = "Admin tenant's password used to create tenant in the target_env."
 }
 
-variable "oregon_prod_usr" {
+variable "us_prod_usr" {
   type        = string
   description = "Admin tenant's username used to create tenant in the target_env."
 }
 
-variable "oregon_prod_pwd" {
+variable "us_prod_pwd" {
   type        = string
   description = "Admin tenant's password used to create tenant in the target_env."
 }
 
-variable "frankfurt_staging_usr" {
+variable "eu_staging_usr" {
   type        = string
   description = "Admin tenant's username used to create tenant in the target_env."
 }
 
-variable "frankfurt_staging_pwd" {
+variable "eu_staging_pwd" {
   type        = string
   description = "Admin tenant's password used to create tenant in the target_env."
 }
 
-variable "frankfurt_prod_usr" {
+variable "eu_prod_usr" {
   type        = string
   description = "Admin tenant's username used to create tenant in the target_env."
 }
 
-variable "frankfurt_prod_pwd" {
+variable "eu_prod_pwd" {
   type        = string
   description = "Admin tenant's password used to create tenant in the target_env."
 }
