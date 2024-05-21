@@ -24,7 +24,7 @@ def lambda_handler(event, context):
         if conn_status['statusCode'] != 200:
             return conn_status
             
-        database_name = os.environ['MONGODB_NAME']
+        database_name = os.environ.get('MONGODB_NAME')
         db = client[database_name]
         # body_dict = json.loads(event['body'])
 
