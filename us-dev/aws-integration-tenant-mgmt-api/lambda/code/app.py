@@ -25,16 +25,9 @@ def lambda_handler(event, context):
 
         if validate_payload_response['statusCode'] == 200:
             validate_payload_response_dict = json.loads(validate_payload_response['body'])
-            oregon_domains = [os.environ['OREGON_DEV'], os.environ['OREGON_STAGING'], os.environ['OREGON_PROD']]
-            frankfurt_domains = [os.environ['FRANKFURT_STAGING'], os.environ['FRANKFURT_PROD']]
 
-            if validate_payload_response_dict['source_env'] in oregon_domains:
-                id_value, source_value, target_value = validate_payload_response_dict['_id'], validate_payload_response_dict['source_env'], validate_payload_response_dict['target_env']
-                client_conn_response = oregon_conn(source_value) # Establishing connection to Oregon MongoDBs
-
-            elif validate_payload_response_dict['source_env'] in frankfurt_domains:
-                id_value, source_value, target_value = validate_payload_response_dict['_id'], validate_payload_response_dict['source_env'], validate_payload_response_dict['target_env']
-                client_conn_response = frankfurt_conn(source_value) # Establishing connection to Frankfurt MongoDBs
+            id_value, target_value = validate_payload_response_dict['_id'], validate_payload_response_dict['target_env']
+            client_conn_response = client_conn() # Establishing connection to MongoDB
 
             if client_conn_response:
                 col = client_conn_response[1]
@@ -44,12 +37,12 @@ def lambda_handler(event, context):
                 if read_from_db_response['statusCode'] == 200:
                     read_from_db_response_dict = json.loads(read_from_db_response['body'])
 
-                    decrypted_tenant_response = decrypt_function(read_from_db_response_dict, source_value) # Decrypt the db response
+                    decrypted_tenant_response = decrypt_function(read_from_db_response_dict) # Decrypt the db response
 
                     if decrypted_tenant_response['statusCode'] == 200:
                         decrypted_tenant_response_dict = json.loads(decrypted_tenant_response['body'])
 
-                        create_tenant_response = create_tenant(target_value, decrypted_tenant_response_dict['value'])
+                        create_tenant_response = create_tenant(target_value, decrypted_tenant_response_dict['value']) # Create the tenant using the integration-tenant-service's API deployed in the target env
 
                         return create_tenant_response
                     else:
@@ -75,7 +68,7 @@ def validate_payload(body_dict):
     source = None
     target = None
 
-    required_params = ['_id', 'source_env', 'target_env']
+    required_params = ['_id', 'target_env']
     missing_params = []
 
     valid_domains = [os.environ['OREGON_DEV'], os.environ['OREGON_STAGING'], os.environ['OREGON_PROD'], os.environ['FRANKFURT_STAGING'], os.environ['FRANKFURT_PROD']]
@@ -87,8 +80,6 @@ def validate_payload(body_dict):
             value = body_dict[key]
             if key == '_id' and value:
                 id = value
-            elif key == 'source_env' and value in valid_domains:
-                source = value
             elif key == 'target_env' and value in valid_domains:
                 target = value
             else:
@@ -97,74 +88,25 @@ def validate_payload(body_dict):
     if missing_params:
         return create_response(400, {'errors': missing_params})
     
-    obj = {key: value for key, value in zip(required_params, [id, source, target])}
+    obj = {key: value for key, value in zip(required_params, [id, target])}
     return create_response(200, obj)
 
-def oregon_conn(source_env):
-    source_valid = True
-
+def client_conn():
     try:
-        # Oregon
-        if source_env == os.environ['OREGON_DEV']:
-            client_oregon = pymongo.MongoClient(host=os.environ['OREGON_DEV_URI']+os.environ['OREGON_DEV_DB'])
-            db = os.environ.get('OREGON_DEV_DB')
-            oregon_db = client_oregon[db]
-            oregon_col = oregon_db[os.environ.get('COLLECTION_NAME')]
-        elif source_env == os.environ['OREGON_STAGING']:
-            client_oregon = pymongo.MongoClient(host=os.environ['OREGON_STAGING_URI']+os.environ['OREGON_STAGING_DB'])
-            db = os.environ.get('OREGON_STAGING_DB')
-            oregon_db = client_oregon[db]
-            oregon_col = oregon_db[os.environ.get('COLLECTION_NAME')]
-        elif source_env == os.environ['OREGON_PROD']:
-            client_oregon = pymongo.MongoClient(host=os.environ['OREGON_PROD_URI']+os.environ['OREGON_PROD_DB'])
-            db = os.environ.get('OREGON_PROD_DB')
-            oregon_db = client_oregon[db]
-            oregon_col = oregon_db[os.environ.get('COLLECTION_NAME')]
-        else:
-            source_valid = False
+        client = pymongo.MongoClient(host=os.environ['MONGODB_URI']+os.environ['MONGODB_NAME'])
+        db = os.environ.get('MONGODB_NAME')
+        client_db = client[db]
+        client_col = client_db[os.environ.get('COLLECTION_NAME')]
 
-        # Return values
-        if not (source_valid):
-            return False
-        else:
-            return client_oregon, oregon_col
+
+        return client, client_col
 
     except Exception as e:
         error_message = f"An error occurred: {str(e)}"
         logger.error(error_message)
         traceback.print_exc()
         return create_response(500, {'errors': error_message})
-    
-def frankfurt_conn(source_env):
-    source_valid = True
-
-    try:
-        # Frankfurt
-        if source_env == os.environ['FRANKFURT_STAGING']:
-            client_frankfurt = pymongo.MongoClient(host=os.environ['FRANKFURT_STAGING_URI']+os.environ['FRANKFURT_STAGING_DB'])
-            db = os.environ.get('FRANKFURT_STAGING_DB')
-            frankfurt_db = client_frankfurt[db]
-            frankfurt_col = frankfurt_db[os.environ.get('COLLECTION_NAME')]
-        elif source_env == os.environ['FRANKFURT_PROD']:
-            client_frankfurt = pymongo.MongoClient(host=os.environ['FRANKFURT_PROD_URI']+os.environ['FRANKFURT_PROD_DB'])
-            db = os.environ.get('FRANKFURT_PROD_DB')
-            frankfurt_db = client_frankfurt[db]
-            frankfurt_col = frankfurt_db[os.environ.get('COLLECTION_NAME')]
-        else:
-            source_valid = False
-
-        # Return values
-        if not (source_valid):
-            return False
-        else:
-            return client_frankfurt, frankfurt_col
-
-    except Exception as e:
-        error_message = f"An error occurred: {str(e)}"
-        logger.error(error_message)
-        traceback.print_exc()
-        return create_response(500, {'errors': error_message})
-
+ 
 def read_from_db(collection, id_value):
     try:
         result = collection.find_one({'_id': id_value})
@@ -183,19 +125,8 @@ def read_from_db(collection, id_value):
         traceback.print_exc()
         return create_response(500, {'errors': error_message})
 
-def decrypt_function(payload, source_env):
-    source_secret = None
-
-    if source_env == os.environ['OREGON_DEV']:
-        source_secret = os.environ['OREGON_DEV_SECRET']
-    if source_env == os.environ['OREGON_STAGING']:
-        source_secret = os.environ['OREGON_STAGING_SECRET']
-    if source_env == os.environ['OREGON_PROD']:
-        source_secret = os.environ['OREGON_PROD_SECRET']
-    if source_env == os.environ['FRANKFURT_STAGING']:
-        source_secret = os.environ['FRANKFURT_STAGING_SECRET']
-    if source_env == os.environ['FRANKFURT_PROD']:
-        source_secret = os.environ['FRANKFURT_PROD_SECRET']
+def decrypt_function(payload):
+    source_secret = os.environ['ENV_SECRET']
 
     if isinstance(payload, dict):
         try:
@@ -224,21 +155,8 @@ def decrypt_function(payload, source_env):
 def create_tenant(target_env, payload):
     api_url = f"{target_env}{os.environ['API_ENDPOINT']}"
 
-    if target_env == os.environ['OREGON_DEV']:
-        username = os.environ['OREGON_DEV_USR']
-        password = os.environ['OREGON_DEV_PWD']
-    elif target_env == os.environ['OREGON_STAGING']:
-        username = os.environ['OREGON_STAGING_USR']
-        password = os.environ['OREGON_STAGING_PWD']
-    elif target_env == os.environ['OREGON_PROD']:
-        username = os.environ['OREGON_PROD_USR']
-        password = os.environ['OREGON_PROD_PWD']
-    elif target_env == os.environ['FRANKFURT_STAGING']:
-        username = os.environ['FRANKFURT_STAGING_USR']
-        password = os.environ['FRANKFURT_STAGING_PWD']
-    elif target_env == os.environ['FRANKFURT_PROD']:
-        username = os.environ['FRANKFURT_PROD_USR']
-        password = os.environ['FRANKFURT_PROD_PWD']
+    username = os.environ['TENANT_USR']
+    password = os.environ['TENANT_PWD']
 
     headers = {"ac-tenant-code": username}
     

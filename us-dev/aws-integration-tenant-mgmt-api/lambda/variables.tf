@@ -24,7 +24,7 @@ variable "lambda_function_name" {
   default     = "aws-integration-tenant-mgmt-function"
 }
 
-# oregon variables
+# db variables
 
 variable "us_dev_domain" {
   type        = string
@@ -41,101 +41,29 @@ variable "us_prod_domain" {
   description = "Domain address of the us-prod."
 }
 
-variable "us_dev_url" {
+variable "mongodb_url" {
   type        = string
   description = "Connection string of the us-dev MongoDB to connect with."
 }
 
-variable "us_stage_url" {
-  type        = string
-  description = "Connection string of the us-stage MongoDB to connect with."
-}
-
-variable "us_prod_url" {
-  type        = string
-  description = "Connection string of the us-prod MongoDB to connect with."
-}
-
-variable "us_dev_db" {
+variable "mongodb_name" {
   type        = string
   description = "Database name in us-dev for the lambda to query with."
 }
 
-variable "us_stage_db" {
+variable "tenant_usr" {
   type        = string
-  description = "Database name in us-stage for the lambda to query with."
+  description = "Admin tenant's username used to create tenant in the target_env."
 }
 
-variable "us_prod_db" {
+variable "tenant_pwd" {
   type        = string
-  description = "Database name in us-prod for the lambda to query with."
+  description = "Admin tenant's password used to create tenant in the target_env."
 }
 
-variable "us_dev_usr" {
+variable "env_secret" {
   type        = string
-  description = "Admin tenant's username used in us-dev."
-}
-
-variable "us_stage_usr" {
-  type        = string
-  description = "Admin tenant's username used in us-stage."
-}
-
-variable "us_prod_usr" {
-  type        = string
-  description = "Admin tenant's username used in us-prod."
-}
-
-variable "us_dev_pwd" {
-  type        = string
-  description = "Admin tenant's password used in us-dev."
-}
-
-variable "us_stage_pwd" {
-  type        = string
-  description = "Admin tenant's password used in us-stage."
-}
-
-variable "us_prod_pwd" {
-  type        = string
-  description = "Admin tenant's password used in us-prod."
-}
-
-variable "us_dev_secret" {
-  type        = string
-  description = "Secret used in us-dev."
-}
-
-variable "us_stage_secret" {
-  type        = string
-  description = "Secret used in us-stage."
-}
-
-variable "us_prod_secret" {
-  type        = string
-  description = "Secret used in us-prod."
-}
-
-# frankfurt variables
-
-variable "eu_stage_url" {
-  type        = string
-  description = "Connection string of the eu-stage MongoDB to connect with."
-}
-
-variable "eu_prod_url" {
-  type        = string
-  description = "Connection string of the eu-prod MongoDB to connect with."
-}
-
-variable "eu_stage_db" {
-  type        = string
-  description = "Database name in eu-stage for the lambda to query with."
-}
-
-variable "eu_prod_db" {
-  type        = string
-  description = "Database name in eu-prod for the lambda to query with."
+  description = "Secret used to decrypt the tenant config."
 }
 
 variable "eu_stage_domain" {
@@ -146,36 +74,6 @@ variable "eu_stage_domain" {
 variable "eu_prod_domain" {
   type        = string
   description = "Domain address of the eu-prod."
-}
-
-variable "eu_stage_usr" {
-  type        = string
-  description = "Admin tenant's username used in eu-stage."
-}
-
-variable "eu_prod_usr" {
-  type        = string
-  description = "Admin tenant's username used in eu-prod."
-}
-
-variable "eu_stage_pwd" {
-  type        = string
-  description = "Admin tenant's password used in eu-stage."
-}
-
-variable "eu_prod_pwd" {
-  type        = string
-  description = "Admin tenant's password used in eu-prod."
-}
-
-variable "eu_stage_secret" {
-  type        = string
-  description = "Secret in eu-stage."
-}
-
-variable "eu_prod_secret" {
-  type        = string
-  description = "Secret in eu-prod."
 }
 
 # query variables

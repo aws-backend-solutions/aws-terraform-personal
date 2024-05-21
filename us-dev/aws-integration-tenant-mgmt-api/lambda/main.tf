@@ -30,36 +30,16 @@ resource "aws_lambda_function" "aws_integration_tenant_mgmt_function" {
 
   environment {
     variables = {
+      MONGODB_URI: var.mongodb_url
+      MONGODB_NAME: var.mongodb_name
       OREGON_DEV: var.us_dev_domain
       OREGON_STAGING: var.us_stage_domain
       OREGON_PROD: var.us_prod_domain
-      OREGON_DEV_URI = var.us_dev_url
-      OREGON_STAGE_URI = var.us_stage_url
-      OREGON_PROD_URI = var.us_prod_url
-      OREGON_DEV_DB = var.us_dev_db
-      OREGON_STAGE_DB = var.us_stage_db
-      OREGON_PROD_DB = var.us_prod_db
-      OREGON_DEV_USR: var.us_dev_usr
-      OREGON_STAGING_USR: var.us_stage_usr
-      OREGON_PROD_USR: var.us_prod_usr
-      OREGON_DEV_PWD: var.us_dev_pwd
-      OREGON_STAGING_PWD: var.us_stage_pwd
-      OREGON_PROD_PWD: var.us_prod_pwd
-      OREGON_DEV_SECRET: var.us_dev_secret
-      OREGON_STAGE_SECRET: var.us_stage_secret
-      OREGON_PROD_SECRET: var.us_prod_secret
       FRANKFURT_STAGING: var.eu_stage_domain
       FRANKFURT_PROD: var.eu_prod_domain
-      FRANKFURT_STAGE_URI = var.eu_stage_url
-      FRANKFURT_PROD_URI = var.eu_prod_url
-      FRANKFURT_STAGE_DB = var.eu_stage_db
-      FRANKFURT_PROD_DB = var.eu_prod_db
-      FRANKFURT_STAGING_USR: var.eu_stage_usr
-      FRANKFURT_STAGING_PWD: var.eu_stage_pwd
-      FRANKFURT_PROD_USR: var.eu_prod_usr
-      FRANKFURT_PROD_PWD: var.eu_prod_pwd
-      FRANKFURT_STAGE_SECRET: var.eu_stage_secret
-      FRANKFURT_PROD_SECRET: var.eu_prod_secret
+      ENV_SECRET: var.env_secret
+      TENANT_USR: var.tenant_usr
+      TENANT_PWD: var.tenant_pwd
       COLLECTION_NAME: var.collection_name
       API_ENDPOINT: var.api_endpoint
     }
