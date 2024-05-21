@@ -39,16 +39,16 @@ resource "aws_lambda_function" "aws_integration_tenant_mgmt_function" {
       OREGON_PROD: var.us_prod_domain
       FRANKFURT_STAGING: var.eu_stage_domain
       FRANKFURT_PROD: var.eu_prod_domain
-      OREGON_DEV_USR: var.oregon_dev_usr
-      OREGON_DEV_PWD: var.oregon_dev_pwd
-      OREGON_STAGING_USR: var.oregon_staging_usr
-      OREGON_STAGING_PWD: var.oregon_staging_pwd
-      OREGON_PROD_USR: var.oregon_prod_usr
-      OREGON_PROD_PWD: var.oregon_prod_pwd
-      FRANKFURT_STAGING_USR: var.frankfurt_staging_usr
-      FRANKFURT_STAGING_PWD: var.frankfurt_staging_pwd
-      FRANKFURT_PROD_USR: var.frankfurt_prod_usr
-      FRANKFURT_PROD_PWD: var.frankfurt_prod_pwd
+      OREGON_DEV_USR: var.us_dev_usr
+      OREGON_DEV_PWD: var.us_dev_pwd
+      OREGON_STAGING_USR: var.us_staging_usr
+      OREGON_STAGING_PWD: var.us_staging_pwd
+      OREGON_PROD_USR: var.us_prod_usr
+      OREGON_PROD_PWD: var.us_prod_pwd
+      FRANKFURT_STAGING_USR: var.eu_staging_usr
+      FRANKFURT_STAGING_PWD: var.eu_staging_pwd
+      FRANKFURT_PROD_USR: var.eu_prod_usr
+      FRANKFURT_PROD_PWD: var.eu_prod_pwd
       COLLECTION_NAME: var.collection_name
       API_ENDPOINT: var.api_endpoint
     }
