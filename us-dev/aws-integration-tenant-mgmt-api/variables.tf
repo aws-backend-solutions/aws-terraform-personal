@@ -46,6 +46,11 @@ variable "lambda_function_name" {
 
 # db variables
 
+variable "mongodb_domain" {
+  type        = string
+  description = "Domain address of where the solution will be deployed."
+}
+
 variable "us_dev_domain" {
   type        = string
   description = "Domain address of the us-dev."
@@ -71,16 +76,6 @@ variable "mongodb_name" {
   description = "Database name in us-dev for the lambda to query with."
 }
 
-variable "tenant_usr" {
-  type        = string
-  description = "Admin tenant's username used to create tenant in the target_env."
-}
-
-variable "tenant_pwd" {
-  type        = string
-  description = "Admin tenant's password used to create tenant in the target_env."
-}
-
 variable "env_secret" {
   type        = string
   description = "Secret used to decrypt the tenant config."
@@ -94,6 +89,56 @@ variable "eu_stage_domain" {
 variable "eu_prod_domain" {
   type        = string
   description = "Domain address of the eu-prod."
+}
+
+variable "oregon_dev_usr" {
+  type        = string
+  description = "Admin tenant's username used to create tenant in the target_env."
+}
+
+variable "oregon_dev_pwd" {
+  type        = string
+  description = "Admin tenant's password used to create tenant in the target_env."
+}
+
+variable "oregon_staging_usr" {
+  type        = string
+  description = "Admin tenant's username used to create tenant in the target_env."
+}
+
+variable "oregon_staging_pwd" {
+  type        = string
+  description = "Admin tenant's password used to create tenant in the target_env."
+}
+
+variable "oregon_prod_usr" {
+  type        = string
+  description = "Admin tenant's username used to create tenant in the target_env."
+}
+
+variable "oregon_prod_pwd" {
+  type        = string
+  description = "Admin tenant's password used to create tenant in the target_env."
+}
+
+variable "frankfurt_staging_usr" {
+  type        = string
+  description = "Admin tenant's username used to create tenant in the target_env."
+}
+
+variable "frankfurt_staging_pwd" {
+  type        = string
+  description = "Admin tenant's password used to create tenant in the target_env."
+}
+
+variable "frankfurt_prod_usr" {
+  type        = string
+  description = "Admin tenant's username used to create tenant in the target_env."
+}
+
+variable "frankfurt_prod_pwd" {
+  type        = string
+  description = "Admin tenant's password used to create tenant in the target_env."
 }
 
 # query variables

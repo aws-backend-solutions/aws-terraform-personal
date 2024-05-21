@@ -154,9 +154,25 @@ def decrypt_function(payload):
 
 def create_tenant(target_env, payload):
     api_url = f"{target_env}{os.environ['API_ENDPOINT']}"
+    domain = os.environ['MONGODB_DOMAIN']
+    username = None
+    password = None
 
-    username = os.environ['TENANT_USR']
-    password = os.environ['TENANT_PWD']
+    if domain == os.environ['OREGON_DEV']:
+        username = os.environ['OREGON_DEV_USR']
+        password = os.environ['OREGON_DEV_PWD']
+    if domain == os.environ['OREGON_STAGING']:
+        username = os.environ['OREGON_STAGING_USR']
+        password = os.environ['OREGON_STAGING_PWD']
+    if domain == os.environ['OREGON_PROD']:
+        username = os.environ['OREGON_PROD_USR']
+        password = os.environ['OREGON_PROD_PWD']
+    if domain == os.environ['FRANKFURT_STAGING']:
+        username = os.environ['FRANKFURT_STAGING_USR']
+        password = os.environ['FRANKFURT_STAGING_PWD']
+    if domain == os.environ['FRANKFURT_PROD']:
+        username = os.environ['FRANKFURT_PROD_USR']
+        password = os.environ['FRANKFURT_PROD_PWD']
 
     headers = {"ac-tenant-code": username}
     
