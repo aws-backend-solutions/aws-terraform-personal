@@ -67,11 +67,17 @@ def validate_payload(body_dict):
     id = None
     source = None
     target = None
+    valid_domains = None
 
     required_params = ['_id', 'target_env']
     missing_params = []
 
-    valid_domains = [os.environ['OREGON_DEV'], os.environ['OREGON_STAGING'], os.environ['OREGON_PROD'], os.environ['FRANKFURT_STAGING'], os.environ['FRANKFURT_PROD']]
+    if os.environ['MONGODB_DOMAIN'] == os.environ['OREGON_DEV'] or os.environ['MONGODB_DOMAIN'] == os.environ['OREGON_STAGING'] or os.environ['MONGODB_DOMAIN'] == os.environ['OREGON_PROD']:
+        valid_domains = [os.environ['FRANKFURT_STAGING'], os.environ['FRANKFURT_PROD']]
+    if os.environ['MONGODB_DOMAIN'] == os.environ['FRANKFURT_STAGING'] or os.environ['MONGODB_DOMAIN'] == os.environ['FRANKFURT_PROD']:
+        valid_domains = [os.environ['OREGON_DEV'], os.environ['OREGON_STAGING'], os.environ['OREGON_PROD']]
+    else:
+        missing_params.append(f"'target_env is invalid.")
 
     for key in required_params:
         if key not in body_dict:
