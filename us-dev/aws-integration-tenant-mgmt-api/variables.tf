@@ -36,7 +36,7 @@ variable "github_token" { # this token needs to be generated in the github's dev
 
 ########## modules/vpc ##########
 
-########## aws-mongodb-get-api/lambda ##########
+########## aws-integration-tenant-mgmt/lambda ##########
 
 variable "lambda_function_name" {
   type        = string
@@ -153,7 +153,7 @@ variable "api_endpoint" {
   description = "API endpoint to trigger the tenant creation."
 }
 
-########## aws-mongodb-get-api/api_gateway ##########
+########## aws-integration-tenant-mgmt/api_gateway ##########
 
 variable "stage_name" {
   type        = string
@@ -165,7 +165,7 @@ variable "path_part" {
   description = "Path part of the API endpoint."
 }
 
-########## aws-mongodb-get-api/budgets ##########
+########## aws-integration-tenant-mgmt/budgets ##########
 
 variable "lambda_budget_limit_amount" {
   type        = string
