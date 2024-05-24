@@ -7,7 +7,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "aws-backend-tfstate"
+    bucket         = "aws-backend-tf-state"
     key            = "aws-integration-tenant-mgmt-api/terraform.tfstate"
     region         = "us-west-2"
     encrypt        = true
@@ -17,8 +17,6 @@ terraform {
 
 provider "aws" {
   region     = var.aws_region
-  access_key = var.aws_access_key
-  secret_key = var.aws_secret_key
 }
 
 provider "github" {
