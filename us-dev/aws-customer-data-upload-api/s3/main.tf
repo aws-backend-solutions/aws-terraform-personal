@@ -1,17 +1,19 @@
 resource "aws_s3_bucket" "aws_customer_data_upload_bucket" {
   bucket = "${var.prefix_name}-bucket"
   
-  versioning {
-    enabled = true
-  }
-  
-  acl = "private"
-  
   tags = {
     Name        = "${var.prefix_name}-bucket"
     CostCenter  = var.cost_center_tag
     Environment = var.environment_tag
     Project     = var.project_tag
+  }
+}
+
+resource "aws_s3_bucket_versioning" "aws_customer_data_upload_bucket_versioning" {
+  bucket = aws_s3_bucket.aws_customer_data_upload_bucket.id
+
+  versioning_configuration {
+    status = "Enabled"
   }
 }
 
