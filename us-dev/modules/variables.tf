@@ -9,16 +9,6 @@ variable "aws_region" {
   description = "Designated AWS_REGION where this solution will be deployed."
 }
 
-variable "aws_access_key" {
-  type        = string
-  description = "Access key for the AWS profile."
-}
-
-variable "aws_secret_key" {
-  type        = string
-  description = "Secret key for the AWS profile."
-}
-
 variable "environment_tag" {
   type        = string
   description = "Provide which environment this will be deployed. Used for tagging the resources created."
