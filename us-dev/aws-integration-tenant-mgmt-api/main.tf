@@ -49,8 +49,6 @@ module "lambda" {
   environment_tag                = var.environment_tag
   project_tag                    = var.project_tag
   lambda_function_name           = var.lambda_function_name
-  stage_name                     = var.stage_name
-  path_part                      = var.path_part
   mongodb_domain                 = var.mongodb_domain
   mongodb_url                    = var.mongodb_url
   mongodb_name                   = var.mongodb_name

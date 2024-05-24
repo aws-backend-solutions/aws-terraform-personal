@@ -1,0 +1,15 @@
+s3://aws-customer-data-upload-s3/
+└── 2024/
+    └── 05/
+        └── 24/
+            ├── <ticket number>/
+            │   ├── <tenant name/code>_<ticket number>_<file name>_<timestamp>.<format of file>
+            │   ├── test_sophia_tenant_AC-18001_data_20240524T153045.json
+            │   ├── test_sophia_tenant_AC-18001_image_20240524T163045.png
+            │   └── test_sophia_tenant_AC-18001_logs_20240524T173045.txt
+            └── <ticket number>/
+                ├── <tenant name/code>_<ticket number>_<file name>_<timestamp>.<format of file>
+                ├── test_sophia_tenant_AC-18176_data_20240524T153045.json
+                ├── test_sophia_tenant_AC-18176_image_20240524T163045.png
+                └── test_sophia_tenant_AC-18176_logs_20240524T173045.txt
+          

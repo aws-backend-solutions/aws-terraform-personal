@@ -36,31 +36,35 @@ data "terraform_remote_state" "modules" {
 }
 
 module "s3" {
-  source      = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-customer-data-upload-api/s3"
-  prefix_name = var.prefix_name
-  aws_region  = var.aws_region
+  source          = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-customer-data-upload-api/s3"
+  prefix_name     = var.prefix_name
+  environment_tag = var.environment_tag
+  project_tag     = var.project_tag
 }
 
 module "lambda" {
-  source                         = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-customer-data-upload-api/lambda"
-  prefix_name                    = var.prefix_name
-  environment_tag                = var.environment_tag
-  project_tag                    = var.project_tag
-  lambda_function_name           = var.lambda_function_name
-  aws_backend_private_subnet1_id = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet1_id
-  aws_backend_private_subnet2_id = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet2_id
-  aws_backend_security_group2_id = data.terraform_remote_state.modules.outputs.aws_backend_security_group2_id
+  source                              = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-customer-data-upload-api/lambda"
+  prefix_name                         = var.prefix_name
+  environment_tag                     = var.environment_tag
+  project_tag                         = var.project_tag
+  new_function_name                   = var.new_function_name
+  renew_function_name                 = var.renew_function_name
+  aws_customer_data_upload_bucket_arn = module.s3.aws_customer_data_upload_bucket_arn
+  aws_backend_private_subnet1_id      = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet1_id
+  aws_backend_private_subnet2_id      = data.terraform_remote_state.modules.outputs.aws_backend_private_subnet2_id
+  aws_backend_security_group2_id      = data.terraform_remote_state.modules.outputs.aws_backend_security_group2_id
 }
 
 module "api_gateway" {
-  source                                          = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-customer-data-upload-api/api_gateway"
-  prefix_name                                     = var.prefix_name
-  environment_tag                                 = var.environment_tag
-  project_tag                                     = var.project_tag
-  stage_name                                      = var.stage_name
-  path_part                                       = var.path_part
-  aws_integration_tenant_mgmt_function_invoke_arn = module.lambda.aws_integration_tenant_mgmt_function_invoke_arn
-  aws_backend_vpc_endpoint_id                     = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_id
+  source                                             = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-customer-data-upload-api/api_gateway"
+  prefix_name                                        = var.prefix_name
+  environment_tag                                    = var.environment_tag
+  project_tag                                        = var.project_tag
+  stage_name                                         = var.stage_name
+  path_part                                          = var.path_part
+  aws_customer_data_upload_new_function_invoke_arn   = module.lambda.aws_customer_data_upload_new_function_invoke_arn
+  aws_customer_data_upload_renew_function_invoke_arn = module.lambda.aws_customer_data_upload_renew_function_invoke_arn
+  aws_backend_vpc_endpoint_id                        = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_id
 }
 
 module "budgets" {
@@ -80,5 +84,7 @@ module "cloudwatch" {
   prefix_name                = var.prefix_name
   environment_tag            = var.environment_tag
   project_tag                = var.project_tag
+  new_function_name          = var.new_function_name
+  renew_function_name        = var.renew_function_name
   cloudwatch_alarm_topic_arn = data.terraform_remote_state.modules.outputs.cloudwatch_alarm_topic_arn
 }

@@ -1,5 +1,28 @@
+resource "aws_iam_policy" "aws_customer_data_upload_function_s3_policy" {
+  name = "${var.prefix_name}-function-s3-policy"
+  description = "IAM policy for Lambda to access S3 bucket"
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          "${var.aws_customer_data_upload_bucket_arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role" "aws_customer_data_upload_function_role" {
   name = "${var.prefix_name}-function-role"
+  
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -16,6 +39,7 @@ resource "aws_iam_role" "aws_customer_data_upload_function_role" {
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
     "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
+    aws_iam_policy.aws_customer_data_upload_function_s3_policy.arn,
   ]
 }
 

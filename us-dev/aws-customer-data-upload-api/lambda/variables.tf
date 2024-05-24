@@ -30,16 +30,6 @@ variable "renew_function_name" {
   default     = "aws-customer-data-upload-renew-url-function"
 }
 
-variable "stage_name" {
-  type        = string
-  description = "Stage where this solution will be deployed."
-}
-
-variable "path_part" {
-  type        = string
-  description = "Path part of the API endpoint."
-}
-
 variable "aws_backend_private_subnet1_id" {
   type        = string
   description = "Designated CIDR block of aws-backend-private-subnet-1 to be created."
@@ -53,4 +43,9 @@ variable "aws_backend_private_subnet2_id" {
 variable "aws_backend_security_group2_id" {
   type        = string
   description = "Designated security group of lambdas in aws-backend-vpc."
+}
+
+variable "aws_customer_data_upload_bucket_arn" {
+  type        = string
+  description = "The ARN of the designated s3 bucket for customers' data."
 }

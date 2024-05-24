@@ -133,16 +133,6 @@ variable "api_endpoint" {
   description = "API endpoint to trigger the tenant creation."
 }
 
-variable "stage_name" {
-  type        = string
-  description = "Stage where this solution will be deployed."
-}
-
-variable "path_part" {
-  type        = string
-  description = "Path part of the API endpoint."
-}
-
 variable "aws_backend_private_subnet1_id" {
   type        = string
   description = "Designated CIDR block of aws-backend-private-subnet-1 to be created."
