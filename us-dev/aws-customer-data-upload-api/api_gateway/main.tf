@@ -94,7 +94,7 @@ resource "aws_api_gateway_integration" "aws_customer_data_upload_api_integration
   rest_api_id             = aws_api_gateway_rest_api.aws_customer_data_upload_api.id
   type                    = "AWS_PROXY"
   integration_http_method = "POST"
-  uri                     = var.aws_customer_data_upload_new_function_invoke_arn
+  uri                     = var.aws_customer_data_upload_function_invoke_arn1
 }
 
 ##### method for the regenerate lambda #####
@@ -127,5 +127,5 @@ resource "aws_api_gateway_integration" "aws_customer_data_upload_api_integration
   rest_api_id             = aws_api_gateway_rest_api.aws_customer_data_upload_api.id
   type                    = "AWS_PROXY"
   integration_http_method = "POST"
-  uri                     = var.aws_customer_data_upload_renew_function_invoke_arn
+  uri                     = var.aws_customer_data_upload_function_invoke_arn2
 }
