@@ -33,12 +33,12 @@ variable "aws_backend_vpc_endpoint_id" {
   description = "The ID of the AwsBackendVpcEndpoint."
 }
 
-variable "aws_customer_data_upload_new_function_invoke_arn" {
+variable "aws_customer_data_upload_function_invoke_arn1" {
   type        = string
   description = "The Invoke ARN of the underlying upload and generate new url Lambda function."
 }
 
-variable "aws_customer_data_upload_renew_function_invoke_arn" {
+variable "aws_customer_data_upload_function_invoke_arn2" {
   type        = string
   description = "The Invoke ARN of the underlying regenerate new url Lambda function."
 }
