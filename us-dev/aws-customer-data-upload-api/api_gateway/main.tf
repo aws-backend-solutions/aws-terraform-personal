@@ -43,7 +43,10 @@ resource "aws_api_gateway_deployment" "aws_customer_data_upload_api_deployment" 
     "version" = timestamp()
   }
 
-  depends_on = [aws_api_gateway_integration.aws_customer_data_upload_api_integration]
+  depends_on = [
+    aws_api_gateway_integration.aws_customer_data_upload_api_integration1,
+    aws_api_gateway_integration.aws_customer_data_upload_api_integration2,
+  ]
   lifecycle {
     create_before_destroy = true
   }

@@ -38,10 +38,16 @@ variable "github_token" { # this token needs to be generated in the github's dev
 
 ########## aws-mongodb-get-api/lambda ##########
 
-variable "lambda_function_name" {
+variable "new_function_name" {
   type        = string
-  description = "Lambda's function name."
-  default     = "aws-customer-data-upload-function"
+  description = "Lambda's function name (Upload and generate new url)."
+  default     = "aws-customer-data-upload-new-url-function"
+}
+
+variable "renew_function_name" {
+  type        = string
+  description = "Lambda's function name (Regenerate new url)."
+  default     = "aws-customer-data-upload-renew-url-function"
 }
 
 ########## aws-mongodb-get-api/api_gateway ##########

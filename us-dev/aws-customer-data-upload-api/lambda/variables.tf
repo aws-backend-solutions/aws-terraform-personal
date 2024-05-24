@@ -21,13 +21,11 @@ variable "project_tag" {
 variable "new_function_name" {
   type        = string
   description = "Lambda's function name (Upload and generate new url)."
-  default     = "aws-customer-data-upload-new-url-function"
 }
 
 variable "renew_function_name" {
   type        = string
   description = "Lambda's function name (Regenerate new url)."
-  default     = "aws-customer-data-upload-renew-url-function"
 }
 
 variable "aws_backend_private_subnet1_id" {
