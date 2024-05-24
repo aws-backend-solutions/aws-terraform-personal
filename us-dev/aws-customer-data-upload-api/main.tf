@@ -62,8 +62,8 @@ module "api_gateway" {
   project_tag                                        = var.project_tag
   stage_name                                         = var.stage_name
   path_part                                          = var.path_part
-  aws_customer_data_upload_new_function_invoke_arn   = module.lambda.aws_customer_data_upload_new_function_invoke_arn
-  aws_customer_data_upload_renew_function_invoke_arn = module.lambda.aws_customer_data_upload_renew_function_invoke_arn
+  aws_customer_data_upload_function_invoke_arn1   = module.lambda.aws_customer_data_upload_function_invoke_arn1
+  aws_customer_data_upload_function_invoke_arn2 = module.lambda.aws_customer_data_upload_function_invoke_arn2
   aws_backend_vpc_endpoint_id                        = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_id
 }
 
