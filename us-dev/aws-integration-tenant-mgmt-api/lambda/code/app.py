@@ -36,14 +36,13 @@ def lambda_handler(event, context):
 
                 if read_from_db_response['statusCode'] == 200:
                     read_from_db_response_dict = json.loads(read_from_db_response['body'])
-                    print(read_from_db_response_dict)
 
                     decrypted_tenant_response = decrypt_function(read_from_db_response_dict) # Decrypt the db response
 
                     if decrypted_tenant_response['statusCode'] == 200:
                         decrypted_tenant_response_dict = json.loads(decrypted_tenant_response['body'])
 
-                        create_tenant_response = create_tenant(target_value, decrypted_tenant_response_dict['value']) # Create the tenant using the integration-tenant-service's API deployed in the target env
+                        create_tenant_response = create_tenant(target_value, decrypted_tenant_response_dict['value'], id_value) # Create the tenant using the integration-tenant-service's API deployed in the target env
 
                         return create_tenant_response
                     else:
@@ -160,8 +159,45 @@ def decrypt_function(payload):
     else:
         return create_response(400, {'message': 'Invalid payload format. Expected dictionary.'})
 
-def create_tenant(target_env, payload):
+def create_tenant(target_env, payload, tenant_code):
     api_url = f"{target_env}{os.environ['API_ENDPOINT']}"
+    username = None
+    password = None
+
+    if target_env == os.environ['OREGON_DEV']:
+        username = os.environ['OREGON_DEV_USR']
+        password = os.environ['OREGON_DEV_PWD']
+    if target_env == os.environ['OREGON_STAGING']:
+        username = os.environ['OREGON_STAGING_USR']
+        password = os.environ['OREGON_STAGING_PWD']
+    if target_env == os.environ['OREGON_PROD']:
+        username = os.environ['OREGON_PROD_USR']
+        password = os.environ['OREGON_PROD_PWD']
+    if target_env == os.environ['FRANKFURT_STAGING']:
+        username = os.environ['FRANKFURT_STAGING_USR']
+        password = os.environ['FRANKFURT_STAGING_PWD']
+    if target_env == os.environ['FRANKFURT_PROD']:
+        username = os.environ['FRANKFURT_PROD_USR']
+        password = os.environ['FRANKFURT_PROD_PWD']
+
+    headers = {"ac-tenant-code": username}
+    
+    response = requests.post(api_url, json=payload, auth=(username, password), headers=headers)
+    
+    if response.status_code == 200:
+        update_tenant_response = update_tenant(target_env, payload, tenant_code) # Update the tenantconfig so that it looks like it was just copy pasted
+
+        if update_tenant_response['statusCode'] == 200:
+            return create_response(response.status_code, json.loads(response.text))
+        else:
+            return update_tenant_response
+    else:
+        logger.error(response.text)
+        traceback.print_exc()
+        return create_response(response.status_code, json.loads(response.text))
+
+def update_tenant(target_env, payload, tenant_code):
+    api_url = f"{target_env}{os.environ['API_ENDPOINT']}{tenant_code}"
     username = None
     password = None
 
