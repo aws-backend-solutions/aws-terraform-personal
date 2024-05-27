@@ -41,6 +41,7 @@ def lambda_handler(event, context):
 
                     if decrypted_tenant_response['statusCode'] == 200:
                         decrypted_tenant_response_dict = json.loads(decrypted_tenant_response['body'])
+                        print(decrypted_tenant_response_dict)
 
                         create_tenant_response = create_tenant(target_value, decrypted_tenant_response_dict['value']) # Create the tenant using the integration-tenant-service's API deployed in the target env
 
