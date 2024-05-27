@@ -16,7 +16,7 @@ terraform {
 }
 
 provider "aws" {
-  region     = var.aws_region
+  region = var.aws_region
 }
 
 provider "github" {
@@ -54,15 +54,15 @@ module "lambda" {
 }
 
 module "api_gateway" {
-  source                                             = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-customer-data-upload-api/api_gateway"
-  prefix_name                                        = var.prefix_name
-  environment_tag                                    = var.environment_tag
-  project_tag                                        = var.project_tag
-  stage_name                                         = var.stage_name
-  path_part                                          = var.path_part
-  aws_customer_data_upload_function_invoke_arn1   = module.lambda.aws_customer_data_upload_function_invoke_arn1
+  source                                        = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-customer-data-upload-api/api_gateway"
+  prefix_name                                   = var.prefix_name
+  environment_tag                               = var.environment_tag
+  project_tag                                   = var.project_tag
+  stage_name                                    = var.stage_name
+  path_part                                     = var.path_part
+  aws_customer_data_upload_function_invoke_arn1 = module.lambda.aws_customer_data_upload_function_invoke_arn1
   aws_customer_data_upload_function_invoke_arn2 = module.lambda.aws_customer_data_upload_function_invoke_arn2
-  aws_backend_vpc_endpoint_id                        = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_id
+  aws_backend_vpc_endpoint_id                   = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_id
 }
 
 module "budgets" {

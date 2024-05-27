@@ -26,7 +26,7 @@ variable "github_token" { # this token needs to be generated in the github's dev
 
 ########## modules/vpc ##########
 
-########## aws-mongodb-get-api/lambda ##########
+########## aws-customer-data-upload-api/lambda ##########
 
 variable "new_function_name" {
   type        = string
@@ -40,7 +40,7 @@ variable "renew_function_name" {
   default     = "aws-customer-data-upload-renew-url-function"
 }
 
-########## aws-mongodb-get-api/api_gateway ##########
+########## aws-customer-data-upload-api/api_gateway ##########
 
 variable "stage_name" {
   type        = string
@@ -52,7 +52,7 @@ variable "path_part" {
   description = "Path part of the API endpoint."
 }
 
-########## aws-mongodb-get-api/budgets ##########
+########## aws-customer-data-upload-api/budgets ##########
 
 variable "lambda_budget_limit_amount" {
   type        = string
