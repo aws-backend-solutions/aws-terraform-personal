@@ -27,7 +27,7 @@ data "terraform_remote_state" "modules" {
   backend = "s3"
 
   config = {
-    bucket = "aws-backend-tfstate"
+    bucket = "aws-backend-tf-state"
     key    = "modules/terraform.tfstate"
     region = "us-west-2"
   }
