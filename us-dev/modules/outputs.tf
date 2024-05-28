@@ -71,5 +71,5 @@ output "aws_backend_api_gateway_role_name" {
 
 output "aws_backend_api_gateway_role_arn" {
   description = "The ARN of the aws_backend_api_gateway_role."
-  value = module.iam.aws_backend_api_gateway_role.arn 
+  value = module.iam.aws_backend_api_gateway_role_arn 
 }
