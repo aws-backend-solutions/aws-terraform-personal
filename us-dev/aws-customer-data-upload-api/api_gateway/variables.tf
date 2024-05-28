@@ -53,7 +53,7 @@ variable "aws_customer_data_upload_bucket_name" {
   description = "The name of the designated s3 bucket for customers' data."
 }
 
-variable "aws_backend_api_gateway_role_name" {
+variable "aws_backend_api_gateway_role_arn" {
   type = string
-  description = "The name of the aws_backend_api_gateway_role."
+  description = "The ARN of the aws_backend_api_gateway_role."
 }
