@@ -93,9 +93,18 @@ resource "aws_api_gateway_integration" "aws_customer_data_upload_api_integration
   resource_id             = aws_api_gateway_resource.aws_customer_data_upload_api_resource.id
   rest_api_id             = aws_api_gateway_rest_api.aws_customer_data_upload_api.id
   type                    = "AWS"
-  integration_http_method = "POST"
-  uri                     = "arn:aws:apigateway:${var.aws_region}:s3:path//"
+  integration_http_method = "PUT"
   credentials             = "${var.aws_backend_api_gateway_role_name}"
+  uri                     = "arn:aws:apigateway:${var.aws_region}:s3:path/{bucket}/{folder}"
+
+  request_parameters = {
+    "integration.request.header.x-amz-meta-fileinfo" = "method.request.header.x-amz-meta-fileinfo"
+    "integration.request.header.Accept"              = "method.request.header.Accept"
+    "integration.request.header.Content-Type"        = "method.request.header.Content-Type"
+
+    "integration.request.path.folder" = "method.request.path.folder"
+    "integration.request.path.bucket" = "method.request.path.bucket"
+  }
 }
 
 # resource "aws_api_gateway_method" "aws_customer_data_upload_api_method1" {
