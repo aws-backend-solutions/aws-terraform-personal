@@ -36,7 +36,7 @@ resource "aws_iam_policy" "aws_backend_api_gateway_cloudwatch_logs_policy" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "cloudwatch_logs_attachment" {
+resource "aws_iam_role_policy_attachment" "aws_backend_api_gateway_cloudwatch_logs_attachment" {
   role       = aws_iam_role.aws_backend_api_gateway_role.name
   policy_arn = aws_iam_policy.aws_backend_api_gateway_cloudwatch_logs_policy.arn
 }
