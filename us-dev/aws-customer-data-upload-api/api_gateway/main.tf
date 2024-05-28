@@ -94,7 +94,7 @@ resource "aws_api_gateway_integration" "aws_customer_data_upload_api_integration
   rest_api_id             = aws_api_gateway_rest_api.aws_customer_data_upload_api.id
   type                    = "AWS"
   integration_http_method = "POST"
-  uri                     = "arn:aws:apigateway:${var.aws_region}:s3:path/${var.aws_customer_data_upload_bucket_name}/*"
+  uri                     = "arn:aws:apigateway:${var.aws_region}:s3:path//"
   credentials             = "${var.aws_backend_api_gateway_role_name}"
 }
 
