@@ -64,7 +64,7 @@ output "cloudwatch_alarm_topic_arn" {
 
 ########## modules/iam ##########
 
-# output "aws_backend_api_gateway_role_name" {
-#   description = "The name of the aws_backend_api_gateway_role."
-#   value = module.iam.aws_backend_api_gateway_role_name
-# }
+output "aws_backend_api_gateway_role_name" {
+  description = "The name of the aws_backend_api_gateway_role."
+  value = module.iam.aws_backend_api_gateway_role_name
+}
