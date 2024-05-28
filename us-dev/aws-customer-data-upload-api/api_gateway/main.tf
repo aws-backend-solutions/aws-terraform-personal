@@ -95,7 +95,7 @@ resource "aws_api_gateway_integration" "aws_customer_data_upload_api_integration
   type                    = "AWS"
   integration_http_method = "PUT"
   credentials             = "${var.aws_backend_api_gateway_role_name}"
-  uri                     = "arn:aws:apigateway:${var.aws_region}:s3:path/{bucket}/{folder}"
+  uri                     = "arn:aws:apigateway:${var.aws_region}:s3:path/${var.aws_customer_data_upload_bucket_name}/{folder}"
 
   request_parameters = {
     "integration.request.header.x-amz-meta-fileinfo" = "method.request.header.x-amz-meta-fileinfo"
@@ -103,7 +103,6 @@ resource "aws_api_gateway_integration" "aws_customer_data_upload_api_integration
     "integration.request.header.Content-Type"        = "method.request.header.Content-Type"
 
     "integration.request.path.folder" = "method.request.path.folder"
-    "integration.request.path.bucket" = "method.request.path.bucket"
   }
 }
 
