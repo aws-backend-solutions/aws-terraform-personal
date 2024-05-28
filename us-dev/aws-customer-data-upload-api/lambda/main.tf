@@ -56,7 +56,7 @@ resource "aws_lambda_function" "aws_customer_data_upload_function1" {
 
   environment {
     variables = {
-
+      # "BUCKET_NAME": var.bucket_name
     }
   }
 

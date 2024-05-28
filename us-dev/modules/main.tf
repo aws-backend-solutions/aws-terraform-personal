@@ -16,7 +16,7 @@ terraform {
 }
 
 provider "aws" {
-  region     = var.aws_region
+  region = var.aws_region
 }
 
 provider "github" {
@@ -47,4 +47,9 @@ module "sns" {
   environment_tag          = var.environment_tag
   recipient_for_budgets    = var.recipient_for_budgets
   recipient_for_cloudwatch = var.recipient_for_cloudwatch
+}
+
+module "iam" {
+  source      = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/iam"
+  prefix_name = var.prefix_name
 }
