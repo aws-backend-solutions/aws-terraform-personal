@@ -72,6 +72,7 @@ module "api_gateway" {
   aws_customer_data_upload_function_invoke_arn2 = module.lambda.aws_customer_data_upload_function_invoke_arn2
   aws_backend_vpc_endpoint_id                   = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_id
   aws_customer_data_upload_bucket_name          = module.s3.aws_customer_data_upload_bucket_name
+  aws_backend_api_gateway_role_name             = data.terraform_remote_state.modules.outputs.aws_backend_api_gateway_role_name
 }
 
 module "budgets" {
