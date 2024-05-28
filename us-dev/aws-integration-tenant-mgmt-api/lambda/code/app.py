@@ -197,7 +197,7 @@ def create_tenant(target_env, payload, tenant_code):
         return create_response(response.status_code, json.loads(response.text))
 
 def update_tenant(target_env, payload, tenant_code):
-    api_url = f"{target_env}{os.environ['API_ENDPOINT']}{tenant_code}"
+    api_url = f"{target_env}{os.environ['API_ENDPOINT']}/{tenant_code}"
     username = None
     password = None
 
