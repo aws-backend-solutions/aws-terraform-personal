@@ -63,6 +63,7 @@ module "lambda" {
 module "api_gateway" {
   source                                        = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-customer-data-upload-api/api_gateway"
   prefix_name                                   = var.prefix_name
+  aws_region                                    = var.aws_region
   environment_tag                               = var.environment_tag
   project_tag                                   = var.project_tag
   stage_name                                    = var.stage_name
@@ -70,6 +71,7 @@ module "api_gateway" {
   aws_customer_data_upload_function_invoke_arn1 = module.lambda.aws_customer_data_upload_function_invoke_arn1
   aws_customer_data_upload_function_invoke_arn2 = module.lambda.aws_customer_data_upload_function_invoke_arn2
   aws_backend_vpc_endpoint_id                   = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_id
+  aws_customer_data_upload_bucket_name          = module.s3.aws_customer_data_upload_bucket_name
 }
 
 module "budgets" {
