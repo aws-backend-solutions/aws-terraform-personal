@@ -102,7 +102,7 @@ resource "aws_api_gateway_integration" "aws_customer_data_upload_api_integration
     "integration.request.header.Accept"              = "method.request.header.Accept"
     "integration.request.header.Content-Type"        = "method.request.header.Content-Type"
 
-    "integration.request.path.folder" = "method.request.path.folder"
+    "integration.request.path.bucket" = "method.request.path.bucket"
     "integration.request.path.folder" = "method.request.path.folder"
   }
 }
