@@ -40,6 +40,13 @@ module "s3" {
   project_tag     = var.project_tag
 }
 
+module "iam" {
+  source                               = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-customer-data-upload-api/iam"
+  prefix_name                          = var.prefix_name
+  aws_customer_data_upload_bucket_name = module.s3.aws_customer_data_upload_bucket_name
+  aws_backend_api_gateway_role_name    = data.terraform_remote_state.modules.outputs.aws_backend_api_gateway_role_name
+}
+
 module "lambda" {
   source                              = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-customer-data-upload-api/lambda"
   prefix_name                         = var.prefix_name
