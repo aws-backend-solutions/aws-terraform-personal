@@ -16,7 +16,7 @@ terraform {
 }
 
 provider "aws" {
-  region     = var.aws_region
+  region = var.aws_region
 }
 
 provider "github" {
@@ -82,6 +82,20 @@ module "api_gateway" {
   path_part                                       = var.path_part
   aws_integration_tenant_mgmt_function_invoke_arn = module.lambda.aws_integration_tenant_mgmt_function_invoke_arn
   aws_backend_vpc_endpoint_id                     = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_id
+}
+
+module "kms" {
+  source          = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/kms"
+  prefix_name     = var.prefix_name
+  environment_tag = var.environment_tag
+  project_tag     = var.project_tag
+}
+
+module "iam" {
+  source                                 = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/iam"
+  prefix_name                            = var.prefix_name
+  aws_integration_tenant_mgmt_kms_arn    = module.kms.aws_integration_tenant_mgmt_kms_arn
+  aws_integration_tenant_mgmt_kms_key_id = module.kms.aws_integration_tenant_mgmt_kms_key_id
 }
 
 module "budgets" {

@@ -26,7 +26,7 @@ def lambda_handler(event, context):
         if validate_payload_response['statusCode'] == 200:
             validate_payload_response_dict = json.loads(validate_payload_response['body'])
 
-            id_value, target_value = validate_payload_response_dict['_id'], validate_payload_response_dict['target_env']
+            id_value, pwd_value, target_value = validate_payload_response_dict['userName'], validate_payload_response_dict['userPassword'], validate_payload_response_dict['target_env']
             client_conn_response = client_conn() # Establishing connection to MongoDB
 
             if client_conn_response:
@@ -37,10 +37,11 @@ def lambda_handler(event, context):
                 if read_from_db_response['statusCode'] == 200:
                     read_from_db_response_dict = json.loads(read_from_db_response['body'])
 
-                    decrypted_tenant_response = decrypt_function(read_from_db_response_dict) # Decrypt the db response
+                    decrypted_tenant_response = decrypt_function(read_from_db_response_dict, pwd_value) # Decrypt the db response
 
                     if decrypted_tenant_response['statusCode'] == 200:
                         decrypted_tenant_response_dict = json.loads(decrypted_tenant_response['body'])
+                        print(decrypted_tenant_response_dict)
 
                         create_tenant_response = create_tenant(target_value, decrypted_tenant_response_dict['value'], id_value) # Create the tenant using the integration-tenant-service's API deployed in the target env
 
@@ -65,11 +66,11 @@ def lambda_handler(event, context):
 
 def validate_payload(body_dict):
     id = None
-    source = None
+    pwd = None
     target = None
     valid_domains = []
 
-    required_params = ['_id', 'target_env']
+    required_params = ['userName', 'userPassword', 'target_env']
     missing_params = []
 
     if os.environ['MONGODB_DOMAIN'] in [os.environ['OREGON_DEV'], os.environ['OREGON_STAGING'], os.environ['OREGON_PROD']]:
@@ -85,8 +86,10 @@ def validate_payload(body_dict):
             missing_params.append(f"'{key}' is a mandatory field.")
         else:
             value = body_dict[key]
-            if key == '_id' and value:
+            if key == 'userName' and value:
                 id = value
+            elif key == 'userPassword' and value:
+                pwd = value
             elif key == 'target_env' and value in valid_domains:
                 target = value
             else:
@@ -95,7 +98,7 @@ def validate_payload(body_dict):
     if missing_params:
         return create_response(400, {'errors': missing_params})
     
-    obj = {key: value for key, value in zip(required_params, [id, target])}
+    obj = {key: value for key, value in zip(required_params, [id, pwd, target])}
     return create_response(200, obj)
 
 def client_conn():
@@ -123,8 +126,8 @@ def read_from_db(collection, id_value):
 
             return create_response(200, result)
         else:
-            print(f"No document found with _id: {id_value}")
-            return create_response(400, {'errors': f"No document found with _id: {id_value}"})
+            print(f"No document found with userName: {id_value}")
+            return create_response(400, {'errors': f"No document found with userName: {id_value}"})
         
     except Exception as e:
         error_message = f"An error occurred: {str(e)}"
@@ -132,7 +135,7 @@ def read_from_db(collection, id_value):
         traceback.print_exc()
         return create_response(500, {'errors': error_message})
 
-def decrypt_function(payload):
+def decrypt_function(payload, userPassword):
     source_secret = os.environ['ENV_SECRET']
 
     if isinstance(payload, dict):
@@ -143,6 +146,7 @@ def decrypt_function(payload):
                     if isinstance(value, dict):
                         for inner_key, inner_value in value.items():
                             if inner_key == 'userPassword' and key == 'tenant':
+                                value['userPassword'] = userPassword
                                 continue
                             if inner_key == 'userPassword' and key != 'tenant':
                                 if 'userPasswordSalt' in value:
@@ -185,12 +189,12 @@ def create_tenant(target_env, payload, tenant_code):
     response = requests.post(api_url, json=payload, auth=(username, password), headers=headers)
     
     if response.status_code == 200:
-        update_tenant_response = update_tenant(target_env, payload, tenant_code) # Update the tenantconfig so that it looks like it was just copy pasted
+        # update_tenant_response = update_tenant(target_env, payload, tenant_code) # Update the tenantconfig so that it looks like it was just copy pasted
 
-        if update_tenant_response['statusCode'] == 200:
-            return create_response(response.status_code, json.loads(response.text))
-        else:
-            return update_tenant_response
+        # if update_tenant_response['statusCode'] == 200:
+        return create_response(response.status_code, json.loads(response.text))
+        # else:
+        #     return update_tenant_response
     else:
         logger.error(response.text)
         traceback.print_exc()

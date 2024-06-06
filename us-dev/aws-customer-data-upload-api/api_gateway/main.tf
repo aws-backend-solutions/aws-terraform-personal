@@ -66,38 +66,6 @@ resource "aws_api_gateway_resource" "aws_customer_data_upload_api_resource" {
 
 ##### method for the upload and generate lambda #####
 
-# resource "aws_api_gateway_method" "aws_customer_data_upload_api_method1" {
-#   rest_api_id   = aws_api_gateway_rest_api.aws_customer_data_upload_api.id
-#   resource_id   = aws_api_gateway_resource.aws_customer_data_upload_api_resource.id
-#   http_method   = "PUT"
-#   authorization = "AWS_IAM"
-
-#   request_models = {
-#     "application/json" = "Error"
-#   }
-# }
-
-# resource "aws_api_gateway_method_settings" "aws_customer_data_upload_api_method_settings1" {
-#   rest_api_id = aws_api_gateway_rest_api.aws_customer_data_upload_api.id
-#   stage_name  = aws_api_gateway_stage.aws_customer_data_upload_api_stage.stage_name
-#   method_path = "*/*"
-
-#   settings {
-#     metrics_enabled = true
-#     logging_level   = "INFO"
-#   }
-# }
-
-# resource "aws_api_gateway_integration" "aws_customer_data_upload_api_integration1" {
-#   http_method             = aws_api_gateway_method.aws_customer_data_upload_api_method1.http_method
-#   resource_id             = aws_api_gateway_resource.aws_customer_data_upload_api_resource.id
-#   rest_api_id             = aws_api_gateway_rest_api.aws_customer_data_upload_api.id
-#   type                    = "AWS"
-#   integration_http_method = "PUT"
-#   credentials             = "${var.aws_backend_api_gateway_role_arn}"
-#   uri                     = "arn:aws:apigateway:${var.aws_region}:s3:path/${var.aws_customer_data_upload_bucket_name}/*"
-# }
-
 resource "aws_api_gateway_method" "aws_customer_data_upload_api_method1" {
   rest_api_id   = aws_api_gateway_rest_api.aws_customer_data_upload_api.id
   resource_id   = aws_api_gateway_resource.aws_customer_data_upload_api_resource.id
