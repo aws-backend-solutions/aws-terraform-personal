@@ -39,11 +39,12 @@ resource "aws_iam_policy" "aws_integration_tenant_mgmt_kms_policy" {
 
 resource "aws_iam_policy_attachment" "aws_integration_tenant_mgmt_kms_policy_attachment" {
   name       = "${var.prefix_name}-kms-policy-attachment"
-  roles      = [aws_iam_role.KMSRole.name]
+  roles      = [aws_iam_role.aws_integration_tenant_mgmt_kms_role.name]
   policy_arn = aws_iam_policy.aws_integration_tenant_mgmt_kms_policy.arn
 }
 
-resource "aws_kms_key_grant" "aws_integration_tenant_mgmt_kms_grant" {
+resource "aws_kms_grant" "aws_integration_tenant_mgmt_kms_grant" {
+  name = "${var.prefix_name}-kms-grant"
   key_id            = "${var.aws_integration_tenant_mgmt_kms_key_id}"
   grantee_principal = aws_iam_role.aws_integration_tenant_mgmt_kms_role.arn
   operations        = ["Encrypt", "Decrypt"]
