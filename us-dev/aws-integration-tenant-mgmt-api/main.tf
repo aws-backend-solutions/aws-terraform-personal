@@ -91,13 +91,6 @@ module "kms" {
   project_tag     = var.project_tag
 }
 
-module "iam" {
-  source                                 = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/iam"
-  prefix_name                            = var.prefix_name
-  aws_integration_tenant_mgmt_kms_arn    = module.kms.aws_integration_tenant_mgmt_kms_arn
-  aws_integration_tenant_mgmt_kms_key_id = module.kms.aws_integration_tenant_mgmt_kms_key_id
-}
-
 module "budgets" {
   source                          = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/budgets"
   prefix_name                     = var.prefix_name
