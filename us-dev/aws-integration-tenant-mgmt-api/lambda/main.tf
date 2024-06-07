@@ -18,6 +18,22 @@ resource "aws_iam_role" "aws_integration_tenant_mgmt_function_role" {
     "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
     "${var.aws_integration_tenant_mgmt_kms_policy_arn}"
   ]
+
+  inline_policy {
+    name = "${var.prefix_name}-secrets-manager-policy"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Effect = "Allow"
+          Action = [
+            "secretsmanager:CreateSecret"
+          ]
+          Resource = "*"
+        }
+      ]
+    })
+  }
 }
 
 resource "aws_lambda_function" "aws_integration_tenant_mgmt_function" {

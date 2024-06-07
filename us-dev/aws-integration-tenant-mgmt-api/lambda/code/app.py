@@ -145,6 +145,7 @@ def decrypt_function(payload):
     source_secret = os.environ['ENV_SECRET']
     new_password = generate_password(20)
     kms_key = os.environ['KMS_KEY']
+    userName = None
 
     if isinstance(payload, dict):
         try:
@@ -153,12 +154,12 @@ def decrypt_function(payload):
                 for key, value in value_obj.items():
                     if isinstance(value, dict):
                         for inner_key, inner_value in value.items():
+                            if inner_key == 'userName' and key == 'tenant':
+                                userName = inner_value
                             if inner_key == 'userPassword' and key == 'tenant':
                                 value['userPassword'] = new_password # Generates new password
                                 encrypted_password = encrypt(new_password, kms_key) # Encrypt the password using KMS
-                                print(inner_key)
-                                print(new_password)
-                                print(encrypted_password)
+                                store_secret(userName, encrypted_password) # Store the newly created and encrypted password in secrets manager for future use
                                 continue
                             if inner_key == 'userPassword' and key != 'tenant':
                                 if 'userPasswordSalt' in value:
