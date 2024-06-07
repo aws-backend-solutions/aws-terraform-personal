@@ -8,6 +8,7 @@ import traceback
 import random
 import string
 import boto3
+import uuid
 
 from bson import Decimal128, json_util
 from datetime import datetime
@@ -24,6 +25,7 @@ def lambda_handler(event, context):
     try:
         print(event)
 
+        new_password = generate_password(20)
         body_dict = json.loads(event['body'])
         validate_payload_response = validate_payload(body_dict) # 1. Extracting data from the event payload
 
@@ -41,14 +43,22 @@ def lambda_handler(event, context):
                 if read_from_db_response['statusCode'] == 200:
                     read_from_db_response_dict = json.loads(read_from_db_response['body'])
 
-                    decrypted_tenant_response = decrypt_function(read_from_db_response_dict) # Decrypt the db response
+                    decrypted_tenant_response = decrypt_function(read_from_db_response_dict, new_password) # Decrypt the db response
 
                     if decrypted_tenant_response['statusCode'] == 200:
                         decrypted_tenant_response_dict = json.loads(decrypted_tenant_response['body'])
+                        print(f"decrypted_tenant_response_dict: {decrypted_tenant_response_dict}")
 
-                        # create_tenant_response = create_tenant(target_value, decrypted_tenant_response_dict['value'], id_value) # Create the tenant using the integration-tenant-service's API deployed in the target env
+                        update_source_tenant_response = update_source_tenant(decrypted_tenant_response_dict['value'], id_value) # This will update the tenant in the mongodb_domain using integration-tenant-service API
+                        print(f"update_source_tenant_response: {update_source_tenant_response}")
 
-                        return decrypted_tenant_response_dict
+                        if update_source_tenant_response['statusCode'] == 200:
+                            create_target_tenant_response = create_target_tenant(decrypted_tenant_response_dict['value'], target_value) # This will create the tenant in the target_env using integration-tenant-service API
+                            print(f"create_target_tenant_response: {create_target_tenant_response}")
+
+                            return create_target_tenant_response
+                        else:
+                            return update_source_tenant_response
                     else:
                         return decrypted_tenant_response
 
@@ -99,7 +109,7 @@ def validate_payload(body_dict):
     if missing_params:
         return create_response(400, {'errors': missing_params})
     
-    obj = {key: value for key, value in zip(required_params, [id, pwd, target])}
+    obj = {key: value for key, value in zip(required_params, [id, target])}
     return create_response(200, obj)
 
 def client_conn():
@@ -141,9 +151,8 @@ def generate_password(length=20):
     password = ''.join(random.choice(characters) for _ in range(length))
     return password
 
-def decrypt_function(payload):
+def decrypt_function(payload, new_password):
     source_secret = os.environ['ENV_SECRET']
-    new_password = generate_password(20)
     kms_key = os.environ['KMS_KEY']
     userName = None
 
@@ -155,7 +164,7 @@ def decrypt_function(payload):
                     if isinstance(value, dict):
                         for inner_key, inner_value in value.items():
                             if inner_key == 'userName' and key == 'tenant':
-                                userName = inner_value
+                                userName = str(uuid.uuid4()) # this should be inner_value, uuid is used for testing only
                             if inner_key == 'userPassword' and key == 'tenant':
                                 value['userPassword'] = new_password # Generates new password
                                 encrypted_password = encrypt(new_password, kms_key) # Encrypt the password using KMS
@@ -176,7 +185,7 @@ def decrypt_function(payload):
     else:
         return create_response(400, {'message': 'Invalid payload format. Expected dictionary.'})
 
-def create_tenant(target_env, payload, tenant_code):
+def create_target_tenant(payload, target_env):
     api_url = f"{target_env}{os.environ['API_ENDPOINT']}"
     username = None
     password = None
@@ -202,35 +211,31 @@ def create_tenant(target_env, payload, tenant_code):
     response = requests.post(api_url, json=payload, auth=(username, password), headers=headers)
     
     if response.status_code == 200:
-        # update_tenant_response = update_tenant(target_env, payload, tenant_code) # Update the tenantconfig so that it looks like it was just copy pasted
-
-        # if update_tenant_response['statusCode'] == 200:
         return create_response(response.status_code, json.loads(response.text))
-        # else:
-        #     return update_tenant_response
     else:
         logger.error(response.text)
         traceback.print_exc()
         return create_response(response.status_code, json.loads(response.text))
 
-def update_tenant(target_env, payload, tenant_code):
-    api_url = f"{target_env}{os.environ['API_ENDPOINT']}/{tenant_code}"
+def update_source_tenant(payload, tenant_code):
+    domain_name = os.environ['MONGODB_DOMAIN']
+    api_url = f"{domain_name}{os.environ['API_ENDPOINT']}/{tenant_code}"
     username = None
     password = None
 
-    if target_env == os.environ['OREGON_DEV']:
+    if domain_name == os.environ['OREGON_DEV']:
         username = os.environ['OREGON_DEV_USR']
         password = os.environ['OREGON_DEV_PWD']
-    if target_env == os.environ['OREGON_STAGING']:
+    if domain_name == os.environ['OREGON_STAGING']:
         username = os.environ['OREGON_STAGING_USR']
         password = os.environ['OREGON_STAGING_PWD']
-    if target_env == os.environ['OREGON_PROD']:
+    if domain_name == os.environ['OREGON_PROD']:
         username = os.environ['OREGON_PROD_USR']
         password = os.environ['OREGON_PROD_PWD']
-    if target_env == os.environ['FRANKFURT_STAGING']:
+    if domain_name == os.environ['FRANKFURT_STAGING']:
         username = os.environ['FRANKFURT_STAGING_USR']
         password = os.environ['FRANKFURT_STAGING_PWD']
-    if target_env == os.environ['FRANKFURT_PROD']:
+    if domain_name == os.environ['FRANKFURT_PROD']:
         username = os.environ['FRANKFURT_PROD_USR']
         password = os.environ['FRANKFURT_PROD_PWD']
 
