@@ -51,6 +51,7 @@ resource "aws_lambda_function" "aws_integration_tenant_mgmt_function" {
       FRANKFURT_PROD_PWD: var.eu_prod_pwd
       COLLECTION_NAME: var.collection_name
       API_ENDPOINT: var.api_endpoint
+      KMS_KEY: var.aws_integration_tenant_mgmt_kms_key_id
     }
   }
 

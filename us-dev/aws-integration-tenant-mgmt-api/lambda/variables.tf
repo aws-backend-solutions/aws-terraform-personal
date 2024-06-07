@@ -147,3 +147,8 @@ variable "aws_backend_security_group2_id" {
   type        = string
   description = "Designated security group of lambdas in aws-backend-vpc."
 }
+
+variable "aws_integration_tenant_mgmt_kms_key_id" {
+  type        = string
+  description = "The ID of the KMS key created for this project."
+}

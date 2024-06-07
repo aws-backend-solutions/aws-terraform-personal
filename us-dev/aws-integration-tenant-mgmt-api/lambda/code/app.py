@@ -5,12 +5,16 @@ import logging
 import base64
 import requests
 import traceback
+import random
+import string
+import boto3
 
 from bson import Decimal128, json_util
 from datetime import datetime
 from pymongo.errors import DuplicateKeyError, ServerSelectionTimeoutError
 from Crypto.Cipher import AES
 from Crypto.Hash import SHA256
+from botocore.exceptions import ClientError
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -26,7 +30,7 @@ def lambda_handler(event, context):
         if validate_payload_response['statusCode'] == 200:
             validate_payload_response_dict = json.loads(validate_payload_response['body'])
 
-            id_value, pwd_value, target_value = validate_payload_response_dict['userName'], validate_payload_response_dict['userPassword'], validate_payload_response_dict['target_env']
+            id_value, target_value = validate_payload_response_dict['tenant_code'], validate_payload_response_dict['target_env']
             client_conn_response = client_conn() # Establishing connection to MongoDB
 
             if client_conn_response:
@@ -37,15 +41,14 @@ def lambda_handler(event, context):
                 if read_from_db_response['statusCode'] == 200:
                     read_from_db_response_dict = json.loads(read_from_db_response['body'])
 
-                    decrypted_tenant_response = decrypt_function(read_from_db_response_dict, pwd_value) # Decrypt the db response
+                    decrypted_tenant_response = decrypt_function(read_from_db_response_dict) # Decrypt the db response
 
                     if decrypted_tenant_response['statusCode'] == 200:
                         decrypted_tenant_response_dict = json.loads(decrypted_tenant_response['body'])
-                        print(decrypted_tenant_response_dict)
 
-                        create_tenant_response = create_tenant(target_value, decrypted_tenant_response_dict['value'], id_value) # Create the tenant using the integration-tenant-service's API deployed in the target env
+                        # create_tenant_response = create_tenant(target_value, decrypted_tenant_response_dict['value'], id_value) # Create the tenant using the integration-tenant-service's API deployed in the target env
 
-                        return create_tenant_response
+                        return decrypted_tenant_response_dict
                     else:
                         return decrypted_tenant_response
 
@@ -70,7 +73,7 @@ def validate_payload(body_dict):
     target = None
     valid_domains = []
 
-    required_params = ['userName', 'userPassword', 'target_env']
+    required_params = ['tenant_code', 'target_env']
     missing_params = []
 
     if os.environ['MONGODB_DOMAIN'] in [os.environ['OREGON_DEV'], os.environ['OREGON_STAGING'], os.environ['OREGON_PROD']]:
@@ -86,10 +89,8 @@ def validate_payload(body_dict):
             missing_params.append(f"'{key}' is a mandatory field.")
         else:
             value = body_dict[key]
-            if key == 'userName' and value:
+            if key == 'tenant_code' and value:
                 id = value
-            elif key == 'userPassword' and value:
-                pwd = value
             elif key == 'target_env' and value in valid_domains:
                 target = value
             else:
@@ -126,8 +127,8 @@ def read_from_db(collection, id_value):
 
             return create_response(200, result)
         else:
-            print(f"No document found with userName: {id_value}")
-            return create_response(400, {'errors': f"No document found with userName: {id_value}"})
+            print(f"No document found with tenant_code: {id_value}")
+            return create_response(400, {'errors': f"No document found with tenant_code: {id_value}"})
         
     except Exception as e:
         error_message = f"An error occurred: {str(e)}"
@@ -135,8 +136,15 @@ def read_from_db(collection, id_value):
         traceback.print_exc()
         return create_response(500, {'errors': error_message})
 
-def decrypt_function(payload, userPassword):
+def generate_password(length=20):
+    characters = string.ascii_letters + string.digits
+    password = ''.join(random.choice(characters) for _ in range(length))
+    return password
+
+def decrypt_function(payload):
     source_secret = os.environ['ENV_SECRET']
+    new_password = generate_password(20)
+    kms_key = os.environ['KMS_KEY']
 
     if isinstance(payload, dict):
         try:
@@ -146,7 +154,11 @@ def decrypt_function(payload, userPassword):
                     if isinstance(value, dict):
                         for inner_key, inner_value in value.items():
                             if inner_key == 'userPassword' and key == 'tenant':
-                                value['userPassword'] = userPassword
+                                value['userPassword'] = new_password # Generates new password
+                                encrypted_password = encrypt(new_password, kms_key) # Encrypt the password using KMS
+                                print(inner_key)
+                                print(new_password)
+                                print(encrypted_password)
                                 continue
                             if inner_key == 'userPassword' and key != 'tenant':
                                 if 'userPasswordSalt' in value:
@@ -232,12 +244,43 @@ def update_tenant(target_env, payload, tenant_code):
         traceback.print_exc()
         return create_response(response.status_code, json.loads(response.text))
 
-def encrypt(text_to_encrypt, secret):
-    text_to_encrypt = prepare_for_cipher(text_to_encrypt)
-    key = create_key(secret)
-    cipher = AES.new(key, AES.MODE_ECB)
-    encrypted_bytes = cipher.encrypt(text_to_encrypt)
-    return base64.b64encode(encrypted_bytes).decode()
+def encrypt(text_to_encrypt, key_id):
+    """Encrypts a password using AWS KMS."""
+    kms_client = boto3.client('kms')
+    try:
+        response = kms_client.encrypt(
+            KeyId=key_id,
+            Plaintext=text_to_encrypt.encode('utf-8')
+        )
+        encrypted_password = response['CiphertextBlob']
+        return encrypted_password
+    except ClientError as e:
+        error_message = f"An error occured: {str(e)}"
+        logger.error(error_message)
+        traceback.print_exc()
+        return create_response(500, {'errors': error_message})
+
+    # manual encryption
+    # password = prepare_for_cipher(password)
+    # key = create_key(secret)
+    # cipher = AES.new(key, AES.MODE_ECB)
+    # encrypted_bytes = cipher.encrypt(password)
+    # return base64.b64encode(encrypted_bytes).decode()
+
+def store_secret(secret_name, encrypted_password):
+    """Stores the encrypted password in AWS Secrets Manager."""
+    secrets_client = boto3.client('secretsmanager')
+    try:
+        secrets_client.create_secret(
+            Name=secret_name,
+            SecretBinary=encrypted_password
+        )
+        print(f"Secret {secret_name} stored successfully.")
+    except ClientError as e:
+        error_message = f"An error occured: {str(e)}"
+        logger.error(error_message)
+        traceback.print_exc()
+        return create_response(500, {'errors': error_message})
 
 def decrypt(text_for_decrypt, secret):
     text_for_decrypt = text_for_decrypt.replace("\n", "")
