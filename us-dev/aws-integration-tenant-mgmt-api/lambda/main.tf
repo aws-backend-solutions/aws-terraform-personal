@@ -16,6 +16,7 @@ resource "aws_iam_role" "aws_integration_tenant_mgmt_function_role" {
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
     "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
+    "${var.aws_integration_tenant_mgmt_kms_policy_arn}"
   ]
 }
 
