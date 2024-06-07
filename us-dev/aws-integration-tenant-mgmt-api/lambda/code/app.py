@@ -169,7 +169,7 @@ def decrypt_function(payload, new_password):
                             if inner_key == 'userPassword' and key == 'tenant':
                                 value['userPassword'] = new_password # Generates new password
                                 encrypted_password = encrypt(new_password, kms_key) # Encrypt the password using KMS
-                                store_secret(userName, encrypted_password) # Store the newly created and encrypted password in secrets manager for future use
+                                store_secret(userName, encrypted_password, kms_key) # Store the newly created and encrypted password in secrets manager for future use
                                 continue
                             if inner_key == 'userPassword' and key != 'tenant':
                                 if 'userPasswordSalt' in value:
@@ -276,13 +276,14 @@ def encrypt(text_to_encrypt, key_id):
     # encrypted_bytes = cipher.encrypt(password)
     # return base64.b64encode(encrypted_bytes).decode()
 
-def store_secret(secret_name, encrypted_password):
+def store_secret(secret_name, encrypted_password, key_id):
     """Stores the encrypted password in AWS Secrets Manager."""
     secrets_client = boto3.client('secretsmanager')
     try:
         secrets_client.create_secret(
             Name=secret_name,
-            SecretBinary=encrypted_password
+            SecretBinary=encrypted_password,
+            KmsKeyId=key_id
         )
         print(f"Secret {secret_name} stored successfully.")
     except ClientError as e:
