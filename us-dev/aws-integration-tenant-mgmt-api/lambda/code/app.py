@@ -53,8 +53,9 @@ def lambda_handler(event, context):
                         print(f"update_source_tenant_response: {update_source_tenant_response}")
 
                         if update_source_tenant_response['statusCode'] == 200:
-                            create_target_tenant_response = create_target_tenant(decrypted_tenant_response_dict['value'], target_value) # This will create the tenant in the target_env using integration-tenant-service API
+                            create_target_tenant_response = create_target_tenant(decrypted_tenant_response_dict['value'], target_value, new_password) # This will create the tenant in the target_env using integration-tenant-service API
                             print(f"create_target_tenant_response: {create_target_tenant_response}")
+                            print(f"create_target_tenant_response type: {type(create_target_tenant_response)}")
 
                             return create_target_tenant_response
                         else:
@@ -185,7 +186,7 @@ def decrypt_function(payload, new_password):
     else:
         return create_response(400, {'message': 'Invalid payload format. Expected dictionary.'})
 
-def create_target_tenant(payload, target_env):
+def create_target_tenant(payload, target_env, new_password):
     api_url = f"{target_env}{os.environ['API_ENDPOINT']}"
     username = None
     password = None
@@ -209,9 +210,11 @@ def create_target_tenant(payload, target_env):
     headers = {"ac-tenant-code": username}
     
     response = requests.post(api_url, json=payload, auth=(username, password), headers=headers)
+    response_text = json.loads(response.text)
+    response_text['userPassword'] = new_password
     
     if response.status_code == 200:
-        return create_response(response.status_code, json.loads(response.text))
+        return create_response(response.status_code, response_text)
     else:
         logger.error(response.text)
         traceback.print_exc()
@@ -242,7 +245,7 @@ def update_source_tenant(payload, tenant_code):
     headers = {"ac-tenant-code": username}
     
     response = requests.post(api_url, json=payload, auth=(username, password), headers=headers)
-    
+
     if response.status_code == 200:
         return create_response(response.status_code, json.loads(response.text))
     else:
