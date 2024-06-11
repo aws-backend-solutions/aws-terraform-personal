@@ -54,8 +54,6 @@ def lambda_handler(event, context):
 
                         if update_source_tenant_response['statusCode'] == 200:
                             create_target_tenant_response = create_target_tenant(decrypted_tenant_response_dict['value'], target_value, new_password) # This will create the tenant in the target_env using integration-tenant-service API
-                            print(f"create_target_tenant_response: {create_target_tenant_response}")
-                            print(f"create_target_tenant_response type: {type(create_target_tenant_response)}")
 
                             return create_target_tenant_response
                         else:
@@ -211,14 +209,15 @@ def create_target_tenant(payload, target_env, new_password):
     
     response = requests.post(api_url, json=payload, auth=(username, password), headers=headers)
     response_text = json.loads(response.text)
-    response_text['userPassword'] = new_password
+    response_text.pop('tenantCode', None)
     
     if response.status_code == 200:
+        response_text['tenantPassword'] = new_password
         return create_response(response.status_code, response_text)
     else:
         logger.error(response.text)
         traceback.print_exc()
-        return create_response(response.status_code, json.loads(response.text))
+        return create_response(response.status_code, response_text)
 
 def update_source_tenant(payload, tenant_code):
     domain_name = os.environ['MONGODB_DOMAIN']
@@ -245,13 +244,15 @@ def update_source_tenant(payload, tenant_code):
     headers = {"ac-tenant-code": username}
     
     response = requests.post(api_url, json=payload, auth=(username, password), headers=headers)
-
+    response_text = json.loads(response.text)
+    response_text.pop('tenantCode', None)
+    
     if response.status_code == 200:
-        return create_response(response.status_code, json.loads(response.text))
+        return create_response(response.status_code, response_text)
     else:
         logger.error(response.text)
         traceback.print_exc()
-        return create_response(response.status_code, json.loads(response.text))
+        return create_response(response.status_code, response_text)
 
 def encrypt(text_to_encrypt, key_id):
     """Encrypts a password using AWS KMS."""
