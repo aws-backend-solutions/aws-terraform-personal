@@ -33,40 +33,38 @@ def lambda_handler(event, context):
             validate_payload_response_dict = json.loads(validate_payload_response['body'])
 
             id_value, target_value = validate_payload_response_dict['tenant_code'], validate_payload_response_dict['target_env']
-            client_conn_response = client_conn() # Establishing connection to MongoDB
 
-            if client_conn_response:
-                col = client_conn_response[1]
-
-                read_from_db_response = read_from_db(col, id_value) # Query the db based off the collection value
-
-                if read_from_db_response['statusCode'] == 200:
-                    read_from_db_response_dict = json.loads(read_from_db_response['body'])
-
-                    decrypted_tenant_response = decrypt_function(read_from_db_response_dict, new_password) # Decrypt the db response
-
-                    if decrypted_tenant_response['statusCode'] == 200:
-                        decrypted_tenant_response_dict = json.loads(decrypted_tenant_response['body'])
-                        print(f"decrypted_tenant_response_dict: {decrypted_tenant_response_dict}")
-
-                        update_source_tenant_response = update_source_tenant(decrypted_tenant_response_dict['value'], id_value) # This will update the tenant in the mongodb_domain using integration-tenant-service API
-                        print(f"update_source_tenant_response: {update_source_tenant_response}")
-
-                        if update_source_tenant_response['statusCode'] == 200:
-                            create_target_tenant_response = create_target_tenant(decrypted_tenant_response_dict['value'], target_value, new_password) # This will create the tenant in the target_env using integration-tenant-service API
-
-                            return create_target_tenant_response
-                        else:
-                            return update_source_tenant_response
-                    else:
-                        return decrypted_tenant_response
-
-                else:
-                    return read_from_db_response
+            if isinstance(id_value, str):
+                id_value = list(id_value)
                 
-            else:
-                return client_conn_response
+            if isinstance(id_value, list):
+                final_status = []
+                final_body = []
 
+                for tenant_code in id_value:
+                    response_json = process_all_tenant_codes(tenant_code, target_value, new_password)
+                    response_json = json.dumps(response_json)
+                    response_dict = json.loads(response_json)
+                    final_status.append(response_dict['statusCode'])
+
+                    response_body_dict = json.loads(response_dict['body'])
+                    activity_id = response_body_dict.get('activityId', None)
+                    errors = response_body_dict.get('errors', [])
+                    final_body.append({
+                        "activityId": activity_id,
+                        "tenantCode": tenant_code,
+                        "errors": errors
+                    })
+
+                if all(value == 200 for value in final_status):
+                    return create_response(200, final_body)
+                else:
+                    return create_response(500, final_body)
+            else:
+                error_message = f"Invalid tenant_code data type, only accepts <class 'list'>: {str(e)}"
+                logger.error(error_message)
+                traceback.print_exc()
+                return create_response(500, {'errors': error_message})
         else:
             return validate_payload_response
         
@@ -76,9 +74,41 @@ def lambda_handler(event, context):
         traceback.print_exc()
         return create_response(500, {'errors': error_message})
 
+def process_all_tenant_codes(id_value, target_value, new_password):
+    client_conn_response = client_conn()  # Establishing connection to MongoDB
+
+    if not client_conn_response:
+        return {'statusCode': 500, 'message': 'Failed to establish database connection'}
+
+    col = client_conn_response[1]
+
+    read_from_db_response = read_from_db(col, id_value)  # Query the db based off the collection value
+
+    if read_from_db_response['statusCode'] != 200:
+        return read_from_db_response
+
+    read_from_db_response_dict = json.loads(read_from_db_response['body'])
+
+    decrypted_tenant_response = decrypt_function(read_from_db_response_dict, new_password)  # Decrypt the db response
+
+    if decrypted_tenant_response['statusCode'] != 200:
+        return decrypted_tenant_response
+
+    decrypted_tenant_response_dict = json.loads(decrypted_tenant_response['body'])
+
+    update_source_tenant_response = update_source_tenant(
+        decrypted_tenant_response_dict['value'], id_value)  # Update the tenant
+
+    if update_source_tenant_response['statusCode'] != 200:
+        return update_source_tenant_response
+
+    create_target_tenant_response = create_target_tenant(
+        decrypted_tenant_response_dict['value'], target_value, new_password)  # Create the tenant in target_env
+
+    return create_target_tenant_response
+
 def validate_payload(body_dict):
-    id = None
-    pwd = None
+    id = []
     target = None
     valid_domains = []
 
@@ -92,14 +122,16 @@ def validate_payload(body_dict):
     else:
         missing_params.append(f"'target_env is invalid.")
 
-
     for key in required_params:
         if key not in body_dict:
             missing_params.append(f"'{key}' is a mandatory field.")
         else:
             value = body_dict[key]
             if key == 'tenant_code' and value:
-                id = value
+                if isinstance(value, list) and len(value) == 2:
+                    id = value
+                else:
+                    missing_params.append("'tenant_code' must be a list containing exactly two values.")
             elif key == 'target_env' and value in valid_domains:
                 target = value
             else:
@@ -167,7 +199,7 @@ def decrypt_function(payload, new_password):
                             if inner_key == 'userPassword' and key == 'tenant':
                                 value['userPassword'] = new_password # Generates new password
                                 encrypted_password = encrypt(new_password, kms_key) # Encrypt the password using KMS
-                                store_secret(userName, encrypted_password, kms_key) # Store the newly created and encrypted password in secrets manager for future use
+                                # store_secret(userName, encrypted_password, kms_key) # Store the newly created and encrypted password in secrets manager for future use
                                 continue
                             if inner_key == 'userPassword' and key != 'tenant':
                                 if 'userPasswordSalt' in value:
