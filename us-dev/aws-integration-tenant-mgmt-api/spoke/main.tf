@@ -34,7 +34,7 @@ data "terraform_remote_state" "modules" {
 }
 
 module "vpc" {
-  source                             = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/vpc"
+  source                             = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/spoke/vpc"
   prefix_name                        = var.prefix_name
   aws_region                         = var.aws_region
   aws_backend_private_route_table_id = data.terraform_remote_state.modules.outputs.aws_backend_private_route_table_id
@@ -42,14 +42,14 @@ module "vpc" {
 }
 
 module "kms" {
-  source          = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/kms"
+  source          = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/spoke/kms"
   prefix_name     = var.prefix_name
   environment_tag = var.environment_tag
   project_tag     = var.project_tag
 }
 
 module "lambda" {
-  source                                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/lambda"
+  source                                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/spoke/lambda"
   prefix_name                                = var.prefix_name
   environment_tag                            = var.environment_tag
   project_tag                                = var.project_tag
@@ -83,7 +83,7 @@ module "lambda" {
 }
 
 module "api_gateway" {
-  source                                          = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/api_gateway"
+  source                                          = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/spoke/api_gateway"
   prefix_name                                     = var.prefix_name
   environment_tag                                 = var.environment_tag
   project_tag                                     = var.project_tag
@@ -94,7 +94,7 @@ module "api_gateway" {
 }
 
 module "budgets" {
-  source                          = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/budgets"
+  source                          = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/spoke/budgets"
   prefix_name                     = var.prefix_name
   environment_tag                 = var.environment_tag
   project_tag                     = var.project_tag
@@ -106,7 +106,7 @@ module "budgets" {
 }
 
 module "cloudwatch" {
-  source                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/cloudwatch"
+  source                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/spoke/cloudwatch"
   prefix_name                = var.prefix_name
   environment_tag            = var.environment_tag
   project_tag                = var.project_tag

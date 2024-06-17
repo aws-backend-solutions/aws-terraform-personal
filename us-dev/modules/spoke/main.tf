@@ -8,7 +8,7 @@ terraform {
 
   backend "s3" {
     bucket         = "aws-backend-tf-state"
-    key            = "modules/terraform.tfstate"
+    key            = "modules/spoke/terraform.tfstate"
     region         = "us-west-2"
     encrypt        = true
     dynamodb_table = "aws-backend-tf-lockid"
@@ -24,7 +24,7 @@ provider "github" {
 }
 
 module "vpc" {
-  source                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/vpc"
+  source                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/spoke/vpc"
   prefix_name                = var.prefix_name
   aws_region                 = var.aws_region
   vpc_cidr_block             = var.vpc_cidr_block
@@ -42,7 +42,7 @@ module "vpc" {
 }
 
 module "sns" {
-  source                   = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/sns"
+  source                   = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/spoke/sns"
   prefix_name              = var.prefix_name
   environment_tag          = var.environment_tag
   recipient_for_budgets    = var.recipient_for_budgets
@@ -50,6 +50,6 @@ module "sns" {
 }
 
 module "iam" {
-  source      = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/iam"
+  source      = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/spoke/iam"
   prefix_name = var.prefix_name
 }
