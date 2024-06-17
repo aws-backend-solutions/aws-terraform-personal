@@ -2,7 +2,7 @@ resource "aws_api_gateway_rest_api" "primary_aws_integration_tenant_mgmt_api" {
   name          = "primary-${var.prefix_name}-api"
   endpoint_configuration {
     types            = ["PRIVATE"]
-    vpc_endpoint_ids = [var.aws_backend_vpc_endpoint_id]
+    vpc_endpoint_ids = [var.primary_aws_backend_vpc_endpoint_id]
   }
 
   tags = {

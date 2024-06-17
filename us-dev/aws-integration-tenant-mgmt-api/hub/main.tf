@@ -19,20 +19,12 @@ provider "aws" {
   region = var.aws_region
 }
 
-module "vpc" {
-  source                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/hub/api_gateway"
-  prefix_name                = var.prefix_name
-  aws_region                 = var.aws_region
-  vpc_cidr_block             = var.vpc_cidr_block
-  private_subnet1_cidr_block = var.private_subnet1_cidr_block
-  private_subnet2_cidr_block = var.private_subnet2_cidr_block
-  public_subnet1_cidr_block  = var.public_subnet1_cidr_block
-  public_subnet2_cidr_block  = var.public_subnet2_cidr_block
-  private_subnet1_az         = var.private_subnet1_az
-  private_subnet2_az         = var.private_subnet2_az
-  public_subnet1_az          = var.public_subnet1_az
-  public_subnet2_az          = var.public_subnet2_az
-  environment_tag            = var.environment_tag
-  vpc_id_to_peer             = var.vpc_id_to_peer
-  cidr_block_of_vpc_to_peer  = var.cidr_block_of_vpc_to_peer
+module "api_gateway" {
+  source                             = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/hub/api_gateway"
+  prefix_name                        = var.prefix_name
+  environment_tag                    = var.environment_tag
+  project_tag                        = var.project_tag
+  stage_name                         = var.stage_name
+  path_part                          = var.path_part
+  primary_aws_backend_vpc_endpoint_id        = data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_endpoint_id
 }
