@@ -203,8 +203,8 @@ resource "aws_vpc_endpoint" "aws_backend_vpc_endpoint" {
 
 ##### nat gateway
 
-resource "aws_nat_gateway" "aws_integration_tenant_mgmt_nat_gateway" {
-  allocation_id = aws_eip.aws_integration_tenant_mgmt_nat_eip.id
+resource "aws_nat_gateway" "aws_backend_nat_gateway" {
+  allocation_id = aws_eip.aws_backend_nat_eip.id
   subnet_id     = aws_subnet.aws_backend_public_subnet1.id
 
   tags = {
@@ -212,7 +212,7 @@ resource "aws_nat_gateway" "aws_integration_tenant_mgmt_nat_gateway" {
   }
 }
 
-resource "aws_eip" "aws_integration_tenant_mgmt_nat_eip" {
+resource "aws_eip" "aws_backend_nat_eip" {
   vpc = true
 }
 
@@ -221,7 +221,7 @@ resource "aws_eip" "aws_integration_tenant_mgmt_nat_eip" {
 resource "aws_route" "aws_backend_ng_route" {
   route_table_id         = aws_route_table.aws_backend_private_route_table.id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.aws_integration_tenant_mgmt_nat_gateway.id
+  nat_gateway_id         = aws_nat_gateway.aws_backend_nat_gateway.id
 }
 
 ##### vpc peering for the mongodb (vpc within the same account)
