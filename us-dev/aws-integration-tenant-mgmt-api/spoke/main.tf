@@ -33,14 +33,6 @@ data "terraform_remote_state" "modules" {
   }
 }
 
-module "vpc" {
-  source                             = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/spoke/vpc"
-  prefix_name                        = var.prefix_name
-  aws_region                         = var.aws_region
-  aws_backend_private_route_table_id = data.terraform_remote_state.modules.outputs.aws_backend_private_route_table_id
-  aws_backend_public_subnet1_id      = data.terraform_remote_state.modules.outputs.aws_backend_public_subnet1_id
-}
-
 module "kms" {
   source          = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/spoke/kms"
   prefix_name     = var.prefix_name
