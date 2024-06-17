@@ -62,13 +62,3 @@ variable "public_subnet2_az" {
   type        = string
   description = "Designated availability zone of aws-backend-public-subnet-2 to be created."
 }
-
-variable "vpc_id_to_peer" {
-  type        = string
-  description = "ID of the VPC to peer with."
-}
-
-variable "cidr_block_of_vpc_to_peer" {
-  type        = string
-  description = "CIDR block of the peered VPC to add for routing tables."
-}

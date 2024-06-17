@@ -33,6 +33,4 @@ module "vpc" {
   public_subnet1_az          = var.public_subnet1_az
   public_subnet2_az          = var.public_subnet2_az
   environment_tag            = var.environment_tag
-  vpc_id_to_peer             = var.vpc_id_to_peer
-  cidr_block_of_vpc_to_peer  = var.cidr_block_of_vpc_to_peer
 }
