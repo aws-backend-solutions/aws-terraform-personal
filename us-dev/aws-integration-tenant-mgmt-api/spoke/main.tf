@@ -8,7 +8,7 @@ terraform {
 
   backend "s3" {
     bucket         = "aws-backend-tf-state"
-    key            = "aws-integration-tenant-mgmt-api/terraform.tfstate"
+    key            = "aws-integration-tenant-mgmt-api/spoke/terraform.tfstate"
     region         = "us-west-2"
     encrypt        = true
     dynamodb_table = "aws-backend-tf-lockid"
@@ -19,16 +19,12 @@ provider "aws" {
   region = var.aws_region
 }
 
-provider "github" {
-  token = var.github_token
-}
-
 data "terraform_remote_state" "modules" {
   backend = "s3"
 
   config = {
     bucket = "aws-backend-tf-state"
-    key    = "modules/terraform.tfstate"
+    key    = "modules/spoke/terraform.tfstate"
     region = "us-west-2"
   }
 }
