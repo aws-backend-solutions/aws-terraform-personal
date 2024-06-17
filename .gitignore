@@ -1,5 +1,7 @@
 .DS_Store
 us-dev/.DS_Store
-us-dev/*/.terraform
-us-dev/*/.terraform.lock.hcl
+us-dev/*/.*
+us-dev/*/.*
 us-dev/aws-integration-tenant-mgmt-api/spoke/lambda/code/env*.json
+us-dev/modules/spoke/.*
+us-dev/modules/spoke/.*
