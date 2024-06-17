@@ -201,19 +201,25 @@ resource "aws_vpc_endpoint" "primary_aws_backend_vpc_endpoint" {
   }
 }
 
-##### vpc peering
+##### nat gateway
 
-resource "aws_vpc_peering_connection" "primary_aws_mongodb_ga_peering_connection" {
-  vpc_id      = aws_vpc.primary_aws_backend_vpc.id
-  peer_vpc_id = var.vpc_id_to_peer
+resource "aws_nat_gateway" "aws_backend_nat_gateway" {
+  allocation_id = aws_eip.aws_backend_nat_eip.id
+  subnet_id     = aws_subnet.aws_backend_public_subnet1.id
 
   tags = {
-    Name = "primary-${var.prefix_name}-vpc-peering"
+    Name = "${var.prefix_name}-nat-gateway"
   }
 }
 
-resource "aws_route" "aws_mongodb_ga_route" {
-  route_table_id            = aws_route_table.primary_aws_backend_private_route_table.id
-  destination_cidr_block    = var.cidr_block_of_vpc_to_peer
-  vpc_peering_connection_id = aws_vpc_peering_connection.primary_aws_mongodb_ga_peering_connection.id
+resource "aws_eip" "aws_backend_nat_eip" {
+  vpc = true
+}
+
+# add nat gateways to private route table
+
+resource "aws_route" "aws_backend_ng_route" {
+  route_table_id         = aws_route_table.aws_backend_private_route_table.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.aws_backend_nat_gateway.id
 }
