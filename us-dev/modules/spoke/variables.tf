@@ -14,11 +14,6 @@ variable "environment_tag" {
   description = "Provide which environment this will be deployed. Used for tagging the resources created."
 }
 
-variable "project_tag" {
-  type        = string
-  description = "Provide the repository name. Used for tagging the resources created."
-}
-
 ########## modules/spoke/vpc ##########
 
 variable "vpc_cidr_block" {
