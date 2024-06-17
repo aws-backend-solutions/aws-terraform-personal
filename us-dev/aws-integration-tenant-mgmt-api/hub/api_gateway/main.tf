@@ -1,4 +1,4 @@
-resource "aws_api_gateway_rest_api" "primary_aws_integration_tenant_mgmt__api" {
+resource "aws_api_gateway_rest_api" "primary_aws_integration_tenant_mgmt_api" {
   name          = "primary-${var.prefix_name}-api"
   endpoint_configuration {
     types            = ["PRIVATE"]
@@ -13,7 +13,7 @@ resource "aws_api_gateway_rest_api" "primary_aws_integration_tenant_mgmt__api" {
 }
 
 resource "aws_api_gateway_rest_api_policy" "primary_api_gateway_policy" {
-  rest_api_id = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt__api.id
+  rest_api_id = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
 
   policy = <<EOF
 {
@@ -32,38 +32,38 @@ resource "aws_api_gateway_rest_api_policy" "primary_api_gateway_policy" {
 EOF
 }
 
-resource "aws_api_gateway_deployment" "primary_aws_integration_tenant_mgmt__api_deployment" {
-  rest_api_id = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt__api.id
+resource "aws_api_gateway_deployment" "primary_aws_integration_tenant_mgmt_api_deployment" {
+  rest_api_id = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
 
   triggers = {
-    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt__api.body))
+    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.body))
   }
 
   variables = {
     "version" = timestamp()
   }
 
-  depends_on = [aws_api_gateway_integration.primary_aws_integration_tenant_mgmt__api_integration]
+  depends_on = [aws_api_gateway_integration.primary_aws_integration_tenant_mgmt_api_integration]
   lifecycle {
     create_before_destroy = true
   }
 }
 
-resource "aws_api_gateway_stage" "primary_aws_integration_tenant_mgmt__api_stage" {
-  deployment_id = aws_api_gateway_deployment.primary_aws_integration_tenant_mgmt__api_deployment.id
-  rest_api_id   = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt__api.id
+resource "aws_api_gateway_stage" "primary_aws_integration_tenant_mgmt_api_stage" {
+  deployment_id = aws_api_gateway_deployment.primary_aws_integration_tenant_mgmt_api_deployment.id
+  rest_api_id   = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
   stage_name    = var.stage_name
 }
 
-resource "aws_api_gateway_resource" "primary_aws_integration_tenant_mgmt__api_resource" {
-  rest_api_id = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt__api.id
-  parent_id   = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt__api.root_resource_id
+resource "aws_api_gateway_resource" "primary_aws_integration_tenant_mgmt_api_resource" {
+  rest_api_id = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
+  parent_id   = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.root_resource_id
   path_part   = var.path_part
 }
 
-resource "aws_api_gateway_method" "primary_aws_integration_tenant_mgmt__api_method" {
-  rest_api_id   = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt__api.id
-  resource_id   = aws_api_gateway_resource.primary_aws_integration_tenant_mgmt__api_resource.id
+resource "aws_api_gateway_method" "primary_aws_integration_tenant_mgmt_api_method" {
+  rest_api_id   = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
+  resource_id   = aws_api_gateway_resource.primary_aws_integration_tenant_mgmt_api_resource.id
   http_method   = "POST"
   authorization = "AWS_IAM"
 
@@ -72,9 +72,9 @@ resource "aws_api_gateway_method" "primary_aws_integration_tenant_mgmt__api_meth
   }
 }
 
-resource "aws_api_gateway_method_settings" "primary_aws_integration_tenant_mgmt__api_method_settings" {
-  rest_api_id = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt__api.id
-  stage_name  = aws_api_gateway_stage.primary_aws_integration_tenant_mgmt__api_stage.stage_name
+resource "aws_api_gateway_method_settings" "primary_aws_integration_tenant_mgmt_api_method_settings" {
+  rest_api_id = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
+  stage_name  = aws_api_gateway_stage.primary_aws_integration_tenant_mgmt_api_stage.stage_name
   method_path = "*/*"
 
   settings {
@@ -83,10 +83,10 @@ resource "aws_api_gateway_method_settings" "primary_aws_integration_tenant_mgmt_
   }
 }
 
-resource "aws_api_gateway_integration" "primary_aws_integration_tenant_mgmt__api_integration" {
-  http_method             = aws_api_gateway_method.primary_aws_integration_tenant_mgmt__api_method.http_method
-  resource_id             = aws_api_gateway_resource.primary_aws_integration_tenant_mgmt__api_resource.id
-  rest_api_id             = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt__api.id
+resource "aws_api_gateway_integration" "primary_aws_integration_tenant_mgmt_api_integration" {
+  http_method             = aws_api_gateway_method.primary_aws_integration_tenant_mgmt_api_method.http_method
+  resource_id             = aws_api_gateway_resource.primary_aws_integration_tenant_mgmt_api_resource.id
+  rest_api_id             = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
   type                    = "AWS_PROXY"
   integration_http_method = "POST"
   # uri                     = 

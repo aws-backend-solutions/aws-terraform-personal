@@ -1,4 +1,4 @@
-########## modules/vpc ##########
+########## modules/spoke/vpc ##########
 
 output "aws_backend_vpc_id" {
   description = "The ID of the aws-backend-vpc."
@@ -50,7 +50,7 @@ output "aws_backend_vpc_endpoint_id" {
   value       = module.vpc.aws_backend_vpc_endpoint_id
 }
 
-########## modules/sns ##########
+########## modules/spoke/sns ##########
 
 output "budget_alert_topic_arn" {
   description = "The ARN of the budget_alert_topic."
@@ -62,14 +62,14 @@ output "cloudwatch_alarm_topic_arn" {
   value       = module.sns.cloudwatch_alarm_topic_arn
 }
 
-########## modules/iam ##########
+########## modules/spoke/iam ##########
 
 output "aws_backend_api_gateway_role_name" {
   description = "The name of the aws_backend_api_gateway_role."
-  value = module.iam.aws_backend_api_gateway_role_name
+  value       = module.iam.aws_backend_api_gateway_role_name
 }
 
 output "aws_backend_api_gateway_role_arn" {
   description = "The ARN of the aws_backend_api_gateway_role."
-  value = module.iam.aws_backend_api_gateway_role_arn 
+  value       = module.iam.aws_backend_api_gateway_role_arn
 }

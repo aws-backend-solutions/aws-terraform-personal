@@ -19,19 +19,12 @@ variable "project_tag" {
   description = "Provide the repository name. Used for tagging the resources created."
 }
 
-variable "github_token" { # this token needs to be generated in the github's developer settings with a read:project permission.
-  type        = string
-  description = "Token to authenticate the use of github links as the source path for the modules."
-}
-
-########## modules/vpc ##########
-
-########## aws-integration-tenant-mgmt/lambda ##########
+########## aws-integration-tenant-mgmt-api/spoke/lambda ##########
 
 variable "lambda_function_name" {
   type        = string
   description = "Lambda's function name."
-  default     = "aws-integration-tenant-mgmt-function"
+  default     = "aws-integration-tenant-mgmt-api/spoke-function"
 }
 
 # db variables
@@ -143,7 +136,7 @@ variable "api_endpoint" {
   description = "API endpoint to trigger the tenant creation."
 }
 
-########## aws-integration-tenant-mgmt/api_gateway ##########
+########## aws-integration-tenant-mgmt-api/spoke/api_gateway ##########
 
 variable "stage_name" {
   type        = string
@@ -155,16 +148,16 @@ variable "path_part" {
   description = "Path part of the API endpoint."
 }
 
-########## aws-integration-tenant-mgmt/budgets ##########
+########## aws-integration-tenant-mgmt-api/spoke/budgets ##########
 
 variable "lambda_budget_limit_amount" {
   type        = string
-  description = "The amount of cost or usage being measured for for the aws-integration-tenant-mgmt-function."
+  description = "The amount of cost or usage being measured for for the aws-integration-tenant-mgmt-api function."
 }
 
 variable "lambda_budget_time_unit" {
   type        = string
-  description = "The length of time until a budget resets the actual and forecasted spend for the aws-integration-tenant-mgmt-function."
+  description = "The length of time until a budget resets the actual and forecasted spend for the aws-integration-tenant-mgmt-api function."
 }
 
 variable "api_gateway_budget_limit_amount" {

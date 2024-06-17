@@ -19,12 +19,7 @@ variable "project_tag" {
   description = "Provide the repository name. Used for tagging the resources created."
 }
 
-variable "github_token" { # this token needs to be generated in the github's developer settings with a read:project permission.
-  type        = string
-  description = "Token to authenticate the use of github links as the source path for the modules."
-}
-
-########## modules/vpc ##########
+########## modules/hub/vpc ##########
 
 variable "vpc_cidr_block" {
   type        = string
@@ -81,7 +76,7 @@ variable "cidr_block_of_vpc_to_peer" {
   description = "CIDR block of the peered VPC to add for routing tables."
 }
 
-########## modules/sns ##########
+########## modules/hub/sns ##########
 
 variable "recipient_for_budgets" {
   type        = string

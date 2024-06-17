@@ -2,4 +2,4 @@
 us-dev/.DS_Store
 us-dev/*/.terraform
 us-dev/*/.terraform.lock.hcl
-us-dev/aws-integration-tenant-mgmt-api/lambda/code/env*.json
+us-dev/aws-integration-tenant-mgmt-api/spoke/lambda/code/env*.json

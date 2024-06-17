@@ -19,10 +19,6 @@ provider "aws" {
   region = var.aws_region
 }
 
-provider "github" {
-  token = var.github_token
-}
-
 module "vpc" {
   source                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/hub/vpc"
   prefix_name                = var.prefix_name
