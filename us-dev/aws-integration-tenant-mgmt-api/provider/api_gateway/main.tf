@@ -28,18 +28,6 @@ resource "aws_api_gateway_rest_api_policy" "api_gateway_policy" {
     }
   ]
 EOF
-  #   "Version": "2012-10-17",
-  #   "Statement": [
-  #     {
-  #       "Effect": "Allow",
-  #       "Principal": "*",
-  #       "Action": "execute-api:Invoke",
-  #       "Resource": [
-  #         "execute-api:/*"
-  #       ]
-  #     }
-  #   ]
-  # }
 }
 
 resource "aws_api_gateway_deployment" "aws_integration_tenant_mgmt_api_deployment" {
