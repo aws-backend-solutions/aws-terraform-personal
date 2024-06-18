@@ -95,5 +95,11 @@ resource "aws_api_gateway_integration" "primary_aws_integration_tenant_mgmt_api_
   rest_api_id             = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
   type                    = "HTTP_PROXY"
   integration_http_method = "POST"
-  uri                     = "http://${var.primary_aws_integration_tenant_mgmt_nlb_dns_name}"
+  uri                     = "https://${var.aws_integration_tenant_mgmt_api_id}.execute-api.${var.aws_region}.amazonaws.com/${var.stage_name}/${var.path_part}"
+
+  request_parameters = {
+    "integration.request.header.X-Amz-Source-Account" = "${var.aws_account_id}"
+  }
+
+  credentials = var.api_gateway_invocation_role_arn
 }

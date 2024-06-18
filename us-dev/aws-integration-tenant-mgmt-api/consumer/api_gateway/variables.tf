@@ -2,6 +2,11 @@ variable "prefix_name" {
   type = string
 }
 
+variable "aws_region" {
+  type        = string
+  description = "Designated AWS_REGION where this solution will be deployed."
+}
+
 variable "cost_center_tag" {
   type        = string
   description = "Used for tagging the resources created."
@@ -41,4 +46,19 @@ variable "primary_aws_integration_tenant_mgmt_nlb_dns_name" {
 variable "primary_aws_integration_tenant_mgmt_nlb_arn" {
   type        = string
   description = "ARN of primary_aws_integration_tenant_mgmt_nlb."
+}
+
+variable "aws_integration_tenant_mgmt_api_id" {
+  type        = string
+  description = "ID for aws-integration-tenant-mgmt-api"
+}
+
+variable "api_gateway_invocation_role_arn" {
+  type        = string
+  description = "ARN for aws-integration-tenant-mgmt-api-gateway-invocation-role"
+}
+
+variable "aws_account_id" {
+  type        = string
+  description = "AWS Account ID where this solution will be deployed."
 }
