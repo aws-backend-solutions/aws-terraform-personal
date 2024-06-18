@@ -80,21 +80,6 @@ resource "aws_api_gateway_method_settings" "primary_aws_integration_tenant_mgmt_
   }
 }
 
-resource "aws_api_gateway_integration" "primary_aws_integration_tenant_mgmt_api_integration" {
-  http_method             = aws_api_gateway_method.primary_aws_integration_tenant_mgmt_api_method.http_method
-  resource_id             = aws_api_gateway_resource.primary_aws_integration_tenant_mgmt_api_resource.id
-  rest_api_id             = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
-  type                    = "HTTP_PROXY"
-  integration_http_method = "POST"
-  uri                     = "https://${var.aws_integration_tenant_mgmt_api_id}.execute-api.${var.aws_region}.amazonaws.com/${var.stage_name}/${var.path_part}"
-
-  request_parameters = {
-    "integration.request.header.X-Amz-Source-Account" = "${var.aws_account_id}"
-  }
-
-  credentials = var.api_gateway_invocation_role_arn
-}
-
 resource "aws_iam_role" "aws_integration_tenant_mgmt_api_invocation_role" {
   name = "${var.prefix_name}-api-invocation-role"
 
@@ -131,4 +116,19 @@ resource "aws_iam_policy" "aws_integration_tenant_mgmt_api_invocation_policy" {
 resource "aws_iam_role_policy_attachment" "aws_integration_tenant_mgmt_api_invocation_attachment" {
   role       = aws_iam_role.aws_integration_tenant_mgmt_api_invocation_role.name
   policy_arn = aws_iam_policy.aws_integration_tenant_mgmt_api_invocation_policy.arn
+}
+
+resource "aws_api_gateway_integration" "primary_aws_integration_tenant_mgmt_api_integration" {
+  http_method             = aws_api_gateway_method.primary_aws_integration_tenant_mgmt_api_method.http_method
+  resource_id             = aws_api_gateway_resource.primary_aws_integration_tenant_mgmt_api_resource.id
+  rest_api_id             = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
+  type                    = "HTTP_PROXY"
+  integration_http_method = "POST"
+  uri                     = "https://${var.aws_integration_tenant_mgmt_api_id}.execute-api.${var.aws_region}.amazonaws.com/${var.stage_name}/${var.path_part}"
+
+  request_parameters = {
+    "integration.request.header.X-Amz-Source-Account" = "${var.aws_account_id}"
+  }
+
+  credentials = aws_iam_role.aws_integration_tenant_mgmt_api_invocation_role.arn
 }
