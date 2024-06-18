@@ -30,5 +30,5 @@ resource "aws_lb_target_group" "primary_aws_integration_tenant_mgmt_tg" {
 
 resource "aws_lb_target_group_attachment" "primary_aws_integration_tenant_mgmt_nlb_attachment" {
   target_group_arn = aws_lb_target_group.primary_aws_integration_tenant_mgmt_tg.arn
-  target_id       = var.primary_aws_backend_vpc_endpoint_id
+  target_id        = var.primary_aws_backend_vpc_endpoint_dns
 }

@@ -28,7 +28,7 @@ variable "primary_aws_backend_vpc_id" {
   description = "The ID of the primary-aws-backend-vpc."
 }
 
-variable "primary_aws_backend_vpc_endpoint_id" {
+variable "primary_aws_backend_vpc_endpoint_dns" {
   type        = string
-  description = "The ID of primary-aws-backend-api-vpce."
+  description = "DNS name of primary_aws_backend_vpc_endpoint."
 }
