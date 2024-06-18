@@ -92,7 +92,7 @@ resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_integrat
   uri                     = var.aws_integration_tenant_mgmt_function_invoke_arn
 }
 
-resource "aws_iam_role" "aws_integration_tenant_mgmt_api_gateway_invocation_role" {
+resource "aws_iam_role" "aws_integration_tenant_mgmt_api_invocation_role" {
   name = "${var.prefix_name}-api-invocation-role"
 
   assume_role_policy = jsonencode({
@@ -131,6 +131,6 @@ resource "aws_iam_policy" "aws_integration_tenant_mgmt_api_invocation_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "aws_integration_tenant_mgmt_api_invocation_attachment" {
-  role       = aws_iam_role.aws_integration_tenant_mgmt_api_gateway_invocation_role.name
+  role       = aws_iam_role.aws_integration_tenant_mgmt_api_invocation_role.name
   policy_arn = aws_iam_policy.aws_integration_tenant_mgmt_api_invocation_policy.arn
 }
