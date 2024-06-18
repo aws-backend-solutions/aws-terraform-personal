@@ -40,6 +40,11 @@ output "primary_aws_backend_security_group3_id" {
   value       = module.vpc.primary_aws_backend_security_group3_id
 }
 
+output "primary_aws_backend_security_group4_id" {
+  description = "The ID of the AwsBackendSecurityGroup4."
+  value       = module.vpc.primary_aws_backend_security_group4_id
+}
+
 output "primary_aws_backend_private_route_table_id" {
   description = "The ID of private route table."
   value       = module.vpc.primary_aws_backend_private_route_table_id
