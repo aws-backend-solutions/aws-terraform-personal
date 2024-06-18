@@ -33,7 +33,7 @@ variable "primary_aws_backend_vpc_endpoint_id" {
   description = "The ID of the primary AwsBackendVpcEndpoint."
 }
 
-variable "aws_backend_vpc_endpoint_id" {
+variable "primary_aws_backend_nlb_dns" {
   type        = string
-  description = "The ID of the AwsBackendVpcEndpoint."
+  description = "DNS name of primary_aws_backend_nlb."
 }
