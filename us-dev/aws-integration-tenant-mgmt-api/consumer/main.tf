@@ -30,7 +30,7 @@ data "terraform_remote_state" "modules" {
 }
 
 module "nlb" {
-  source                                 = "gitconsumer.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/nlb"
+  source                                 = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/nlb"
   prefix_name                            = var.prefix_name
   environment_tag                        = var.environment_tag
   primary_aws_backend_security_group4_id = data.terraform_remote_state.modules.outputs.primary_aws_backend_security_group4_id
@@ -45,7 +45,7 @@ module "nlb" {
 }
 
 module "api_gateway" {
-  source                                      = "gitconsumer.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/api_gateway"
+  source                                      = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/api_gateway"
   prefix_name                                 = var.prefix_name
   environment_tag                             = var.environment_tag
   project_tag                                 = var.project_tag
