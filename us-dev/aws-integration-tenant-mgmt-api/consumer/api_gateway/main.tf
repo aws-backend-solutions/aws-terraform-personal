@@ -1,9 +1,3 @@
-resource "aws_api_gateway_vpc_link" "primary_aws_integration_tenant_mgmt_vpc_link" {
-  name        = "primary-${var.prefix_name}-vpc-link"
-  description = "VPC Link for ${var.prefix_name}"
-  target_arns = [var.primary_aws_integration_tenant_mgmt_nlb_arn]
-}
-
 resource "aws_api_gateway_rest_api" "primary_aws_integration_tenant_mgmt_api" {
   name          = "primary-${var.prefix_name}-api"
   endpoint_configuration {
@@ -45,7 +39,8 @@ resource "aws_api_gateway_deployment" "primary_aws_integration_tenant_mgmt_api_d
     redeployment = sha1(jsonencode(aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.body))
   }
 
-  # depends_on = [aws_api_gateway_integration.primary_aws_integration_tenant_mgmt_api_integration]
+  depends_on = [aws_api_gateway_integration.primary_aws_integration_tenant_mgmt_api_integration]
+  
   lifecycle {
     create_before_destroy = true
   }
