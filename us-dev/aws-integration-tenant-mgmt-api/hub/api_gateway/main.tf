@@ -90,4 +90,6 @@ resource "aws_api_gateway_integration" "primary_aws_integration_tenant_mgmt_api_
   type                    = "HTTP_PROXY"
   integration_http_method = "POST"
   uri                     = var.aws_backend_vpc_endpoint_id
+  connection_type         = "VPC_LINK"
+  connection_id           = "ej140y"
 }
