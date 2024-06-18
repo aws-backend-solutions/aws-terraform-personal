@@ -1,7 +1,7 @@
 resource "aws_api_gateway_vpc_link" "primary_aws_integration_tenant_mgmt_vpc_link" {
   name        = "primary-${var.prefix_name}-vpc-link"
   description = "VPC Link for ${var.prefix_name}"
-  target_arns = [ var.primary_aws_integration_tenant_mgmt_nlb_arn ]
+  target_arns = [var.primary_aws_integration_tenant_mgmt_nlb_arn]
 }
 
 resource "aws_api_gateway_rest_api" "primary_aws_integration_tenant_mgmt_api" {
@@ -95,5 +95,5 @@ resource "aws_api_gateway_integration" "primary_aws_integration_tenant_mgmt_api_
   rest_api_id             = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
   type                    = "HTTP_PROXY"
   integration_http_method = "POST"
-  uri                     = aws_api_gateway_vpc_link.primary_aws_integration_tenant_mgmt_vpc_link.target_arn
+  uri                     = var.primary_aws_integration_tenant_mgmt_nlb_arn
 }
