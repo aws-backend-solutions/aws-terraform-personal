@@ -27,6 +27,7 @@ resource "aws_api_gateway_rest_api_policy" "api_gateway_policy" {
       "Action": "sts:AssumeRole"
     }
   ]
+}
 EOF
 }
 
