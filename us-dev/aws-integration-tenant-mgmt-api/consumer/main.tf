@@ -57,7 +57,7 @@ module "api_gateway" {
   primary_aws_backend_vpc_endpoint_id              = data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_endpoint_id
   primary_aws_integration_tenant_mgmt_nlb_dns_name = module.nlb.primary_aws_integration_tenant_mgmt_nlb_dns_name
   primary_aws_integration_tenant_mgmt_nlb_arn      = module.nlb.primary_aws_integration_tenant_mgmt_nlb_arn
-  aws_integration_tenant_mgmt_api_id               = data.terraform_remote_state.modules.outputs.aws_integration_tenant_mgmt_api_id
-  api_gateway_invocation_role_arn                  = data.terraform_remote_state.modules.outputs.api_gateway_invocation_role_arn
+  aws_integration_tenant_mgmt_api_id               = var.aws_integration_tenant_mgmt_api_id
+  api_gateway_invocation_role_arn                  = var.api_gateway_invocation_role_arn
   aws_account_id                                   = data.aws_caller_identity.current.account_id
 }

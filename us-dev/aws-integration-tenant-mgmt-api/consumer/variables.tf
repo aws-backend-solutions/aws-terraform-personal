@@ -30,3 +30,13 @@ variable "path_part" {
   type        = string
   description = "Path part of the API endpoint."
 }
+
+variable "aws_integration_tenant_mgmt_api_id" {
+  type        = string
+  description = "ID for aws-integration-tenant-mgmt-api"
+}
+
+variable "api_gateway_invocation_role_arn" {
+  type        = string
+  description = "ARN for aws-integration-tenant-mgmt-api-gateway-invocation-role"
+}
