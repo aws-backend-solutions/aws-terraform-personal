@@ -22,3 +22,13 @@ variable "primary_aws_backend_subnet_ids" {
   type        = list(string)
   description = "List of subnet IDs where load balancer will be deployed"
 }
+
+variable "primary_aws_backend_vpc_id" {
+  type        = string
+  description = "The ID of the primary-aws-backend-vpc."
+}
+
+variable "primary_aws_backend_vpc_endpoint_id" {
+  type        = string
+  description = "The ID of primary-aws-backend-api-vpce."
+}

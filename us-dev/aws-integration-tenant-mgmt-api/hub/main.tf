@@ -40,6 +40,8 @@ module "nlb" {
     data.terraform_remote_state.modules.outputs.primary_aws_backend_public_subnet1_id,
     data.terraform_remote_state.modules.outputs.primary_aws_backend_public_subnet2_id
   ]
+  primary_aws_backend_vpc_id = data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_id
+  primary_aws_backend_vpc_endpoint_id = data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_endpoint_id
 }
 
 module "api_gateway" {
@@ -51,4 +53,5 @@ module "api_gateway" {
   path_part                                   = var.path_part
   primary_aws_backend_vpc_endpoint_id         = data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_endpoint_id
   primary_aws_integration_tenant_mgmt_nlb_dns = module.nlb.primary_aws_integration_tenant_mgmt_nlb_dns
+  primary_aws_integration_tenant_mgmt_nlb_arn = module.nlb.primary_aws_integration_tenant_mgmt_nlb_arn
 }

@@ -37,3 +37,8 @@ variable "primary_aws_integration_tenant_mgmt_nlb_dns" {
   type        = string
   description = "DNS name of primary_aws_integration_tenant_mgmt_nlb_dns."
 }
+
+variable "primary_aws_integration_tenant_mgmt_nlb_arn" {
+  type        = string
+  description = "ARN of primary_aws_integration_tenant_mgmt_nlb."
+}
