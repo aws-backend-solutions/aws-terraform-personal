@@ -53,11 +53,6 @@ variable "aws_integration_tenant_mgmt_api_id" {
   description = "ID for aws-integration-tenant-mgmt-api"
 }
 
-variable "api_gateway_invocation_role_arn" {
-  type        = string
-  description = "ARN for aws-integration-tenant-mgmt-api-gateway-invocation-role"
-}
-
 variable "aws_account_id" {
   type        = string
   description = "AWS Account ID where this solution will be deployed."
