@@ -91,5 +91,5 @@ resource "aws_api_gateway_integration" "primary_aws_integration_tenant_mgmt_api_
   integration_http_method = "POST"
   uri                     = var.primary_aws_integration_tenant_mgmt_nlb_dns
   connection_type         = "VPC_LINK"
-  connection_id           = "ej140y"
+  connection_id           = "9ptvr7"
 }
