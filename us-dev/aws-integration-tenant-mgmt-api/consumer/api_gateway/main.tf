@@ -45,11 +45,7 @@ resource "aws_api_gateway_deployment" "primary_aws_integration_tenant_mgmt_api_d
     redeployment = sha1(jsonencode(aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.body))
   }
 
-  variables = {
-    "version" = timestamp()
-  }
-
-  depends_on = [aws_api_gateway_integration.primary_aws_integration_tenant_mgmt_api_integration]
+  # depends_on = [aws_api_gateway_integration.primary_aws_integration_tenant_mgmt_api_integration]
   lifecycle {
     create_before_destroy = true
   }
