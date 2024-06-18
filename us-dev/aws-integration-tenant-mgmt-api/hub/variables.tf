@@ -31,11 +31,6 @@ variable "path_part" {
   description = "Path part of the API endpoint."
 }
 
-variable "primary_aws_backend_vpc_endpoint_id" {
-  type        = string
-  description = "The ID of the primary AwsBackendVpcEndpoint."
-}
-
 variable "aws_backend_vpc_endpoint_id" {
   type        = string
   description = "The ID of the AwsBackendVpcEndpoint."
