@@ -8,7 +8,7 @@ terraform {
 
   backend "s3" {
     bucket         = "aws-backend-tfstate"
-    key            = "modules/hub/terraform.tfstate"
+    key            = "modules/consumer/terraform.tfstate"
     region         = "us-west-2"
     encrypt        = true
     dynamodb_table = "aws-backend-tf-lockid"
@@ -20,7 +20,7 @@ provider "aws" {
 }
 
 module "vpc" {
-  source                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/hub/vpc"
+  source                     = "gitconsumer.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/consumer/vpc"
   prefix_name                = var.prefix_name
   aws_region                 = var.aws_region
   vpc_cidr_block             = var.vpc_cidr_block
