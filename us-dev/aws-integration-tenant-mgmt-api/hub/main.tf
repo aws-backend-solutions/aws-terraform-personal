@@ -52,5 +52,6 @@ module "api_gateway" {
   stage_name                                  = var.stage_name
   path_part                                   = var.path_part
   primary_aws_backend_vpc_endpoint_id         = data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_endpoint_id
+  primary_aws_integration_tenant_mgmt_nlb_dns_name = module.nlb.primary_aws_integration_tenant_mgmt_nlb_dns_name
   primary_aws_integration_tenant_mgmt_nlb_arn = module.nlb.primary_aws_integration_tenant_mgmt_nlb_arn
 }

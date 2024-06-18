@@ -33,6 +33,11 @@ variable "primary_aws_backend_vpc_endpoint_id" {
   description = "The ID of the primary AwsBackendVpcEndpoint."
 }
 
+variable "primary_aws_integration_tenant_mgmt_nlb_dns_name" {
+  type        = string
+  description = "DNS name of primary_aws_integration_tenant_mgmt_nlb_dns_name."
+}
+
 variable "primary_aws_integration_tenant_mgmt_nlb_arn" {
   type        = string
   description = "ARN of primary_aws_integration_tenant_mgmt_nlb."
