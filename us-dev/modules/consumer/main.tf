@@ -20,7 +20,7 @@ provider "aws" {
 }
 
 module "vpc" {
-  source                     = "gitconsumer.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/consumer/vpc"
+  source                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/consumer/vpc"
   prefix_name                = var.prefix_name
   aws_region                 = var.aws_region
   vpc_cidr_block             = var.vpc_cidr_block
