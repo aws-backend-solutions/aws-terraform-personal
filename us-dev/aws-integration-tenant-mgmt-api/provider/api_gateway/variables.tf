@@ -2,6 +2,11 @@ variable "prefix_name" {
   type = string
 }
 
+variable "aws_region" {
+  type        = string
+  description = "Designated AWS_REGION where this solution will be deployed."
+}
+
 variable "cost_center_tag" {
   type        = string
   description = "Used for tagging the resources created."
@@ -36,4 +41,14 @@ variable "aws_backend_vpc_endpoint_id" {
 variable "aws_integration_tenant_mgmt_function_invoke_arn" {
   type        = string
   description = "The Invoke ARN of the underlying Lambda function."
+}
+
+variable "aws_account_id" {
+  type        = string
+  description = "AWS Account ID where this solution will be deployed."
+}
+
+variable "peer_aws_account_id" {
+  description = "AWS Account ID of the peer VPC"
+  type        = string
 }

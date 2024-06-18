@@ -29,6 +29,8 @@ data "terraform_remote_state" "modules" {
   }
 }
 
+data "aws_caller_identity" "current" {}
+
 module "kms" {
   source          = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/provider/kms"
   prefix_name     = var.prefix_name
@@ -79,6 +81,8 @@ module "api_gateway" {
   path_part                                       = var.path_part
   aws_integration_tenant_mgmt_function_invoke_arn = module.lambda.aws_integration_tenant_mgmt_function_invoke_arn
   aws_backend_vpc_endpoint_id                     = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_id
+  aws_account_id                                  = data.aws_caller_identity.current.account_id
+  peer_aws_account_id                             = var.peer_aws_account_id
 }
 
 module "budgets" {

@@ -1,6 +1,6 @@
 resource "aws_lb" "primary_aws_integration_tenant_mgmt_nlb" {
   name               = "${var.prefix_name}-nlb"
-  internal           = false
+  internal           = true
   load_balancer_type = "network"
   security_groups    = [var.primary_aws_backend_security_group4_id]
   subnets            = var.primary_aws_backend_subnet_ids
