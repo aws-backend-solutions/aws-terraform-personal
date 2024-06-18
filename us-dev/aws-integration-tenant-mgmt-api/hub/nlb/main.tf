@@ -12,8 +12,8 @@ resource "aws_lb" "primary_aws_integration_tenant_mgmt_nlb" {
   }
 }
 
-resource "aws_lb_target_group" "primary_aws_integration_tenant_mgmt_nlb_tg" {
-  name     = "${var.prefix_name}-nlb-tg"
+resource "aws_lb_target_group" "primary_aws_integration_tenant_mgmt_tg" {
+  name     = "${var.prefix_name}-tg"
   port     = 443
   protocol = "TLS"
 
@@ -29,6 +29,6 @@ resource "aws_lb_target_group" "primary_aws_integration_tenant_mgmt_nlb_tg" {
 }
 
 resource "aws_lb_target_group_attachment" "primary_aws_integration_tenant_mgmt_nlb_attachment" {
-  target_group_arn = aws_lb_target_group.primary_aws_integration_tenant_mgmt_nlb_tg.arn
+  target_group_arn = aws_lb_target_group.primary_aws_integration_tenant_mgmt_tg.arn
   target_id       = var.primary_aws_backend_vpc_endpoint_id
 }
