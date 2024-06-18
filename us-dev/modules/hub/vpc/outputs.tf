@@ -57,3 +57,7 @@ output "primary_aws_backend_vpc_endpoint_id" {
   description = "The ID of primary-aws-backend-api-vpce."
   value       = aws_vpc_endpoint.primary_aws_backend_vpc_endpoint.id
 }
+
+output "primary_aws_backend_vpc_endpoint_dns_name" {
+  value = aws_vpc_endpoint.primary_aws_backend_vpc_endpoint.dns_entry[0].dns_name
+}
