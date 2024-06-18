@@ -19,6 +19,16 @@ provider "aws" {
   region = var.aws_region
 }
 
+data "terraform_remote_state" "modules" {
+  backend = "s3"
+
+  config = {
+    bucket = "aws-backend-tfstate"
+    key    = "modules/spoke/terraform.tfstate"
+    region = "us-west-2"
+  }
+}
+
 module "api_gateway" {
   source                              = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/hub/api_gateway"
   prefix_name                         = var.prefix_name
