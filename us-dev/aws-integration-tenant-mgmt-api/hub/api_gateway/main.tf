@@ -87,7 +87,7 @@ resource "aws_api_gateway_integration" "primary_aws_integration_tenant_mgmt_api_
   http_method             = aws_api_gateway_method.primary_aws_integration_tenant_mgmt_api_method.http_method
   resource_id             = aws_api_gateway_resource.primary_aws_integration_tenant_mgmt_api_resource.id
   rest_api_id             = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
-  type                    = "HTTP"
+  type                    = "HTTP_PROXY"
   integration_http_method = "POST"
   uri                     = var.aws_backend_vpc_endpoint_id
   connection_type         = "VPC_LINK"
