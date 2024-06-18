@@ -94,3 +94,41 @@ resource "aws_api_gateway_integration" "primary_aws_integration_tenant_mgmt_api_
 
   credentials = var.api_gateway_invocation_role_arn
 }
+
+resource "aws_iam_role" "aws_integration_tenant_mgmt_api_invocation_role" {
+  name = "${var.prefix_name}-api-invocation-role"
+
+  assume_role_policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": {
+          "Service": "apigateway.amazonaws.com"
+        },
+        "Action": "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "aws_integration_tenant_mgmt_api_invocation_policy" {
+  name        = "${var.prefix_name}-api-invocation-policy"
+  description = "Policy allowing API Gateway in provider account to invoke methods in this API Gateway"
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": "execute-api:Invoke",
+        "Resource": "arn:aws:execute-api:${var.aws_region}:${var.aws_account_id}:${aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id}/*/*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "aws_integration_tenant_mgmt_api_invocation_attachment" {
+  role       = aws_iam_role.aws_integration_tenant_mgmt_api_invocation_role.name
+  policy_arn = aws_iam_policy.aws_integration_tenant_mgmt_api_invocation_policy.arn
+}

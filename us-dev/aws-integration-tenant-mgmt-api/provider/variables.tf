@@ -148,11 +148,6 @@ variable "path_part" {
   description = "Path part of the API endpoint."
 }
 
-variable "peer_aws_account_id" {
-  description = "AWS Account ID of the peer VPC"
-  type        = string
-}
-
 ########## aws-integration-tenant-mgmt-api/spoke/budgets ##########
 
 variable "lambda_budget_limit_amount" {

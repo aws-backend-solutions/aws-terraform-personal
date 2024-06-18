@@ -42,13 +42,3 @@ variable "aws_integration_tenant_mgmt_function_invoke_arn" {
   type        = string
   description = "The Invoke ARN of the underlying Lambda function."
 }
-
-variable "aws_account_id" {
-  type        = string
-  description = "AWS Account ID where this solution will be deployed."
-}
-
-variable "peer_aws_account_id" {
-  description = "AWS Account ID of the peer VPC"
-  type        = string
-}

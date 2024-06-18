@@ -17,19 +17,29 @@ resource "aws_api_gateway_rest_api_policy" "api_gateway_policy" {
 
   policy = <<EOF
 {
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Principal": "*",
-        "Action": "execute-api:Invoke",
-        "Resource": [
-          "execute-api:/*"
-        ]
-      }
-    ]
-  }
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
 EOF
+  #   "Version": "2012-10-17",
+  #   "Statement": [
+  #     {
+  #       "Effect": "Allow",
+  #       "Principal": "*",
+  #       "Action": "execute-api:Invoke",
+  #       "Resource": [
+  #         "execute-api:/*"
+  #       ]
+  #     }
+  #   ]
+  # }
 }
 
 resource "aws_api_gateway_deployment" "aws_integration_tenant_mgmt_api_deployment" {
@@ -90,47 +100,4 @@ resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_integrat
   type                    = "AWS_PROXY"
   integration_http_method = "POST"
   uri                     = var.aws_integration_tenant_mgmt_function_invoke_arn
-}
-
-resource "aws_iam_role" "aws_integration_tenant_mgmt_api_invocation_role" {
-  name = "${var.prefix_name}-api-invocation-role"
-
-  assume_role_policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "apigateway.amazonaws.com"
-        },
-        "Action": "sts:AssumeRole"
-      }
-    ]
-  })
-}
-
-resource "aws_iam_policy" "aws_integration_tenant_mgmt_api_invocation_policy" {
-  name        = "${var.prefix_name}-api-invocation-policy"
-  description = "Policy allowing API Gateway in consumer ccount to invoke methods in this API Gateway"
-
-  policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Action": "execute-api:Invoke",
-        "Resource": "arn:aws:execute-api:${var.aws_region}:${var.aws_account_id}:${aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id}/*/*",
-        "Condition": {
-          "StringEquals": {
-            "aws:SourceAccount": "${var.peer_aws_account_id}"
-          }
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "aws_integration_tenant_mgmt_api_invocation_attachment" {
-  role       = aws_iam_role.aws_integration_tenant_mgmt_api_invocation_role.name
-  policy_arn = aws_iam_policy.aws_integration_tenant_mgmt_api_invocation_policy.arn
 }
