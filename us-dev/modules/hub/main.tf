@@ -34,16 +34,3 @@ module "vpc" {
   public_subnet2_az          = var.public_subnet2_az
   environment_tag            = var.environment_tag
 }
-
-module "nlb" {
-  source                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/hub/nlb"
-  prefix_name                = var.prefix_name
-  environment_tag            = var.environment_tag
-  primary_aws_backend_security_group4_id = module.vpc.primary_aws_backend_security_group4_id
-  primary_aws_backend_subnet_ids = [
-    module.vpc.primary_aws_backend_private_subnet1_id,
-    module.vpc.primary_aws_backend_private_subnet2_id,
-    module.vpc.primary_aws_backend_public_subnet1_id,
-    module.vpc.primary_aws_backend_public_subnet2_id
-  ]
-}
