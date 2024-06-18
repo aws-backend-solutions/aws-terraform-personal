@@ -63,14 +63,19 @@ variable "public_subnet2_az" {
   description = "Designated availability zone of aws-backend-public-subnet-2 to be created."
 }
 
-# vpc peering with a different aws account
+# these are for the vpc from another account
 
-variable "vpc_id_to_peer" {
+variable "peer_aws_account_id" {
+  description = "AWS Account ID of the peer VPC"
   type        = string
-  description = "ID of the VPC to peer with."
 }
 
-variable "cidr_block_of_vpc_to_peer" {
+variable "peer_vpc_id" {
+  description = "VPC ID of the peer VPC"
   type        = string
-  description = "CIDR block of the peered VPC to add for routing tables."
+}
+
+variable "peer_vpc_cidr_block" {
+  description = "CIDR block of the peer VPC"
+  type        = string
 }
