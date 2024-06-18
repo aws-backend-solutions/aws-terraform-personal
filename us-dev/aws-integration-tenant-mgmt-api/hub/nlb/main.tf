@@ -16,6 +16,7 @@ resource "aws_lb_target_group" "primary_aws_integration_tenant_mgmt_tg" {
   name     = "${var.prefix_name}-tg"
   port     = 443
   protocol = "TLS"
+  target_type = "ip"
 
   health_check {
     path                = "/ping"

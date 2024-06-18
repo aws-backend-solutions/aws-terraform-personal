@@ -240,22 +240,3 @@ resource "aws_route" "aws_mongodb_ga_route" {
   destination_cidr_block    = var.cidr_block_of_vpc_to_peer
   vpc_peering_connection_id = aws_vpc_peering_connection.aws_mongodb_ga_peering_connection.id
 }
-
-##### vpc peering for the the vpc from another account
-
-resource "aws_vpc_peering_connection" "primary_aws_backend_vpc_peering_connection" {
-  vpc_id        = aws_vpc.aws_backend_vpc.id
-  peer_vpc_id   = var.peer_vpc_id
-  peer_owner_id = var.peer_aws_account_id
-  auto_accept   = false
-
-  tags = {
-    Name = "primary-${var.prefix_name}-vpc-peering"
-  }
-}
-
-resource "aws_route" "primary_aws_backend_vpc_route" {
-  route_table_id            = aws_route_table.aws_backend_private_route_table.id
-  destination_cidr_block    = var.peer_vpc_cidr_block
-  vpc_peering_connection_id = aws_vpc_peering_connection.primary_aws_backend_vpc_peering_connection.id
-}

@@ -35,9 +35,6 @@ module "vpc" {
   environment_tag            = var.environment_tag
   vpc_id_to_peer             = var.vpc_id_to_peer
   cidr_block_of_vpc_to_peer  = var.cidr_block_of_vpc_to_peer
-  peer_aws_account_id        = var.peer_aws_account_id
-  peer_vpc_id                = var.peer_vpc_id
-  peer_vpc_cidr_block        = var.peer_vpc_cidr_block
 }
 
 module "sns" {
