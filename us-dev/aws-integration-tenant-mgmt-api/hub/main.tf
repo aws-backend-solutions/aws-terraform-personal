@@ -24,7 +24,7 @@ data "terraform_remote_state" "modules" {
 
   config = {
     bucket = "aws-backend-tfstate"
-    key    = "modules/spoke/terraform.tfstate"
+    key    = "modules/hub/terraform.tfstate"
     region = "us-west-2"
   }
 }
