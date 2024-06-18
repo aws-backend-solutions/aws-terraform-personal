@@ -243,3 +243,20 @@ resource "aws_route" "primary_aws_backend_ng_route" {
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.primary_aws_backend_nat_gateway.id
 }
+
+##### vpc peering with a different aws account
+
+resource "aws_vpc_peering_connection" "primary_aws_backend_peering_connection" {
+  vpc_id      = aws_vpc.primary_aws_backend_vpc.id
+  peer_vpc_id = var.vpc_id_to_peer
+
+  tags = {
+    Name = "primary-${var.prefix_name}-vpc-peering"
+  }
+}
+
+resource "aws_route" "primary_aws_backend_route" {
+  route_table_id            = aws_route_table.primary_aws_backend_private_route_table.id
+  destination_cidr_block    = var.cidr_block_of_vpc_to_peer
+  vpc_peering_connection_id = aws_vpc_peering_connection.primary_aws_backend_peering_connection.id
+}
