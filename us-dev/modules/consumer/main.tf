@@ -53,11 +53,11 @@ module "nlb" {
   source                                 = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/nlb"
   prefix_name                            = var.prefix_name
   environment_tag                        = var.environment_tag
-  primary_aws_backend_security_group4_id = data.terraform_remote_state.modules.outputs.primary_aws_backend_security_group4_id
+  primary_aws_backend_security_group4_id = module.vpc.primary_aws_backend_security_group4_id
   primary_aws_backend_subnet_ids = [
-    data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet1_id,
-    data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet2_id
+    module.vpc.primary_aws_backend_private_subnet1_id,
+    module.vpc.outputs.primary_aws_backend_private_subnet2_id
   ]
-  primary_aws_backend_vpc_id           = data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_id
+  primary_aws_backend_vpc_id           = module.vpc.primary_aws_backend_vpc_id
   primary_aws_backend_vpc_endpoint_ips = local.primary_aws_backend_vpc_endpoint_ips
 }

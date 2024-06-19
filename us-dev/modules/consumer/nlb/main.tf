@@ -1,4 +1,4 @@
-resource "aws_lb" "primary_aws_integration_tenant_mgmt_nlb" {
+resource "aws_lb" "primary_aws_backend_nlb" {
   name               = "${var.prefix_name}-nlb"
   internal           = true
   load_balancer_type = "network"
@@ -12,7 +12,7 @@ resource "aws_lb" "primary_aws_integration_tenant_mgmt_nlb" {
   }
 }
 
-resource "aws_lb_target_group" "primary_aws_integration_tenant_mgmt_tg" {
+resource "aws_lb_target_group" "primary_aws_backend_tg" {
   name     = "${var.prefix_name}-tg"
   port     = 80
   protocol = "TCP"
@@ -29,21 +29,21 @@ resource "aws_lb_target_group" "primary_aws_integration_tenant_mgmt_tg" {
   vpc_id = var.primary_aws_backend_vpc_id
 }
 
-resource "aws_lb_target_group_attachment" "primary_aws_integration_tenant_mgmt_nlb_attachment" {
+resource "aws_lb_target_group_attachment" "primary_aws_backend_nlb_attachment" {
   for_each = toset(var.primary_aws_backend_vpc_endpoint_ips)
   
-  target_group_arn = aws_lb_target_group.primary_aws_integration_tenant_mgmt_tg.arn
+  target_group_arn = aws_lb_target_group.primary_aws_backend_tg.arn
   target_id        = each.value
   port             = 80
 }
 
-resource "aws_lb_listener" "primary_aws_integration_tenant_mgmt_nlb_listener" {
-  load_balancer_arn = aws_lb.primary_aws_integration_tenant_mgmt_nlb.arn
+resource "aws_lb_listener" "primary_aws_backend_nlb_listener" {
+  load_balancer_arn = aws_lb.primary_aws_backend_nlb.arn
   port              = 80
   protocol          = "TCP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.primary_aws_integration_tenant_mgmt_tg.arn
+    target_group_arn = aws_lb_target_group.primary_aws_backend_tg.arn
   }
 }
