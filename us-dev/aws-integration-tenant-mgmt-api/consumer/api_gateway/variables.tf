@@ -47,13 +47,3 @@ variable "aws_account_id" {
   type        = string
   description = "AWS Account ID where this solution will be deployed."
 }
-
-variable "primary_aws_backend_nlb_dns_name" {
-  type        = string
-  description = "DNS name of primary_aws_integration_tenant_mgmt_nlb_dns_name."
-}
-
-variable "primary_aws_backend_nlb_arn" {
-  type        = string
-  description = "ARN of primary_aws_integration_tenant_mgmt_nlb."
-}
