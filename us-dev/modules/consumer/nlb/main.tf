@@ -15,7 +15,7 @@ resource "aws_lb" "primary_aws_backend_nlb" {
 resource "aws_lb_target_group" "primary_aws_backend_tg" {
   name     = "${var.prefix_name}-tg"
   port     = 443
-  protocol = "TCP"
+  protocol = "HTTPS"
   target_type = "ip"
 
   health_check {
@@ -24,7 +24,7 @@ resource "aws_lb_target_group" "primary_aws_backend_tg" {
     timeout             = 5
     healthy_threshold   = 2
     unhealthy_threshold = 2
-    protocol            = "TCP"
+    protocol            = "HTTPS"
   }
 
   vpc_id = var.primary_aws_backend_vpc_id
