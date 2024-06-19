@@ -60,5 +60,5 @@ output "primary_aws_backend_vpc_endpoint_id" {
 
 output "primary_aws_backend_vpc_endpoint_ips" {
   description = "List of private IP addresses of the VPC endpoint interfaces"
-  value       = aws_vpc_endpoint.primary_aws_backend_vpc_endpoint.private_ip_address
+  value       = aws_vpc_endpoint.primary_aws_backend_vpc_endpoint.network_interface_ids
 }
