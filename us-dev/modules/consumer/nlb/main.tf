@@ -1,12 +1,12 @@
 resource "aws_lb" "primary_aws_backend_nlb" {
-  name               = "${var.prefix_name}-nlb"
+  name               = "primary-${var.prefix_name}-nlb"
   internal           = true
   load_balancer_type = "network"
   security_groups    = [var.primary_aws_backend_security_group4_id]
   subnets            = var.primary_aws_backend_subnet_ids
 
   tags = {
-    Name        = "${var.prefix_name}-nlb"
+    Name        = "primary-${var.prefix_name}-nlb"
     CostCenter  = var.cost_center_tag
     Environment = var.environment_tag
   }
@@ -18,7 +18,7 @@ resource "aws_lb_target_group" "primary_aws_backend_nlb_tg" {
   target_type = "ip"
 
   # health_check {
-  #   path                = "/${var.stage_name}/health"
+  #   path                = "/primary-${var.stage_name}/health"
   #   interval            = 30
   #   timeout             = 5
   #   healthy_threshold   = 2

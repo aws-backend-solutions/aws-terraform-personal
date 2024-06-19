@@ -50,9 +50,9 @@ locals {
 }
 
 module "nlb" {
-  source                         = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/consumer/nlb"
-  prefix_name                    = var.prefix_name
-  environment_tag                = var.environment_tag
+  source                                 = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/consumer/nlb"
+  prefix_name                            = var.prefix_name
+  environment_tag                        = var.environment_tag
   primary_aws_backend_security_group4_id = module.vpc.primary_aws_backend_security_group4_id
   primary_aws_backend_subnet_ids = [
     module.vpc.primary_aws_backend_private_subnet1_id,
@@ -60,5 +60,5 @@ module "nlb" {
   ]
   primary_aws_backend_vpc_id           = module.vpc.primary_aws_backend_vpc_id
   primary_aws_backend_vpc_endpoint_ips = local.primary_aws_backend_vpc_endpoint_ips
-  stage_name                   = var.stage_name
+  stage_name                           = var.stage_name
 }
