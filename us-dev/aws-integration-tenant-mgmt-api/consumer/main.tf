@@ -31,6 +31,17 @@ data "terraform_remote_state" "modules" {
 
 data "aws_caller_identity" "current" {}
 
+data "aws_network_interface" "primary_aws_backend_vpc_endpoint_ips" {
+  for_each = toset(data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_endpoint_enis)
+  id       = each.value
+}
+
+locals {
+  primary_aws_backend_vpc_endpoint_ips = [
+    for eni in data.aws_network_interface.primary_aws_backend_vpc_endpoint_ips : eni.private_ips[0]
+  ]
+}
+
 module "nlb" {
   source                                 = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/nlb"
   prefix_name                            = var.prefix_name
@@ -41,7 +52,7 @@ module "nlb" {
     data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet2_id
   ]
   primary_aws_backend_vpc_id           = data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_id
-  primary_aws_backend_vpc_endpoint_ips = var.vpc_endpoint_ips
+  primary_aws_backend_vpc_endpoint_ips = local.primary_aws_backend_vpc_endpoint_ips
 }
 
 module "api_gateway" {
