@@ -14,8 +14,8 @@ resource "aws_lb" "primary_aws_integration_tenant_mgmt_nlb" {
 
 resource "aws_lb_target_group" "primary_aws_integration_tenant_mgmt_tg" {
   name     = "${var.prefix_name}-tg"
-  port     = 443
-  protocol = "TLS"
+  port     = 80
+  protocol = "TCP"
   target_type = "ip"
 
   health_check {
