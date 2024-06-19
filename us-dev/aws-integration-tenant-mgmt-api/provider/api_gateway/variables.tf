@@ -42,3 +42,8 @@ variable "aws_integration_tenant_mgmt_function_invoke_arn" {
   type        = string
   description = "The Invoke ARN of the underlying Lambda function."
 }
+
+variable "source_vpc" {
+  type        = string
+  description = "ID of the VPC where the request will be coming from."
+}

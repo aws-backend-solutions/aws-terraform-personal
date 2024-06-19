@@ -148,6 +148,11 @@ variable "path_part" {
   description = "Path part of the API endpoint."
 }
 
+variable "source_vpc" {
+  type        = string
+  description = "ID of the VPC where the request will be coming from."
+}
+
 ########## aws-integration-tenant-mgmt-api/spoke/budgets ##########
 
 variable "lambda_budget_limit_amount" {

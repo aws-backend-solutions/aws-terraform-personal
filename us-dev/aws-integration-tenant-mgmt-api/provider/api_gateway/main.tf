@@ -21,10 +21,20 @@ resource "aws_api_gateway_rest_api_policy" "api_gateway_policy" {
   "Statement": [
     {
       "Effect": "Allow",
-      "Principal": {
-        "Service": "apigateway.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
+      "Principal": "*",
+      "Action": "execute-api:Invoke",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "execute-api:Invoke",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:SourceVpc": "${var.source_vpc}"
+        }
+      }
     }
   ]
 }
