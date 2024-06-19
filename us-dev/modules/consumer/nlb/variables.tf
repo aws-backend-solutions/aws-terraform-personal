@@ -32,3 +32,8 @@ variable "primary_aws_backend_vpc_endpoint_ips" {
   type        = list(string)
   description = "List of private IP addresses of the VPC endpoint interfaces"
 }
+
+variable "stage_name" {
+  type        = string
+  description = "Stage where this solution will be deployed."
+}

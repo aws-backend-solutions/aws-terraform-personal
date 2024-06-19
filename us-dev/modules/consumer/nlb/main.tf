@@ -19,11 +19,12 @@ resource "aws_lb_target_group" "primary_aws_backend_tg" {
   target_type = "ip"
 
   health_check {
-    path                = "/ping"
+    path                = "/${var.stage_name}/health"
     interval            = 30
     timeout             = 5
     healthy_threshold   = 2
     unhealthy_threshold = 2
+    protocol            = "TCP"
   }
 
   vpc_id = var.primary_aws_backend_vpc_id
