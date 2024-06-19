@@ -82,10 +82,3 @@ variable "recipient_for_cloudwatch" {
   type        = string
   description = "The recipient of the cloudwatch alarms when there is an error."
 }
-
-########## modules/provider/nlb ##########
-
-variable "stage_name" {
-  type        = string
-  description = "Stage where this solution will be deployed."
-}
