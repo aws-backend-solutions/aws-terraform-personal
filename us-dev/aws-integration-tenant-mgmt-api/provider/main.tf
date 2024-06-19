@@ -80,7 +80,7 @@ module "api_gateway" {
   path_part                                       = var.path_part
   aws_integration_tenant_mgmt_function_invoke_arn = module.lambda.aws_integration_tenant_mgmt_function_invoke_arn
   aws_backend_vpc_endpoint_id                     = data.terraform_remote_state.modules.outputs.aws_backend_vpc_endpoint_id
-  source_vpc = var.source_vpc
+  source_vpc                                      = var.source_vpc
 }
 
 module "budgets" {
