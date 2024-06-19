@@ -80,7 +80,7 @@ resource "aws_api_gateway_integration" "primary_aws_integration_tenant_mgmt_api_
   rest_api_id             = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
   type                    = "HTTP_PROXY"
   integration_http_method = "POST"
-  uri                     = "https://${var.primary_aws_backend_nlb_dns_name}"
+  uri                     = "https://${var.aws_integration_tenant_mgmt_api_id}.execute-api.${var.aws_region}.amazonaws.com/${var.stage_name}/tenants"
   connection_type         = "VPC_LINK"
   connection_id           = aws_api_gateway_vpc_link.primary_aws_integration_tenant_mgmt_vpc_link.id
 }
