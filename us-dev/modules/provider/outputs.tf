@@ -78,15 +78,3 @@ output "aws_backend_api_gateway_role_arn" {
   description = "The ARN of the aws_backend_api_gateway_role."
   value       = module.iam.aws_backend_api_gateway_role_arn
 }
-
-########## modules/provider/nlb ##########
-
-output "aws_backend_nlb_dns_name" {
-  description = "DNS name of aws_backend_nlb."
-  value       = module.nlb.aws_backend_nlb_dns_name
-}
-
-output "aws_backend_nlb_arn" {
-  description = "ARN of aws_backend_nlb."
-  value       = module.nlb.aws_backend_nlb_arn
-}
