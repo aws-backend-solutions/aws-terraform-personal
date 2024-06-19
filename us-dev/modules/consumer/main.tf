@@ -56,7 +56,7 @@ module "nlb" {
   primary_aws_backend_security_group4_id = module.vpc.primary_aws_backend_security_group4_id
   primary_aws_backend_subnet_ids = [
     module.vpc.primary_aws_backend_private_subnet1_id,
-    module.vpc.outputs.primary_aws_backend_private_subnet2_id
+    module.vpc.primary_aws_backend_private_subnet2_id
   ]
   primary_aws_backend_vpc_id           = module.vpc.primary_aws_backend_vpc_id
   primary_aws_backend_vpc_endpoint_ips = local.primary_aws_backend_vpc_endpoint_ips
