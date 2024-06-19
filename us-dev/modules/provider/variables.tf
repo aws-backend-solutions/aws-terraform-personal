@@ -14,7 +14,7 @@ variable "environment_tag" {
   description = "Provide which environment this will be deployed. Used for tagging the resources created."
 }
 
-########## modules/spoke/vpc ##########
+########## modules/provider/vpc ##########
 
 variable "vpc_cidr_block" {
   type        = string
@@ -71,7 +71,7 @@ variable "cidr_block_of_vpc_to_peer" {
   description = "CIDR block of the peered VPC to add for routing tables."
 }
 
-########## modules/spoke/sns ##########
+########## modules/provider/sns ##########
 
 variable "recipient_for_budgets" {
   type        = string
@@ -81,4 +81,11 @@ variable "recipient_for_budgets" {
 variable "recipient_for_cloudwatch" {
   type        = string
   description = "The recipient of the cloudwatch alarms when there is an error."
+}
+
+########## modules/provider/nlb ##########
+
+variable "stage_name" {
+  type        = string
+  description = "Stage where this solution will be deployed."
 }

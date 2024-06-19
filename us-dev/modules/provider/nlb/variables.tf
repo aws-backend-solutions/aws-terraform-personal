@@ -13,22 +13,22 @@ variable "environment_tag" {
   description = "Provide which environment this will be deployed. Used for tagging the resources created."
 }
 
-variable "primary_aws_backend_security_group4_id" {
+variable "aws_backend_security_group4_id" {
   type        = string
   description = "Designated security group of primary-aws-backend-nlb in primary-aws-backend-vpc."
 }
 
-variable "primary_aws_backend_subnet_ids" {
+variable "aws_backend_subnet_ids" {
   type        = list(string)
   description = "List of subnet IDs where load balancer will be deployed"
 }
 
-variable "primary_aws_backend_vpc_id" {
+variable "aws_backend_vpc_id" {
   type        = string
   description = "The ID of the primary-aws-backend-vpc."
 }
 
-variable "primary_aws_backend_vpc_endpoint_ips" {
+variable "aws_backend_vpc_endpoint_ips" {
   type        = list(string)
   description = "List of private IP addresses of the VPC endpoint interfaces"
 }

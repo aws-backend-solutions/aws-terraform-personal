@@ -1,4 +1,4 @@
-########## modules/spoke/vpc ##########
+########## modules/provider/vpc ##########
 
 output "aws_backend_vpc_id" {
   description = "The ID of the aws-backend-vpc."
@@ -50,7 +50,12 @@ output "aws_backend_vpc_endpoint_id" {
   value       = module.vpc.aws_backend_vpc_endpoint_id
 }
 
-########## modules/spoke/sns ##########
+output "aws_backend_vpc_endpoint_enis" {
+  description = "List of private IP addresses of the VPC endpoint interfaces"
+  value       = module.vpc.aws_backend_vpc_endpoint_enis
+}
+
+########## modules/provider/sns ##########
 
 output "budget_alert_topic_arn" {
   description = "The ARN of the budget_alert_topic."
@@ -62,7 +67,7 @@ output "cloudwatch_alarm_topic_arn" {
   value       = module.sns.cloudwatch_alarm_topic_arn
 }
 
-########## modules/spoke/iam ##########
+########## modules/provider/iam ##########
 
 output "aws_backend_api_gateway_role_name" {
   description = "The name of the aws_backend_api_gateway_role."
@@ -72,4 +77,16 @@ output "aws_backend_api_gateway_role_name" {
 output "aws_backend_api_gateway_role_arn" {
   description = "The ARN of the aws_backend_api_gateway_role."
   value       = module.iam.aws_backend_api_gateway_role_arn
+}
+
+########## modules/provider/nlb ##########
+
+output "primary_aws_backend_nlb_dns_name" {
+  description = "DNS name of primary_aws_backend_nlb."
+  value       = module.nlb.primary_aws_backend_nlb_dns_name
+}
+
+output "primary_aws_backend_nlb_arn" {
+  description = "ARN of primary_aws_backend_nlb."
+  value       = module.nlb.primary_aws_backend_nlb_arn
 }

@@ -37,6 +37,31 @@ module "vpc" {
   cidr_block_of_vpc_to_peer  = var.cidr_block_of_vpc_to_peer
 }
 
+data "aws_network_interface" "primary_aws_backend_vpc_endpoint_ips" {
+  for_each = toset(module.vpc.primary_aws_backend_vpc_endpoint_enis)
+  id       = each.value
+}
+
+locals {
+  primary_aws_backend_vpc_endpoint_ips = [
+    for eni in data.aws_network_interface.primary_aws_backend_vpc_endpoint_ips : eni.private_ips[0]
+  ]
+}
+
+module "nlb" {
+  source                         = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/provider/nlb"
+  prefix_name                    = var.prefix_name
+  environment_tag                = var.environment_tag
+  aws_backend_security_group4_id = module.vpc.aws_backend_security_group4_id
+  aws_backend_subnet_ids = [
+    module.vpc.aws_backend_private_subnet1_id,
+    module.vpc.aws_backend_private_subnet2_id
+  ]
+  aws_backend_vpc_id           = module.vpc.ws_backend_vpc_id
+  aws_backend_vpc_endpoint_ips = local.aws_backend_vpc_endpoint_ips
+  stage_name                   = var.stage_name
+}
+
 module "sns" {
   source                   = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/provider/sns"
   prefix_name              = var.prefix_name

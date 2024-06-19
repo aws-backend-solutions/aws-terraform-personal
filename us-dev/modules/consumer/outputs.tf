@@ -1,4 +1,4 @@
-########## modules/hub/vpc ##########
+########## modules/consumer/vpc ##########
 
 output "primary_aws_backend_vpc_id" {
   description = "The ID of the primary-aws-backend-vpc."
@@ -53,19 +53,4 @@ output "primary_aws_backend_private_route_table_id" {
 output "primary_aws_backend_vpc_endpoint_id" {
   description = "The ID of primary-aws-backend-api-vpce."
   value       = module.vpc.primary_aws_backend_vpc_endpoint_id
-}
-
-output "primary_aws_backend_vpc_endpoint_enis" {
-  description = "List of private IP addresses of the VPC endpoint interfaces"
-  value       = module.vpc.primary_aws_backend_vpc_endpoint_enis
-}
-
-output "primary_aws_backend_nlb_dns_name" {
-  description = "DNS name of primary_aws_backend_nlb."
-  value       = module.nlb.primary_aws_backend_nlb_dns_name
-}
-
-output "primary_aws_backend_nlb_arn" {
-  description = "ARN of primary_aws_backend_nlb."
-  value       = module.nlb.primary_aws_backend_nlb_arn
 }

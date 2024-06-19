@@ -123,26 +123,6 @@ resource "aws_security_group" "primary_aws_backend_security_group3" {
   }
 }
 
-resource "aws_security_group" "primary_aws_backend_security_group4" {
-  name        = "primary-${var.prefix_name}-sg-4"
-  description = "Enable access to NLB"
-  vpc_id      = aws_vpc.primary_aws_backend_vpc.id
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] 
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
 ##### creation of custom route tables
 
 resource "aws_route_table" "primary_aws_backend_private_route_table" {

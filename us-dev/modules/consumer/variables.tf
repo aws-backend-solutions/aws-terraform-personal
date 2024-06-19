@@ -14,7 +14,7 @@ variable "environment_tag" {
   description = "Provide which environment this will be deployed. Used for tagging the resources created."
 }
 
-########## modules/hub/vpc ##########
+########## modules/consumer/vpc ##########
 
 variable "vpc_cidr_block" {
   type        = string
@@ -76,11 +76,4 @@ variable "peer_vpc_id" {
 variable "peer_vpc_cidr_block" {
   description = "CIDR block of the peer VPC"
   type        = string
-}
-
-########## modules/hub/nlb ##########
-
-variable "stage_name" {
-  type        = string
-  description = "Stage where this solution will be deployed."
 }

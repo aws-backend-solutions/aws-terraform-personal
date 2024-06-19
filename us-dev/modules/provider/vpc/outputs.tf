@@ -52,3 +52,8 @@ output "aws_backend_vpc_endpoint_id" {
   description = "The ID of aws-backend-api-vpce."
   value       = aws_vpc_endpoint.aws_backend_vpc_endpoint.id
 }
+
+output "aws_backend_vpc_endpoint_enis" {
+  description = "List of private IP addresses of the VPC endpoint interfaces"
+  value       = aws_vpc_endpoint.aws_backend_vpc_endpoint.network_interface_ids
+}
