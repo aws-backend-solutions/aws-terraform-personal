@@ -1,7 +1,7 @@
 resource "aws_api_gateway_vpc_link" "primary_aws_integration_tenant_mgmt_vpc_link" {
   name = "${var.prefix_name}-vpc-link"
   target_arns = [
-    aws_lb.primary_aws_integration_tenant_mgmt_nlb.arn
+    var.primary_aws_integration_tenant_mgmt_nlb_arn
   ]
 
   tags = {
