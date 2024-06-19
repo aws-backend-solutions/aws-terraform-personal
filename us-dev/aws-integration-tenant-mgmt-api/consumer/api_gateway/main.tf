@@ -1,3 +1,16 @@
+resource "aws_api_gateway_vpc_link" "primary_aws_integration_tenant_mgmt_vpc_link" {
+  name = "${var.prefix_name}-vpc-link"
+  target_arns = [
+    var.primary_aws_backend_nlb_arn
+  ]
+
+  tags = {
+    Name        = "${var.prefix_name}-vpc-link"
+    CostCenter  = var.cost_center_tag
+    Environment = var.environment_tag
+  }
+}
+
 resource "aws_api_gateway_rest_api" "primary_aws_integration_tenant_mgmt_api" {
   name          = "primary-${var.prefix_name}-api"
   endpoint_configuration {
@@ -30,6 +43,50 @@ resource "aws_api_gateway_rest_api_policy" "primary_api_gateway_policy" {
     ]
   }
 EOF
+}
+
+##### /health
+
+resource "aws_api_gateway_resource" "primary_aws_integration_tenant_mgmt_api_health_resource" {
+  rest_api_id = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
+  parent_id   = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.root_resource_id
+  path_part   = "health"
+}
+
+resource "aws_api_gateway_method" "primary_aws_integration_tenant_mgmt_api_health_method" {
+  rest_api_id   = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
+  resource_id   = aws_api_gateway_resource.primary_aws_integration_tenant_mgmt_api_health_resource.id
+  http_method   = "GET"
+  authorization = "AWS_IAM"
+}
+
+resource "aws_api_gateway_integration" "primary_aws_integration_tenant_mgmt_api_health_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
+  resource_id             = aws_api_gateway_resource.primary_aws_integration_tenant_mgmt_api_health_resource.id
+  http_method             = aws_api_gateway_method.primary_aws_integration_tenant_mgmt_api_health_method.http_method
+  type                    = "MOCK"
+  request_templates       = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_method_response" "primary_aws_integration_tenant_mgmt_api_health_method_response" {
+  rest_api_id = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
+  resource_id = aws_api_gateway_resource.primary_aws_integration_tenant_mgmt_api_health_resource.id
+  http_method = aws_api_gateway_method.primary_aws_integration_tenant_mgmt_api_health_method.http_method
+  status_code = "200"
+}
+
+resource "aws_api_gateway_integration_response" "primary_aws_integration_tenant_mgmt_api_health_integration_response" {
+  rest_api_id = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
+  resource_id = aws_api_gateway_resource.primary_aws_integration_tenant_mgmt_api_health_resource.id
+  http_method = aws_api_gateway_method.primary_aws_integration_tenant_mgmt_api_health_method.http_method
+  status_code = aws_api_gateway_method_response.primary_aws_integration_tenant_mgmt_api_health_method_response.status_code
+  response_templates = {
+    "application/json" = jsonencode({
+      message = "OK"
+    })
+  }
 }
 
 ##### /environment-specific
@@ -69,6 +126,8 @@ resource "aws_api_gateway_integration" "primary_aws_integration_tenant_mgmt_api_
   type                    = "HTTP_PROXY"
   integration_http_method = "POST"
   uri                     = "https://${var.aws_integration_tenant_mgmt_api_id}.execute-api.${var.aws_region}.amazonaws.com/${var.stage_name}/tenants"
+  connection_type         = "VPC_LINK"
+  connection_id           = aws_api_gateway_vpc_link.primary_aws_integration_tenant_mgmt_vpc_link.id
 }
 
 resource "aws_api_gateway_stage" "primary_aws_integration_tenant_mgmt_api_stage" {
@@ -84,7 +143,10 @@ resource "aws_api_gateway_deployment" "primary_aws_integration_tenant_mgmt_api_d
     redeployment = sha1(jsonencode(aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.body))
   }
 
-  depends_on = [aws_api_gateway_integration.primary_aws_integration_tenant_mgmt_api_integration]
+  depends_on = [
+    aws_api_gateway_integration.primary_aws_integration_tenant_mgmt_api_integration,
+    aws_api_gateway_integration.primary_aws_integration_tenant_mgmt_api_health_integration
+  ]
   
   lifecycle {
     create_before_destroy = true
