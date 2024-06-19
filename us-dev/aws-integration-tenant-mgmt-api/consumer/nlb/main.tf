@@ -36,3 +36,14 @@ resource "aws_lb_target_group_attachment" "primary_aws_integration_tenant_mgmt_n
   target_id        = each.value
   port             = 80
 }
+
+resource "aws_lb_listener" "primary_aws_integration_tenant_mgmt_nlb_listener" {
+  load_balancer_arn = aws_lb.primary_aws_integration_tenant_mgmt_nlb.arn
+  port              = 80
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.primary_aws_integration_tenant_mgmt_tg.arn
+  }
+}
