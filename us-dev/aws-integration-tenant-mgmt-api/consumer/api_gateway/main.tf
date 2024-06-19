@@ -1,16 +1,3 @@
-# resource "aws_api_gateway_vpc_link" "primary_aws_integration_tenant_mgmt_vpc_link" {
-#   name = "${var.prefix_name}-vpc-link"
-#   target_arns = [
-#     var.primary_aws_backend_nlb_arn
-#   ]
-
-#   tags = {
-#     Name        = "${var.prefix_name}-vpc-link"
-#     CostCenter  = var.cost_center_tag
-#     Environment = var.environment_tag
-#   }
-# }
-
 resource "aws_api_gateway_rest_api" "primary_aws_integration_tenant_mgmt_api" {
   name          = "primary-${var.prefix_name}-api"
   endpoint_configuration {
@@ -123,11 +110,9 @@ resource "aws_api_gateway_integration" "primary_aws_integration_tenant_mgmt_api_
   http_method             = aws_api_gateway_method.primary_aws_integration_tenant_mgmt_api_method.http_method
   resource_id             = aws_api_gateway_resource.primary_aws_integration_tenant_mgmt_api_resource.id
   rest_api_id             = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
-  type                    = "HTTP_PROXY"
+  type                    = "AWS_PROXY"
   integration_http_method = "POST"
-  uri                     = "https://${var.aws_integration_tenant_mgmt_api_id}.execute-api.${var.aws_region}.amazonaws.com/${var.stage_name}/tenants"
-  # connection_type         = "VPC_LINK"
-  # connection_id           = aws_api_gateway_vpc_link.primary_aws_integration_tenant_mgmt_vpc_link.id
+  uri                     = "arn:aws:lambda:us-west-2:654654411031:function:test" # var.primary_aws_integration_tenant_mgmt_function_invoke_arn
 }
 
 resource "aws_api_gateway_stage" "primary_aws_integration_tenant_mgmt_api_stage" {
