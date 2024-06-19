@@ -40,8 +40,6 @@ module "api_gateway" {
   stage_name                          = var.stage_name
   path_part                           = var.path_part
   primary_aws_backend_vpc_endpoint_id = data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_endpoint_id
-  primary_aws_backend_nlb_dns_name    = data.terraform_remote_state.modules.outputs.primary_aws_backend_nlb_dns_name
-  primary_aws_backend_nlb_arn         = data.terraform_remote_state.modules.outputs.primary_aws_backend_nlb_arn
   aws_integration_tenant_mgmt_api_id  = var.aws_integration_tenant_mgmt_api_id
   aws_account_id                      = data.aws_caller_identity.current.account_id
 }

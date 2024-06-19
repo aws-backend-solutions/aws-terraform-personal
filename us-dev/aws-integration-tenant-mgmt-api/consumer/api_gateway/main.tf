@@ -1,17 +1,3 @@
-resource "aws_api_gateway_vpc_link" "primary_aws_integration_tenant_mgmt_vpc_link" {
-  name = "${var.prefix_name}-vpc-link"
-  target_arns = [
-    var.primary_aws_backend_nlb_arn
-  ]
-
-  tags = {
-    Name        = "${var.prefix_name}-vpc-link"
-    CostCenter  = var.cost_center_tag
-    Environment = var.environment_tag
-  }
-}
-
-
 resource "aws_api_gateway_rest_api" "primary_aws_integration_tenant_mgmt_api" {
   name          = "primary-${var.prefix_name}-api"
   endpoint_configuration {
