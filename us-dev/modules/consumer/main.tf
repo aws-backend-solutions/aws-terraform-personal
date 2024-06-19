@@ -50,7 +50,7 @@ locals {
 }
 
 module "nlb" {
-  source                                 = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/nlb"
+  source                                 = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/consumer/nlb"
   prefix_name                            = var.prefix_name
   environment_tag                        = var.environment_tag
   primary_aws_backend_security_group4_id = module.vpc.primary_aws_backend_security_group4_id
