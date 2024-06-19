@@ -19,7 +19,7 @@ resource "aws_lb_target_group" "primary_aws_backend_tg" {
   target_type = "ip"
 
   health_check {
-    path                = "/ping"
+    path                = "/"
     interval            = 30
     timeout             = 5
     healthy_threshold   = 2
