@@ -59,3 +59,13 @@ output "primary_aws_backend_vpc_endpoint_enis" {
   description = "List of private IP addresses of the VPC endpoint interfaces"
   value       = module.vpc.primary_aws_backend_vpc_endpoint_enis
 }
+
+output "primary_aws_backend_nlb_dns_name" {
+  description = "DNS name of primary_aws_backend_nlb."
+  value       = module.nlb.primary_aws_backend_nlb.dns_name
+}
+
+output "primary_aws_backend_nlb_arn" {
+  description = "ARN of primary_aws_backend_nlb."
+  value       = module.nlb.primary_aws_backend_nlb.arn
+}
