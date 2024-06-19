@@ -60,5 +60,5 @@ module "nlb" {
   ]
   primary_aws_backend_vpc_id           = module.vpc.primary_aws_backend_vpc_id
   primary_aws_backend_vpc_endpoint_ips = local.primary_aws_backend_vpc_endpoint_ips
-  stage_name = var.stage_name
+  stage_name                           = var.stage_name
 }
