@@ -40,8 +40,8 @@ module "nlb" {
     data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet1_id,
     data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet2_id
   ]
-  primary_aws_backend_vpc_id                = data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_id
-  primary_aws_backend_vpc_endpoint_dns_name = data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_endpoint_dns_name
+  primary_aws_backend_vpc_id           = data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_id
+  primary_aws_backend_vpc_endpoint_ips = var.vpc_endpoint_ips
 }
 
 module "api_gateway" {
