@@ -109,8 +109,8 @@ resource "aws_security_group" "primary_aws_backend_security_group3" {
   vpc_id      = aws_vpc.primary_aws_backend_vpc.id
 
   ingress {
-    from_port   = 80
-    to_port     = 80
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"] 
   }
