@@ -55,7 +55,7 @@ output "primary_aws_backend_vpc_endpoint_id" {
   value       = module.vpc.primary_aws_backend_vpc_endpoint_id
 }
 
-output "primary_aws_backend_vpc_endpoint_dns_name" {
-  description = "The DNS of primary-aws-backend-api-vpce."
-  value = module.vpc.primary_aws_backend_vpc_endpoint_dns_name
+output "primary_aws_backend_vpc_endpoint_ips" {
+  description = "List of private IP addresses of the VPC endpoint interfaces"
+  value       = module.vpc.primary_aws_backend_vpc_endpoint.private_ip_address
 }
