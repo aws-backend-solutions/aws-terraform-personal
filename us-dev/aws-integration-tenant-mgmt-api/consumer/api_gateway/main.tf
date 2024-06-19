@@ -1,3 +1,17 @@
+resource "aws_api_gateway_vpc_link" "primary_aws_integration_tenant_mgmt_vpc_link" {
+  name = "${var.prefix_name}-vpc-link"
+  target_arns = [
+    aws_lb.primary_aws_integration_tenant_mgmt_nlb.arn
+  ]
+
+  tags = {
+    Name        = "${var.prefix_name}-vpc-link"
+    CostCenter  = var.cost_center_tag
+    Environment = var.environment_tag
+  }
+}
+
+
 resource "aws_api_gateway_rest_api" "primary_aws_integration_tenant_mgmt_api" {
   name          = "primary-${var.prefix_name}-api"
   endpoint_configuration {
@@ -32,26 +46,6 @@ resource "aws_api_gateway_rest_api_policy" "primary_api_gateway_policy" {
 EOF
 }
 
-resource "aws_api_gateway_deployment" "primary_aws_integration_tenant_mgmt_api_deployment" {
-  rest_api_id = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
-
-  triggers = {
-    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.body))
-  }
-
-  depends_on = [aws_api_gateway_integration.primary_aws_integration_tenant_mgmt_api_integration]
-  
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-resource "aws_api_gateway_stage" "primary_aws_integration_tenant_mgmt_api_stage" {
-  deployment_id = aws_api_gateway_deployment.primary_aws_integration_tenant_mgmt_api_deployment.id
-  rest_api_id   = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
-  stage_name    = var.stage_name
-}
-
 resource "aws_api_gateway_resource" "primary_aws_integration_tenant_mgmt_api_resource" {
   rest_api_id = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
   parent_id   = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.root_resource_id
@@ -80,55 +74,33 @@ resource "aws_api_gateway_method_settings" "primary_aws_integration_tenant_mgmt_
   }
 }
 
-resource "aws_iam_role" "aws_integration_tenant_mgmt_api_invocation_role" {
-  name = "${var.prefix_name}-api-invocation-role"
-
-  assume_role_policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "apigateway.amazonaws.com"
-        },
-        "Action": "sts:AssumeRole"
-      }
-    ]
-  })
-}
-
-resource "aws_iam_policy" "aws_integration_tenant_mgmt_api_invocation_policy" {
-  name        = "${var.prefix_name}-api-invocation-policy"
-  description = "Policy allowing API Gateway in provider account to invoke methods in this API Gateway"
-
-  policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Action": "execute-api:Invoke",
-        "Resource": "arn:aws:execute-api:${var.aws_region}:${var.aws_account_id}:${aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id}/*/*"
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "aws_integration_tenant_mgmt_api_invocation_attachment" {
-  role       = aws_iam_role.aws_integration_tenant_mgmt_api_invocation_role.name
-  policy_arn = aws_iam_policy.aws_integration_tenant_mgmt_api_invocation_policy.arn
-}
-
 resource "aws_api_gateway_integration" "primary_aws_integration_tenant_mgmt_api_integration" {
   http_method             = aws_api_gateway_method.primary_aws_integration_tenant_mgmt_api_method.http_method
   resource_id             = aws_api_gateway_resource.primary_aws_integration_tenant_mgmt_api_resource.id
   rest_api_id             = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
   type                    = "HTTP_PROXY"
   integration_http_method = "POST"
-  uri                     = "https://${var.aws_integration_tenant_mgmt_api_id}.execute-api.${var.aws_region}.amazonaws.com/${var.stage_name}/${var.path_part}"
+  uri                     = var.primary_aws_integration_tenant_mgmt_nlb_dns_name
+  connection_type         = "VPC_LINK"
+  connection_id           = aws_api_gateway_vpc_link.primary_aws_integration_tenant_mgmt_vpc_link.id
+}
 
-#   request_parameters = {
-#     "integration.request.header.X-Amz-Source-Account" = "${var.aws_account_id}"
-#   }
+resource "aws_api_gateway_stage" "primary_aws_integration_tenant_mgmt_api_stage" {
+  deployment_id = aws_api_gateway_deployment.primary_aws_integration_tenant_mgmt_api_deployment.id
+  rest_api_id   = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
+  stage_name    = var.stage_name
+}
 
-  credentials = aws_iam_role.aws_integration_tenant_mgmt_api_invocation_role.arn
+resource "aws_api_gateway_deployment" "primary_aws_integration_tenant_mgmt_api_deployment" {
+  rest_api_id = aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.id
+
+  triggers = {
+    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.primary_aws_integration_tenant_mgmt_api.body))
+  }
+
+  depends_on = [aws_api_gateway_integration.primary_aws_integration_tenant_mgmt_api_integration]
+  
+  lifecycle {
+    create_before_destroy = true
+  }
 }
