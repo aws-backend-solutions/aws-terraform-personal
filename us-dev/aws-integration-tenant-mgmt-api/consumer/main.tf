@@ -31,30 +31,6 @@ data "terraform_remote_state" "modules" {
 
 data "aws_caller_identity" "current" {}
 
-data "aws_network_interface" "primary_aws_backend_vpc_endpoint_ips" {
-  for_each = toset(data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_endpoint_enis)
-  id       = each.value
-}
-
-locals {
-  primary_aws_backend_vpc_endpoint_ips = [
-    for eni in data.aws_network_interface.primary_aws_backend_vpc_endpoint_ips : eni.private_ips[0]
-  ]
-}
-
-module "nlb" {
-  source                                 = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/nlb"
-  prefix_name                            = var.prefix_name
-  environment_tag                        = var.environment_tag
-  primary_aws_backend_security_group4_id = data.terraform_remote_state.modules.outputs.primary_aws_backend_security_group4_id
-  primary_aws_backend_subnet_ids = [
-    data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet1_id,
-    data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet2_id
-  ]
-  primary_aws_backend_vpc_id           = data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_id
-  primary_aws_backend_vpc_endpoint_ips = local.primary_aws_backend_vpc_endpoint_ips
-}
-
 module "api_gateway" {
   source                                           = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/api_gateway"
   prefix_name                                      = var.prefix_name
@@ -64,8 +40,8 @@ module "api_gateway" {
   stage_name                                       = var.stage_name
   path_part                                        = var.path_part
   primary_aws_backend_vpc_endpoint_id              = data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_endpoint_id
-  primary_aws_integration_tenant_mgmt_nlb_dns_name = module.nlb.primary_aws_integration_tenant_mgmt_nlb_dns_name
-  primary_aws_integration_tenant_mgmt_nlb_arn      = module.nlb.primary_aws_integration_tenant_mgmt_nlb_arn
+  primary_aws_integration_tenant_mgmt_nlb_dns_name = data.terraform_remote_state.modules.outputs.primary_aws_integration_tenant_mgmt_nlb_dns_name
+  primary_aws_integration_tenant_mgmt_nlb_arn      = data.terraform_remote_state.modules.outputs.primary_aws_integration_tenant_mgmt_nlb_arn
   aws_integration_tenant_mgmt_api_id               = var.aws_integration_tenant_mgmt_api_id
   aws_account_id                                   = data.aws_caller_identity.current.account_id
 }

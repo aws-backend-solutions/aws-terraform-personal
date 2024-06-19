@@ -37,3 +37,27 @@ module "vpc" {
   peer_vpc_id                = var.peer_vpc_id
   peer_vpc_cidr_block        = var.peer_vpc_cidr_block
 }
+
+data "aws_network_interface" "primary_aws_backend_vpc_endpoint_ips" {
+  for_each = toset(module.vpc.primary_aws_backend_vpc_endpoint_enis)
+  id       = each.value
+}
+
+locals {
+  primary_aws_backend_vpc_endpoint_ips = [
+    for eni in data.aws_network_interface.primary_aws_backend_vpc_endpoint_ips : eni.private_ips[0]
+  ]
+}
+
+module "nlb" {
+  source                                 = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/nlb"
+  prefix_name                            = var.prefix_name
+  environment_tag                        = var.environment_tag
+  primary_aws_backend_security_group4_id = data.terraform_remote_state.modules.outputs.primary_aws_backend_security_group4_id
+  primary_aws_backend_subnet_ids = [
+    data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet1_id,
+    data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet2_id
+  ]
+  primary_aws_backend_vpc_id           = data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_id
+  primary_aws_backend_vpc_endpoint_ips = local.primary_aws_backend_vpc_endpoint_ips
+}
