@@ -31,28 +31,51 @@ resource "aws_api_gateway_rest_api_policy" "api_gateway_policy" {
 EOF
 }
 
-resource "aws_api_gateway_deployment" "aws_integration_tenant_mgmt_api_deployment" {
+##### /health
+
+resource "aws_api_gateway_resource" "aws_integration_tenant_mgmt_api_health_resource" {
   rest_api_id = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
-
-  triggers = {
-    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.body))
-  }
-
-  variables = {
-    "version" = timestamp()
-  }
-
-  depends_on = [aws_api_gateway_integration.aws_integration_tenant_mgmt_api_integration]
-  lifecycle {
-    create_before_destroy = true
-  }
+  parent_id   = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.root_resource_id
+  path_part   = "health"
 }
 
-resource "aws_api_gateway_stage" "aws_integration_tenant_mgmt_api_stage" {
-  deployment_id = aws_api_gateway_deployment.aws_integration_tenant_mgmt_api_deployment.id
+resource "aws_api_gateway_method" "aws_integration_tenant_mgmt_api_health_method" {
   rest_api_id   = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
-  stage_name    = var.stage_name
+  resource_id   = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_health_resource.id
+  http_method   = "GET"
+  authorization = "AWS_IAM"
 }
+
+resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_health_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
+  resource_id             = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_health_resource.id
+  http_method             = aws_api_gateway_method.aws_integration_tenant_mgmt_api_health_method.http_method
+  type                    = "MOCK"
+  request_templates       = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_method_response" "aws_integration_tenant_mgmt_api_health_method_response" {
+  rest_api_id = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
+  resource_id = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_health_resource.id
+  http_method = aws_api_gateway_method.aws_integration_tenant_mgmt_api_health_method.http_method
+  status_code = "200"
+}
+
+resource "aws_api_gateway_integration_response" "aws_integration_tenant_mgmt_api_health_integration_response" {
+  rest_api_id = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
+  resource_id = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_health_resource.id
+  http_method = aws_api_gateway_method.aws_integration_tenant_mgmt_api_health_method.http_method
+  status_code = aws_api_gateway_method_response.aws_integration_tenant_mgmt_api_health_method_response.status_code
+  response_templates = {
+    "application/json" = jsonencode({
+      message = "OK"
+    })
+  }
+}
+
+##### /environment-specific
 
 resource "aws_api_gateway_resource" "aws_integration_tenant_mgmt_api_resource" {
   rest_api_id = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
@@ -89,4 +112,27 @@ resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_integrat
   type                    = "AWS_PROXY"
   integration_http_method = "POST"
   uri                     = var.aws_integration_tenant_mgmt_function_invoke_arn
+}
+
+resource "aws_api_gateway_stage" "aws_integration_tenant_mgmt_api_stage" {
+  deployment_id = aws_api_gateway_deployment.aws_integration_tenant_mgmt_api_deployment.id
+  rest_api_id   = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
+  stage_name    = var.stage_name
+}
+
+resource "aws_api_gateway_deployment" "aws_integration_tenant_mgmt_api_deployment" {
+  rest_api_id = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
+
+  triggers = {
+    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.body))
+  }
+
+  depends_on = [
+    aws_api_gateway_integration.aws_integration_tenant_mgmt_api_integration,
+    aws_api_gateway_integration.aws_integration_tenant_mgmt_api_health_integration
+  ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
