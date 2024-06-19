@@ -38,11 +38,6 @@ output "primary_aws_backend_security_group3_id" {
   value       = aws_security_group.primary_aws_backend_security_group3.id
 }
 
-output "primary_aws_backend_security_group4_id" {
-  description = "The ID of the AwsBackendSecurityGroup4."
-  value       = aws_security_group.primary_aws_backend_security_group4.id
-}
-
 output "primary_aws_backend_private_route_table_id" {
   description = "The ID of private route table."
   value       = aws_route_table.primary_aws_backend_private_route_table.id
