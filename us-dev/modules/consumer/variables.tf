@@ -77,10 +77,3 @@ variable "peer_vpc_cidr_block" {
   description = "CIDR block of the peer VPC"
   type        = string
 }
-
-########## modules/consumer/nlb ##########
-
-variable "stage_name" {
-  type        = string
-  description = "Stage where this solution will be deployed."
-}
