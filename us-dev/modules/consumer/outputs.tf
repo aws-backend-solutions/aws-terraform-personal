@@ -57,5 +57,5 @@ output "primary_aws_backend_vpc_endpoint_id" {
 
 output "primary_aws_backend_vpc_endpoint_ips" {
   description = "List of private IP addresses of the VPC endpoint interfaces"
-  value       = module.vpc.primary_aws_backend_vpc_endpoint.private_ip_address
+  value       = module.vpc.primary_aws_backend_vpc_endpoint_ips
 }
