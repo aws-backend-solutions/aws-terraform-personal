@@ -37,3 +37,12 @@ module "vpc" {
   peer_vpc_id                = var.peer_vpc_id
   peer_vpc_cidr_block        = var.peer_vpc_cidr_block
 }
+
+module "api_gateway" {
+  source                              = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/consumer/api_gateway"
+  prefix_name                         = var.prefix_name
+  aws_region                          = var.aws_region
+  environment_tag                     = var.environment_tag
+  project_tag                         = var.project_tag
+  primary_aws_backend_vpc_endpoint_id = module.vpc.primary_aws_backend_vpc_endpoint_id
+}
