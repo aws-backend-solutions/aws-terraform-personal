@@ -23,6 +23,12 @@ variable "project_tag" {
   description = "Provide the repository name. Used for tagging the resources created."
 }
 
+variable "lambda_function_name" {
+  type        = string
+  description = "Lambda's function name."
+  default     = "function"
+}
+
 variable "stage_name" {
   type        = string
   description = "Stage where this solution will be deployed."
@@ -33,33 +39,22 @@ variable "path_part" {
   description = "Path part of the API endpoint."
 }
 
-variable "primary_aws_backend_vpc_endpoint_id" {
+variable "primary_aws_backend_private_subnet1_id" {
   type        = string
-  description = "The ID of the primary AwsBackendVpcEndpoint."
+  description = "The ID of the primary-aws-backend-private-subnet-1."
+}
+
+variable "primary_aws_backend_private_subnet2_id" {
+  type        = string
+  description = "The ID of the primary-aws-backend-private-subnet-2."
+}
+
+variable "primary_aws_backend_security_group2_id" {
+  type        = string
+  description = "Designated security group of lambdas in primary-aws-backend-vpc."
 }
 
 variable "aws_integration_tenant_mgmt_api_id" {
   type        = string
   description = "ID for aws-integration-tenant-mgmt-api"
-}
-
-variable "aws_account_id" {
-  type        = string
-  description = "AWS Account ID where this solution will be deployed."
-}
-
-variable "primary_aws_integration_tenant_mgmt_api_id" {
-  description = "ID for primary_aws-integration-tenant-mgmt-api"
-}
-
-variable "primary_aws_integration_tenant_mgmt_api_root_resource_id" {
-  description = "Root resource ID for primary_aws-integration-tenant-mgmt-api"
-}
-
-variable "primary_aws_integration_tenant_mgmt_api_body" {
-  description = "Body of primary_aws-integration-tenant-mgmt-api"
-}
-
-variable "aws_integration_tenant_mgmt_function_us_staging_invoke_arn" {
-  description = "Body of primary_aws-integration-tenant-mgmt-api"
 }

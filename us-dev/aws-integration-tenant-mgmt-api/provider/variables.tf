@@ -19,12 +19,12 @@ variable "project_tag" {
   description = "Provide the repository name. Used for tagging the resources created."
 }
 
-########## aws-integration-tenant-mgmt-api/spoke/lambda ##########
+########## aws-integration-tenant-mgmt-api/provider/lambda ##########
 
 variable "lambda_function_name" {
   type        = string
   description = "Lambda's function name."
-  default     = "aws-integration-tenant-mgmt-function"
+  default     = "function"
 }
 
 # db variables
@@ -136,7 +136,7 @@ variable "api_endpoint" {
   description = "API endpoint to trigger the tenant creation."
 }
 
-########## aws-integration-tenant-mgmt-api/spoke/api_gateway ##########
+########## aws-integration-tenant-mgmt-api/provider/api_gateway ##########
 
 variable "stage_name" {
   type        = string
@@ -153,7 +153,7 @@ variable "source_vpc" {
   description = "ID of the VPC where the request will be coming from."
 }
 
-########## aws-integration-tenant-mgmt-api/spoke/budgets ##########
+########## aws-integration-tenant-mgmt-api/provider/budgets ##########
 
 variable "lambda_budget_limit_amount" {
   type        = string

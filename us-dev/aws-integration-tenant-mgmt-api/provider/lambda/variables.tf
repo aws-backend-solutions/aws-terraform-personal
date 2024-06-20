@@ -135,12 +135,12 @@ variable "api_endpoint" {
 
 variable "aws_backend_private_subnet1_id" {
   type        = string
-  description = "Designated CIDR block of aws-backend-private-subnet-1 to be created."
+  description = "The ID of the primary-aws-backend-private-subnet-1."
 }
 
 variable "aws_backend_private_subnet2_id" {
   type        = string
-  description = "Designated CIDR block of aws-backend-private-subnet-2 to be created."
+  description = "The ID of the primary-aws-backend-private-subnet-2."
 }
 
 variable "aws_backend_security_group2_id" {

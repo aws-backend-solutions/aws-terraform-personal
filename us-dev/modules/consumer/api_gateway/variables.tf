@@ -1,5 +1,3 @@
-########## common variables ##########
-
 variable "prefix_name" {
   type = string
 }
@@ -7,6 +5,12 @@ variable "prefix_name" {
 variable "aws_region" {
   type        = string
   description = "Designated AWS_REGION where this solution will be deployed."
+}
+
+variable "cost_center_tag" {
+  type        = string
+  description = "Used for tagging the resources created."
+  default     = "AWSDevAccount"
 }
 
 variable "environment_tag" {
@@ -19,19 +23,7 @@ variable "project_tag" {
   description = "Provide the repository name. Used for tagging the resources created."
 }
 
-########## aws-integration-tenant-mgmt-api/consumer/api_gateway ##########
-
-variable "stage_name" {
+variable "primary_aws_backend_vpc_endpoint_id" {
   type        = string
-  description = "Stage where this solution will be deployed."
-}
-
-variable "path_part" {
-  type        = string
-  description = "Path part of the API endpoint."
-}
-
-variable "aws_integration_tenant_mgmt_api_id" {
-  type        = string
-  description = "ID for aws-integration-tenant-mgmt-api"
+  description = "The ID of the primary AwsBackendVpcEndpoint."
 }

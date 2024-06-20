@@ -37,13 +37,13 @@ resource "aws_iam_role" "aws_integration_tenant_mgmt_function_role" {
 }
 
 resource "aws_lambda_function" "aws_integration_tenant_mgmt_function" {
-  function_name    = var.lambda_function_name
+  function_name    = "${var.prefix_name}-${var.lambda_function_name}"
   description      = "Lambda function that creates tenant from oregon to frankfurt and vice versa."
   handler          = "app.lambda_handler"
   runtime          = "python3.9"
   timeout          = 60
   role             = aws_iam_role.aws_integration_tenant_mgmt_function_role.arn
-  filename         = "${path.module}/code/${var.lambda_function_name}.zip"
+  filename         = "${path.module}/code/${var.prefix_name}-${var.lambda_function_name}.zip"
 
   environment {
     variables = {
