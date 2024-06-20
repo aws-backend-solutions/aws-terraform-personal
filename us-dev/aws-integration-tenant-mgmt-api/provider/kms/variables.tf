@@ -17,3 +17,8 @@ variable "project_tag" {
   type        = string
   description = "Provide the repository name. Used for tagging the resources created."
 }
+
+variable "aws_region" {
+  type        = string
+  description = "Designated AWS_REGION where this solution will be deployed."
+}

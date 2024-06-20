@@ -34,11 +34,13 @@ module "kms" {
   prefix_name     = var.prefix_name
   environment_tag = var.environment_tag
   project_tag     = var.project_tag
+  aws_region      = var.aws_region
 }
 
 module "lambda" {
   source                                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/provider/lambda"
   prefix_name                                = var.prefix_name
+  aws_region                                 = var.aws_region
   environment_tag                            = var.environment_tag
   project_tag                                = var.project_tag
   lambda_function_name                       = var.lambda_function_name

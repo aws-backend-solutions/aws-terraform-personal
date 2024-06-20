@@ -38,7 +38,7 @@ resource "aws_kms_key" "aws_integration_tenant_mgmt_kms_key" {
   })
 
   tags = {
-    Name        = "${var.prefix_name}-kms-key"
+    Name        = "${var.prefix_name}-${var.aws_region}-kms-key"
     CostCenter  = "${var.cost_center_tag}"
     Environment = "${var.environment_tag}"
     Project     = "${var.project_tag}"
@@ -52,7 +52,7 @@ resource "aws_kms_alias" "aws_integration_tenant_mgmt_kms_alias" {
 }
 
 resource "aws_iam_role" "aws_integration_tenant_mgmt_kms_role" {
-  name = "${var.prefix_name}-kms-role"
+  name = "${var.prefix_name}-${var.aws_region}-kms-role"
   
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
@@ -69,7 +69,7 @@ resource "aws_iam_role" "aws_integration_tenant_mgmt_kms_role" {
 }
 
 resource "aws_iam_policy" "aws_integration_tenant_mgmt_kms_policy" {
-  name        = "${var.prefix_name}-kms-policy"
+  name        = "${var.prefix_name}-${var.aws_region}-kms-policy"
   description = "Policy for accessing KMS encryption/decryption"
   depends_on = [ aws_kms_key.aws_integration_tenant_mgmt_kms_key ]
   
@@ -92,7 +92,7 @@ resource "aws_iam_policy" "aws_integration_tenant_mgmt_kms_policy" {
 }
 
 resource "aws_iam_policy_attachment" "aws_integration_tenant_mgmt_kms_policy_attachment" {
-  name       = "${var.prefix_name}-kms-policy-attachment"
+  name       = "${var.prefix_name}-${var.aws_region}-kms-policy-attachment"
   roles      = [aws_iam_role.aws_integration_tenant_mgmt_kms_role.name]
   policy_arn = aws_iam_policy.aws_integration_tenant_mgmt_kms_policy.arn
 }

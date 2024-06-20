@@ -1,5 +1,5 @@
 resource "aws_iam_role" "aws_integration_tenant_mgmt_function_role" {
-  name = "${var.prefix_name}-function-role"
+  name = "${var.prefix_name}-${var.aws_region}-function-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -20,7 +20,7 @@ resource "aws_iam_role" "aws_integration_tenant_mgmt_function_role" {
   ]
 
   inline_policy {
-    name = "${var.prefix_name}-secrets-manager-policy"
+    name = "${var.prefix_name}-${var.aws_region}-secrets-manager-policy"
     policy = jsonencode({
       Version = "2012-10-17"
       Statement = [

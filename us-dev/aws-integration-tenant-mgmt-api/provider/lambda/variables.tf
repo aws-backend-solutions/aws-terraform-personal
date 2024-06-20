@@ -2,6 +2,11 @@ variable "prefix_name" {
   type = string
 }
 
+variable "aws_region" {
+  type        = string
+  description = "Designated AWS_REGION where this solution will be deployed."
+}
+
 variable "cost_center_tag" {
   type        = string
   description = "Used for tagging the resources created."
