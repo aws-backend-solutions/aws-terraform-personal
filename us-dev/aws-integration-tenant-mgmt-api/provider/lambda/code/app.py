@@ -18,8 +18,8 @@ from Crypto.Hash import SHA256
 from botocore.exceptions import ClientError
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
+logger.setLevel("INFO")
 
 def lambda_handler(event, context):
     try:
