@@ -224,21 +224,40 @@ resource "aws_route" "primary_aws_backend_ng_route" {
   nat_gateway_id         = aws_nat_gateway.primary_aws_backend_nat_gateway.id
 }
 
-##### vpc peering with a different aws account
+##### vpc peering with a different aws account - /us-staging
 
-# resource "aws_vpc_peering_connection" "primary_aws_backend_peering_connection" {
-#   vpc_id      = aws_vpc.primary_aws_backend_vpc.id
-#   peer_vpc_id   = var.peer_vpc_id
-#   peer_owner_id = var.peer_aws_account_id
-#   auto_accept   = false
+resource "aws_vpc_peering_connection" "primary_aws_backend_peering_connection" {
+  vpc_id      = aws_vpc.primary_aws_backend_vpc.id
+  peer_vpc_id   = var.us_staging_peer_vpc_id
+  peer_owner_id = var.us_staging_peer_aws_account_id
+  auto_accept   = false
 
-#   tags = {
-#     Name = "primary-${var.prefix_name}-vpc-peering"
-#   }
-# }
+  tags = {
+    Name = "primary-${var.prefix_name}-us-staging-vpc-peering"
+  }
+}
 
-# resource "aws_route" "primary_aws_backend_route" {
-#   route_table_id            = aws_route_table.primary_aws_backend_private_route_table.id
-#   destination_cidr_block    = var.peer_vpc_cidr_block
-#   vpc_peering_connection_id = aws_vpc_peering_connection.primary_aws_backend_peering_connection.id
-# }
+resource "aws_route" "primary_aws_backend_route" {
+  route_table_id            = aws_route_table.primary_aws_backend_private_route_table.id
+  destination_cidr_block    = var.us_staging_peer_vpc_cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.primary_aws_backend_peering_connection.id
+}
+
+##### vpc peering with a different aws account - /eu-staging
+
+resource "aws_vpc_peering_connection" "primary_aws_backend_peering_connection" {
+  vpc_id      = aws_vpc.primary_aws_backend_vpc.id
+  peer_vpc_id   = var.eu_staging_peer_vpc_id
+  peer_owner_id = var.eu_staging_peer_aws_account_id
+  auto_accept   = false
+
+  tags = {
+    Name = "primary-${var.prefix_name}-eu-staging-vpc-peering"
+  }
+}
+
+resource "aws_route" "primary_aws_backend_route" {
+  route_table_id            = aws_route_table.primary_aws_backend_private_route_table.id
+  destination_cidr_block    = var.eu_staging_peer_vpc_cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.primary_aws_backend_peering_connection.id
+}

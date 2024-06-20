@@ -63,19 +63,36 @@ variable "public_subnet2_az" {
   description = "Designated availability zone of aws-backend-public-subnet-2 to be created."
 }
 
-# these are for the vpc from another account
+##### vpc peering with a different aws account - /us-staging
 
-# variable "peer_aws_account_id" {
-#   description = "AWS Account ID of the peer VPC"
-#   type        = string
-# }
+variable "us_staging_peer_aws_account_id" {
+  description = "AWS Account ID of the peer VPC"
+  type        = string
+}
 
-# variable "peer_vpc_id" {
-#   description = "VPC ID of the peer VPC"
-#   type        = string
-# }
+variable "us_staging_peer_vpc_id" {
+  description = "VPC ID of the peer VPC"
+  type        = string
+}
 
-# variable "peer_vpc_cidr_block" {
-#   description = "CIDR block of the peer VPC"
-#   type        = string
-# }
+variable "us_staging_peer_vpc_cidr_block" {
+  description = "CIDR block of the peer VPC"
+  type        = string
+}
+
+##### vpc peering with a different aws account - /eu-staging
+
+variable "eu_staging_peer_aws_account_id" {
+  description = "AWS Account ID of the peer VPC"
+  type        = string
+}
+
+variable "eu_staging_peer_vpc_id" {
+  description = "VPC ID of the peer VPC"
+  type        = string
+}
+
+variable "eu_staging_peer_vpc_cidr_block" {
+  description = "CIDR block of the peer VPC"
+  type        = string
+}
