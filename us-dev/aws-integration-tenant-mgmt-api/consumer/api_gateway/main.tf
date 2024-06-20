@@ -98,7 +98,7 @@ resource "aws_api_gateway_integration_response" "aws_integration_tenant_mgmt_api
 resource "aws_api_gateway_resource" "aws_integration_tenant_mgmt_api_us_staging_resource" {
   rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
   parent_id   = var.primary_aws_integration_tenant_mgmt_api_root_resource_id
-  path_part   = var.path_part
+  path_part   = var.us_staging_path_part
 }
 
 resource "aws_api_gateway_method" "aws_integration_tenant_mgmt_api_us_staging_method" {
@@ -137,7 +137,7 @@ resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_us_stagi
 resource "aws_api_gateway_resource" "aws_integration_tenant_mgmt_api_eu_staging_resource" {
   rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
   parent_id   = var.primary_aws_integration_tenant_mgmt_api_root_resource_id
-  path_part   = var.path_part
+  path_part   = var.eu_staging_path_part
 }
 
 resource "aws_api_gateway_method" "aws_integration_tenant_mgmt_api_eu_staging_method" {

@@ -28,11 +28,6 @@ variable "stage_name" {
   description = "Stage where this solution will be deployed."
 }
 
-variable "path_part" {
-  type        = string
-  description = "Path part of the API endpoint."
-}
-
 variable "primary_aws_backend_vpc_endpoint_id" {
   type        = string
   description = "The ID of the primary AwsBackendVpcEndpoint."
