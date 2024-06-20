@@ -249,6 +249,7 @@ resource "aws_vpc_peering_connection" "primary_aws_backend_eu_staging_peering_co
   vpc_id      = aws_vpc.primary_aws_backend_vpc.id
   peer_vpc_id   = var.eu_staging_peer_vpc_id
   peer_owner_id = var.eu_staging_peer_aws_account_id
+  peer_region = "eu-central-1"
   auto_accept   = false
 
   tags = {
