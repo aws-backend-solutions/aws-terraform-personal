@@ -39,8 +39,8 @@ module "lambda" {
   primary_aws_backend_private_subnet1_id                     = data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet1_id
   primary_aws_backend_private_subnet2_id                     = data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet2_id
   primary_aws_backend_security_group2_id                     = data.terraform_remote_state.modules.outputs.primary_aws_backend_security_group2_id
+  us_staging_path_part                                       = var.us_staging_path_part
   us_staging_aws_integration_tenant_mgmt_api_id              = var.us_staging_aws_integration_tenant_mgmt_api_id
-  aws_integration_tenant_mgmt_function_us_staging_invoke_arn = module.lambda.aws_integration_tenant_mgmt_function_us_staging_invoke_arn
   eu_staging_path_part                                       = var.eu_staging_path_part
   eu_staging_aws_integration_tenant_mgmt_api_id              = var.eu_staging_aws_integration_tenant_mgmt_api_id
 }
