@@ -65,17 +65,17 @@ variable "public_subnet2_az" {
 
 # these are for the vpc from another account
 
-variable "peer_aws_account_id" {
-  description = "AWS Account ID of the peer VPC"
-  type        = string
-}
+# variable "peer_aws_account_id" {
+#   description = "AWS Account ID of the peer VPC"
+#   type        = string
+# }
 
-variable "peer_vpc_id" {
-  description = "VPC ID of the peer VPC"
-  type        = string
-}
+# variable "peer_vpc_id" {
+#   description = "VPC ID of the peer VPC"
+#   type        = string
+# }
 
-variable "peer_vpc_cidr_block" {
-  description = "CIDR block of the peer VPC"
-  type        = string
-}
+# variable "peer_vpc_cidr_block" {
+#   description = "CIDR block of the peer VPC"
+#   type        = string
+# }

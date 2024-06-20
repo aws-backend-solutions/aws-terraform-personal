@@ -33,9 +33,9 @@ module "vpc" {
   public_subnet1_az          = var.public_subnet1_az
   public_subnet2_az          = var.public_subnet2_az
   environment_tag            = var.environment_tag
-  peer_aws_account_id        = var.peer_aws_account_id
-  peer_vpc_id                = var.peer_vpc_id
-  peer_vpc_cidr_block        = var.peer_vpc_cidr_block
+  # peer_aws_account_id        = var.peer_aws_account_id
+  # peer_vpc_id                = var.peer_vpc_id
+  # peer_vpc_cidr_block        = var.peer_vpc_cidr_block
 }
 
 module "api_gateway" {
