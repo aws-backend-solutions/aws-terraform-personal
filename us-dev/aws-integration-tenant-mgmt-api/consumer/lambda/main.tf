@@ -35,7 +35,6 @@ resource "aws_lambda_function" "aws_integration_tenant_mgmt_function_us_staging"
       api_id     = var.us_staging_aws_integration_tenant_mgmt_api_id
       stage_name = var.stage_name
       path_part  = var.us_staging_path_part
-      aws_region = var.aws_region
     }
   }
 
@@ -83,7 +82,6 @@ resource "aws_lambda_function" "aws_integration_tenant_mgmt_function_eu_staging"
       api_id     = var.eu_staging_aws_integration_tenant_mgmt_api_id
       stage_name = var.stage_name
       path_part  = var.eu_staging_path_part
-      aws_region = var.aws_region
     }
   }
 

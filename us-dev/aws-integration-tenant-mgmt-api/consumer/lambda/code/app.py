@@ -10,7 +10,18 @@ logger.setLevel("INFO")
 def lambda_handler(event, context):
     print(event)
 
-    private_api_url = "https://"+os.environ['api_id']+".execute-api."+os.environ['aws_region']+".amazonaws.com/"+os.environ['stage_name']+"/tenants"
+    aws_region = None
+    if 'us-' in os.environ['path_part']:
+        aws_region = "us-west-2"
+    elif 'eu-' in os.environ['path_part']:
+        aws_region = "eu-central-1"
+    else:
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"error": "Invalid path_part provided during the configuration."}),
+        }
+
+    private_api_url = "https://"+os.environ['api_id']+".execute-api."+aws_region+".amazonaws.com/"+os.environ['stage_name']+"/tenants"
     logger.info(f"Private API URL: {private_api_url}")
 
     payload = event['body']
@@ -31,5 +42,5 @@ def lambda_handler(event, context):
         
         return {
             "statusCode": 500,
-            "body": json.dumps({"message": str(e)}),
+            "body": json.dumps({"error": str(e)}),
         }

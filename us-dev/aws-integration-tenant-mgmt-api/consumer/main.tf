@@ -32,7 +32,6 @@ data "terraform_remote_state" "modules" {
 module "lambda" {
   source                                                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/lambda"
   prefix_name                                                = var.prefix_name
-  aws_region                                                 = var.aws_region
   environment_tag                                            = var.environment_tag
   project_tag                                                = var.project_tag
   stage_name                                                 = var.stage_name
@@ -50,7 +49,6 @@ data "aws_caller_identity" "current" {}
 module "api_gateway" {
   source                                                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/api_gateway"
   prefix_name                                                = var.prefix_name
-  aws_region                                                 = var.aws_region
   environment_tag                                            = var.environment_tag
   project_tag                                                = var.project_tag
   stage_name                                                 = var.stage_name
