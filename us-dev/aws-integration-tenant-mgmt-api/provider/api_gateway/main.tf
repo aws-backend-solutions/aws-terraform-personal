@@ -133,10 +133,6 @@ resource "aws_api_gateway_stage" "aws_integration_tenant_mgmt_api_stage" {
 resource "aws_api_gateway_deployment" "aws_integration_tenant_mgmt_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
 
-  triggers = {
-    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.body))
-  }
-
   depends_on = [
     aws_api_gateway_integration.aws_integration_tenant_mgmt_api_integration,
     aws_api_gateway_integration.aws_integration_tenant_mgmt_api_health_integration
