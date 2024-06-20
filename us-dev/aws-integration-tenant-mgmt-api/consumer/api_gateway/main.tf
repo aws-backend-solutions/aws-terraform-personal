@@ -1,5 +1,5 @@
 resource "aws_iam_policy" "aws_integration_tenant_mgmt_api_policy" {
-  name        = "${prefix_name}-api-policy"
+  name        = "${var.prefix_name}-api-policy"
   description = "Policy to allow invoking the API Gateway and VPC read-only access"
   
   policy = jsonencode({
@@ -27,7 +27,7 @@ resource "aws_iam_policy" "aws_integration_tenant_mgmt_api_policy" {
 }
 
 resource "aws_iam_role" "aws_integration_tenant_mgmt_api_role" {
-  name = "${prefix_name}-api-role"
+  name = "${var.prefix_name}-api-role"
   
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
