@@ -49,17 +49,21 @@ variable "aws_account_id" {
 }
 
 variable "primary_aws_integration_tenant_mgmt_api_id" {
-  description = "ID for primary_aws-integration-tenant-mgmt-api"
+  type        = string
+  description = "ID for primary-aws-integration-tenant-mgmt-api"
 }
 
 variable "primary_aws_integration_tenant_mgmt_api_root_resource_id" {
-  description = "Root resource ID for primary_aws-integration-tenant-mgmt-api"
+  type        = string
+  description = "Root resource ID for primary-aws-integration-tenant-mgmt-api"
 }
 
 variable "primary_aws_integration_tenant_mgmt_api_body" {
-  description = "Body of primary_aws-integration-tenant-mgmt-api"
+  type        = string
+  description = "Body of primary-aws-integration-tenant-mgmt-api"
 }
 
 variable "aws_integration_tenant_mgmt_function_us_staging_invoke_arn" {
-  description = "Body of primary_aws-integration-tenant-mgmt-api"
+  type        = string
+  description = "The Invoke ARN of the underlying Lambda function in us-staging."
 }
