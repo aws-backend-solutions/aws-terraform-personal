@@ -90,10 +90,6 @@ resource "aws_api_gateway_stage" "primary_aws_integration_tenant_mgmt_api_stage"
 resource "aws_api_gateway_deployment" "primary_aws_integration_tenant_mgmt_api_deployment" {
   rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
 
-  triggers = {
-    redeployment = sha1(jsonencode(var.primary_aws_integration_tenant_mgmt_api_body))
-  }
-
   depends_on = [
     aws_api_gateway_integration.aws_integration_tenant_mgmt_api_us_staging_integration,
     aws_api_gateway_integration.aws_integration_tenant_mgmt_api_health_integration
