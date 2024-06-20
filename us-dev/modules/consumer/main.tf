@@ -43,6 +43,5 @@ module "api_gateway" {
   prefix_name                         = var.prefix_name
   aws_region                          = var.aws_region
   environment_tag                     = var.environment_tag
-  project_tag                         = var.project_tag
   primary_aws_backend_vpc_endpoint_id = module.vpc.primary_aws_backend_vpc_endpoint_id
 }
