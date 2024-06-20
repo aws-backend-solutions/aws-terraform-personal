@@ -38,11 +38,6 @@ variable "primary_aws_backend_vpc_endpoint_id" {
   description = "The ID of the primary AwsBackendVpcEndpoint."
 }
 
-variable "aws_integration_tenant_mgmt_api_id" {
-  type        = string
-  description = "ID for aws-integration-tenant-mgmt-api"
-}
-
 variable "aws_account_id" {
   type        = string
   description = "AWS Account ID where this solution will be deployed."
