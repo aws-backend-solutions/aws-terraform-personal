@@ -9,7 +9,7 @@ terraform {
   backend "s3" {
     bucket         = "aws-backend-tf-state"
     key            = "modules/provider/terraform.tfstate"
-    region         = "us-west-2"
+    region         = "${var.aws_region}"
     encrypt        = true
     dynamodb_table = "aws-backend-tf-lockid"
   }
