@@ -1,3 +1,54 @@
+resource "aws_iam_policy" "aws_integration_tenant_mgmt_api_policy" {
+  name        = "${prefix_name}-api-policy"
+  description = "Policy to allow invoking the API Gateway and VPC read-only access"
+  
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid      = "AllowInvokeAPI",
+        Effect   = "Allow",
+        Action   = "execute-api:Invoke",
+        Resource = "arn:aws:execute-api:us-west-2:${var.aws_account_id}:${var.primary_aws_integration_tenant_mgmt_api_id}/*"
+      },
+      {
+        Sid    = "AllowVPCReadOnlyAccess",
+        Effect = "Allow",
+        Action = [
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeSecurityGroups"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role" "aws_integration_tenant_mgmt_api_role" {
+  name = "${prefix_name}-api-role"
+  
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "aws_integration_tenant_mgmt_api_attachment" {
+  role       = aws_iam_role.aws_integration_tenant_mgmt_api_role.name
+  policy_arn = aws_iam_policy.aws_integration_tenant_mgmt_api_policy.arn
+}
+
+
 ##### /health
 
 resource "aws_api_gateway_resource" "aws_integration_tenant_mgmt_api_health_resource" {
