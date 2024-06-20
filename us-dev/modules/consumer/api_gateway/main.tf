@@ -8,7 +8,6 @@ resource "aws_api_gateway_rest_api" "primary_aws_integration_tenant_mgmt_api" {
   tags = {
     CostCenter  = var.cost_center_tag
     Environment = var.environment_tag
-    Project     = var.project_tag
   }
 }
 
