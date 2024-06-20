@@ -34,11 +34,6 @@ variable "stage_name" {
   description = "Stage where this solution will be deployed."
 }
 
-variable "path_part" {
-  type        = string
-  description = "Path part of the API endpoint."
-}
-
 variable "primary_aws_backend_private_subnet1_id" {
   type        = string
   description = "The ID of the primary-aws-backend-private-subnet-1."
@@ -54,7 +49,22 @@ variable "primary_aws_backend_security_group2_id" {
   description = "Designated security group of lambdas in primary-aws-backend-vpc."
 }
 
-variable "aws_integration_tenant_mgmt_api_id" {
+##### /us-staging
+
+variable "us_staging_path_part" {
   type        = string
-  description = "ID for aws-integration-tenant-mgmt-api"
+}
+
+variable "us_staging_aws_integration_tenant_mgmt_api_id" {
+  type        = string
+}
+
+##### /eu-staging
+
+variable "eu_staging_path_part" {
+  type        = string
+}
+
+variable "eu_staging_aws_integration_tenant_mgmt_api_id" {
+  type        = string
 }

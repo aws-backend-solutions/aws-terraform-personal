@@ -26,12 +26,22 @@ variable "stage_name" {
   description = "Stage where this solution will be deployed."
 }
 
-variable "path_part" {
+##### /us-staging
+
+variable "us_staging_path_part" {
   type        = string
-  description = "Path part of the API endpoint."
 }
 
-variable "aws_integration_tenant_mgmt_api_id" {
+variable "us_staging_aws_integration_tenant_mgmt_api_id" {
   type        = string
-  description = "ID for aws-integration-tenant-mgmt-api"
+}
+
+##### /eu-staging
+
+variable "eu_staging_path_part" {
+  type        = string
+}
+
+variable "eu_staging_aws_integration_tenant_mgmt_api_id" {
+  type        = string
 }
