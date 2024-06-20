@@ -16,6 +16,8 @@ resource "aws_sns_topic_subscription" "budget_alert_topic_subscription" {
 resource "aws_sns_topic_policy" "budget_alert_topic_policy" {
   arn = aws_sns_topic.budget_alert_topic.arn
 
+  depends_on = [ aws_sns_topic.budget_alert_topic ]
+
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -24,7 +26,7 @@ resource "aws_sns_topic_policy" "budget_alert_topic_policy" {
         Service = "budgets.amazonaws.com"
       }
       Action   = "sns:Publish"
-      Resource = aws_sns_topic.budget_alert_topic.arn
+      Resource = "${aws_sns_topic.budget_alert_topic.arn}"
     }]
   })
 }
@@ -47,6 +49,8 @@ resource "aws_sns_topic_subscription" "cloudwatch_alarm_topic_subscription" {
 resource "aws_sns_topic_policy" "cloudwatch_alarm_topic_policy" {
   arn = aws_sns_topic.cloudwatch_alarm_topic.arn
 
+  depends_on = [ aws_sns_topic.cloudwatch_alarm_topic ]
+
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -55,7 +59,7 @@ resource "aws_sns_topic_policy" "cloudwatch_alarm_topic_policy" {
         Service = "budgets.amazonaws.com"
       }
       Action   = "sns:Publish"
-      Resource = aws_sns_topic.cloudwatch_alarm_topic.arn
+      Resource = "${aws_sns_topic.cloudwatch_alarm_topic.arn}"
     }]
   })
 }
