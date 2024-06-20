@@ -58,6 +58,5 @@ module "api_gateway" {
   aws_account_id                                             = data.aws_caller_identity.current.account_id
   primary_aws_integration_tenant_mgmt_api_id                 = data.terraform_remote_state.modules.outputs.primary_aws_integration_tenant_mgmt_api_id
   primary_aws_integration_tenant_mgmt_api_root_resource_id   = data.terraform_remote_state.modules.outputs.primary_aws_integration_tenant_mgmt_api_root_resource_id
-  primary_aws_integration_tenant_mgmt_api_body               = data.terraform_remote_state.modules.outputs.primary_aws_integration_tenant_mgmt_api_body
   aws_integration_tenant_mgmt_function_us_staging_invoke_arn = module.lambda.aws_integration_tenant_mgmt_function_us_staging_invoke_arn
 }
