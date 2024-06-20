@@ -22,8 +22,8 @@ resource "aws_iam_role" "aws_integration_tenant_mgmt_function_role" {
 ##### /us-staging
 
 resource "aws_lambda_function" "aws_integration_tenant_mgmt_function_us_staging" {
-  function_name = "${var.prefix_name}-${var.lambda_function_name}-${path_part}"
-  description   = "Lambda function that triggers the API endpoint in ${path_part} to create tenants."
+  function_name = "${var.prefix_name}-${var.lambda_function_name}-${var.path_part}"
+  description   = "Lambda function that triggers the API endpoint in ${var.path_part} to create tenants."
   handler       = "app.lambda_handler"
   runtime       = "python3.9"
   timeout       = 60
