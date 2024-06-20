@@ -132,25 +132,6 @@ resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_us_stagi
   uri                     = var.aws_integration_tenant_mgmt_function_us_staging_invoke_arn
 }
 
-resource "aws_api_gateway_stage" "primary_aws_integration_tenant_mgmt_api_stage" {
-  deployment_id = aws_api_gateway_deployment.primary_aws_integration_tenant_mgmt_api_deployment.id
-  rest_api_id   = var.primary_aws_integration_tenant_mgmt_api_id
-  stage_name    = var.stage_name
-}
-
-resource "aws_api_gateway_deployment" "primary_aws_integration_tenant_mgmt_api_deployment" {
-  rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
-
-  depends_on = [
-    aws_api_gateway_integration.aws_integration_tenant_mgmt_api_us_staging_integration,
-    aws_api_gateway_integration.aws_integration_tenant_mgmt_api_health_integration
-  ]
-  
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
 ##### /eu-staging
 
 resource "aws_api_gateway_resource" "aws_integration_tenant_mgmt_api_eu_staging_resource" {
@@ -189,6 +170,8 @@ resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_eu_stagi
   integration_http_method = "POST"
   uri                     = var.aws_integration_tenant_mgmt_function_eu_staging_invoke_arn
 }
+
+# deployment - only needs to be created once
 
 resource "aws_api_gateway_stage" "primary_aws_integration_tenant_mgmt_api_stage" {
   deployment_id = aws_api_gateway_deployment.primary_aws_integration_tenant_mgmt_api_deployment.id
