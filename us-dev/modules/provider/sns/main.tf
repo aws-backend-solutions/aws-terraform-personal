@@ -24,7 +24,7 @@ resource "aws_sns_topic_policy" "budget_alert_topic_policy" {
         Service = "budgets.amazonaws.com"
       }
       Action   = "sns:Publish"
-      Resource = aws_sns_topic.budget_alert_topic.arn
+      Resource = "${aws_sns_topic.budget_alert_topic.arn}"
     }]
   })
 }
@@ -55,7 +55,7 @@ resource "aws_sns_topic_policy" "cloudwatch_alarm_topic_policy" {
         Service = "budgets.amazonaws.com"
       }
       Action   = "sns:Publish"
-      Resource = aws_sns_topic.cloudwatch_alarm_topic.arn
+      Resource = "${aws_sns_topic.cloudwatch_alarm_topic.arn}"
     }]
   })
 }
