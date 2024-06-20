@@ -249,6 +249,8 @@ resource "aws_route" "aws_backend_ng_route" {
 resource "aws_vpc_peering_connection" "aws_mongodb_ga_peering_connection" {
   vpc_id      = aws_vpc.aws_backend_vpc.id
   peer_vpc_id = var.vpc_id_to_peer
+  peer_region   = "us-west-2"
+  auto_accept   = false
 
   tags = {
     Name = "${var.prefix_name}-vpc-peering"
