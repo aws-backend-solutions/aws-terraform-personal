@@ -144,6 +144,7 @@ resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_tenants_
   rest_api_id             = var.primary_aws_integration_tenant_mgmt_api_id
   type                    = "AWS"
   integration_http_method = "POST"
+  credentials             = aws_iam_role.aws_integration_tenant_mgmt_api_sqs_role.arn
   uri                     = "arn:aws:apigateway:${var.aws_region}:sqs:path/${var.aws_account_id}/${var.aws_integration_tenant_mgmt_sqs_queue_name}"
 
   request_templates = {
