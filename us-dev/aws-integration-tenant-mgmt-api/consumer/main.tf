@@ -29,21 +29,15 @@ data "terraform_remote_state" "modules" {
   }
 }
 
-module "sqs" {
-  source      = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/sqs"
-  prefix_name = var.prefix_name
-}
-
 module "lambda" {
-  source                                    = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/lambda"
-  prefix_name                               = var.prefix_name
-  environment_tag                           = var.environment_tag
-  project_tag                               = var.project_tag
-  stage_name                                = var.stage_name
-  primary_aws_backend_private_subnet1_id    = data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet1_id
-  primary_aws_backend_private_subnet2_id    = data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet2_id
-  primary_aws_backend_security_group2_id    = data.terraform_remote_state.modules.outputs.primary_aws_backend_security_group2_id
-  aws_integration_tenant_mgmt_sqs_queue_arn = module.sqs.aws_integration_tenant_mgmt_sqs_queue_arn
+  source                                 = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/lambda"
+  prefix_name                            = var.prefix_name
+  environment_tag                        = var.environment_tag
+  project_tag                            = var.project_tag
+  stage_name                             = var.stage_name
+  primary_aws_backend_private_subnet1_id = data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet1_id
+  primary_aws_backend_private_subnet2_id = data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet2_id
+  primary_aws_backend_security_group2_id = data.terraform_remote_state.modules.outputs.primary_aws_backend_security_group2_id
 }
 
 data "aws_caller_identity" "current" {}
@@ -59,6 +53,5 @@ module "api_gateway" {
   aws_account_id                                           = data.aws_caller_identity.current.account_id
   primary_aws_integration_tenant_mgmt_api_id               = data.terraform_remote_state.modules.outputs.primary_aws_integration_tenant_mgmt_api_id
   primary_aws_integration_tenant_mgmt_api_root_resource_id = data.terraform_remote_state.modules.outputs.primary_aws_integration_tenant_mgmt_api_root_resource_id
-  aws_integration_tenant_mgmt_sqs_queue_arn                = module.sqs.aws_integration_tenant_mgmt_sqs_queue_arn
-  aws_integration_tenant_mgmt_sqs_queue_name               = module.sqs.aws_integration_tenant_mgmt_sqs_queue_name
+  aws_integration_tenant_mgmt_router_function_invoke_arn   = module.lambda.aws_integration_tenant_mgmt_router_function_invoke_arn
 }

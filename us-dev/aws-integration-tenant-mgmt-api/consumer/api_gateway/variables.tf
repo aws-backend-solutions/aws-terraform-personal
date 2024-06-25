@@ -48,12 +48,7 @@ variable "primary_aws_integration_tenant_mgmt_api_root_resource_id" {
   description = "Root resource ID for primary-aws-integration-tenant-mgmt-api"
 }
 
-variable "aws_integration_tenant_mgmt_sqs_queue_arn" {
+variable "aws_integration_tenant_mgmt_router_function_invoke_arn" {
   type        = string
-  description = "The SQS Queue ARN for the primary API Gateway of primary_aws_integration_tenant_mgmt_api."
-}
-
-variable "aws_integration_tenant_mgmt_sqs_queue_name" {
-  type        = string
-  description = "The SQS Queue name for the primary API Gateway of primary_aws_integration_tenant_mgmt_api."
+  description = "The Invoke ARN of the underlying Lambda function."
 }

@@ -19,30 +19,6 @@ resource "aws_iam_role" "aws_integration_tenant_mgmt_router_function_role" {
   ]
 }
 
-data "aws_iam_policy_document" "aws_integration_tenant_mgmt_router_function_sqs_document" {
-  statement {
-    actions = [
-      "sqs:ReceiveMessage",
-      "sqs:DeleteMessage",
-      "sqs:GetQueueAttributes"
-    ]
-    resources = [
-      var.aws_integration_tenant_mgmt_sqs_queue_arn
-    ]
-  }
-}
-
-resource "aws_iam_policy" "aws_integration_tenant_mgmt_router_function_sqs_policy" {
-  name        = "${var.prefix_name}-sqs-policy"
-  description = "Allow Lambda to interact with SQS"
-  policy      = data.aws_iam_policy_document.aws_integration_tenant_mgmt_router_function_sqs_document.json
-}
-
-resource "aws_iam_role_policy_attachment" "aws_integration_tenant_mgmt_router_function_sqs_policy_attachment" {
-  policy_arn = aws_iam_policy.aws_integration_tenant_mgmt_router_function_sqs_policy.arn
-  role       = aws_iam_role.aws_integration_tenant_mgmt_router_function_role.name
-}
-
 ##### /router lambda
 
 resource "aws_lambda_function" "aws_integration_tenant_mgmt_router_function" {
@@ -53,12 +29,6 @@ resource "aws_lambda_function" "aws_integration_tenant_mgmt_router_function" {
   timeout       = 60
   role          = aws_iam_role.aws_integration_tenant_mgmt_router_function_role.arn
   filename      = "${path.module}/code/${var.prefix_name}-router-function.zip"
-}
-
-resource "aws_lambda_event_source_mapping" "aws_integration_tenant_mgmt_router_function_mapping" {
-  event_source_arn = var.aws_integration_tenant_mgmt_sqs_queue_arn
-  function_name    = aws_lambda_function.aws_integration_tenant_mgmt_router_function.arn
-  batch_size       = 10
 }
 
 resource "aws_cloudwatch_log_group" "aws_integration_tenant_mgmt_router_function_log_group" {
