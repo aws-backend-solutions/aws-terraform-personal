@@ -19,23 +19,23 @@ resource "aws_iam_role" "aws_integration_tenant_mgmt_function_role" {
   ]
 }
 
+data "aws_iam_policy_document" "aws_integration_tenant_mgmt_function_sqs_document" {
+  statement {
+    actions = [
+      "sqs:ReceiveMessage",
+      "sqs:DeleteMessage",
+      "sqs:GetQueueAttributes"
+    ]
+    resources = [
+      var.aws_integration_tenant_mgmt_sqs_queue_arn
+    ]
+  }
+}
+
 resource "aws_iam_policy" "aws_integration_tenant_mgmt_function_sqs_policy" {
   name        = "${var.prefix_name}-sqs-policy"
   description = "Allow Lambda to interact with SQS"
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect   = "Allow",
-        Action   = [
-          "sqs:ReceiveMessage",
-          "sqs:DeleteMessage",
-          "sqs:GetQueueAttributes"
-        ],
-        Resource = "${var.aws_integration_tenant_mgmt_sqs_queue_arn}"
-      }
-    ]
-  })
+  policy      = data.aws_iam_policy_document.aws_integration_tenant_mgmt_function_sqs_document.json
 }
 
 resource "aws_iam_role_policy_attachment" "aws_integration_tenant_mgmt_function_sqs_policy_attachment" {
