@@ -173,6 +173,32 @@ resource "aws_api_gateway_integration_response" "aws_integration_tenant_mgmt_api
   }
 }
 
+resource "aws_api_gateway_integration_response" "aws_integration_tenant_mgmt_api_tenants_integration_400" {
+  http_method = aws_api_gateway_method.aws_integration_tenant_mgmt_api_tenants_method.http_method
+  resource_id = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_tenants_resource.id
+  rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
+  status_code = "400"
+
+  response_templates = {
+    "application/json" = jsonencode({
+      message = "Bad request received"
+    })
+  }
+}
+
+resource "aws_api_gateway_integration_response" "aws_integration_tenant_mgmt_api_tenants_integration_500" {
+  http_method = aws_api_gateway_method.aws_integration_tenant_mgmt_api_tenants_method.http_method
+  resource_id = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_tenants_resource.id
+  rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
+  status_code = "500"
+
+  response_templates = {
+    "application/json" = jsonencode({
+      message = "Internal server error"
+    })
+  }
+}
+
 # deployment - only needs to be created once
 
 resource "aws_api_gateway_stage" "primary_aws_integration_tenant_mgmt_api_stage" {
