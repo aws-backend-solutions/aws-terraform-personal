@@ -11,31 +11,43 @@ def lambda_handler(event, context):
     print(event)
 
     body = event['body']
-    body_dict = json.loads(body)
-    source_env = body_dict['source_env']
+    payload = json.loads(body)
+    source_env = payload['source_env']
+    api_url = None
+    api_id
 
-    print(source_env)
+    if source_env == os.environ['us_staging_domain']:
+        api_url = os.environ['us_staging_vpce']
+        api_id =  os.environ['us_staging_api_id']
+    elif source_env == os.environ['eu_staging_domain']:
+        api_url = os.environ['eu_staging_vpce']
+        api_id =  os.environ['eu_staging_api_id']
+    else:
+        return {
+            "statusCode": 400,
+            "body": json.dumps({"error": "Invalid source_env value."}),
+        }
 
-    # private_api_url = "https://"+os.environ['api_id']+".execute-api."+aws_region+".amazonaws.com/"+os.environ['stage_name']+"/tenants"
-    # logger.info(f"Private API URL: {private_api_url}")
+    logger.info(f"Private API URL: {api_url}")
 
-    # payload = event['body']
-    # payload = json.loads(payload)
-    # logger.info(f"Payload: {payload}")
+    headers = {
+        "Content-Type": "application/json",
+        "x-apigw-api-id": api_id
+    }
 
-    # try:
-    #     response = requests.post(private_api_url, json=payload)
-    #     logger.info(f"Successful response: {response}")
+    try:
+        response = requests.post(f"http://{api_url}", json=payload, headers=headers)
+        logger.info(f"Successful response: {response}")
         
-    #     return {
-    #         "statusCode": response.status_code,
-    #         "body": response.text,
-    #         "headers": dict(response.headers)
-    #     }
-    # except requests.exceptions.RequestException as e:
-    #     logger.error(f"Error response: {e}")
+        return {
+            "statusCode": response.status_code,
+            "body": response.text,
+            "headers": dict(response.headers)
+        }
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error response: {e}")
         
-    #     return {
-    #         "statusCode": 500,
-    #         "body": json.dumps({"error": str(e)}),
-    #     }
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"error": str(e)}),
+        }

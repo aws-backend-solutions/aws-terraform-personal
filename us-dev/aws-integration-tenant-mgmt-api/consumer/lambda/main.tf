@@ -39,6 +39,8 @@ resource "aws_lambda_function" "aws_integration_tenant_mgmt_router_function" {
       eu_prod_domain    = var.eu_prod_domain
       us_staging_vpce   = var.us_staging_vpce
       eu_staging_vpce   = var.eu_staging_vpce
+      us_staging_api_id = var.us_staging_api_id
+      eu_staging_api_id = var.eu_staging_api_id
     }
   }
 

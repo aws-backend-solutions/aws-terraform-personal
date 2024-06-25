@@ -44,6 +44,8 @@ variable "primary_aws_backend_security_group2_id" {
   description = "Designated security group of lambdas in primary-aws-backend-vpc."
 }
 
+# domains
+
 variable "us_dev_domain" {
   type        = string
   description = "Oregon dev domain."
@@ -69,6 +71,8 @@ variable "eu_prod_domain" {
   description = "Frankfurt prod domain."
 }
 
+# vpc endpoints
+
 variable "us_staging_vpce" {
   type        = string
   description = "Public DNS of the VPC endpoint of the solution deployed in us-staging."
@@ -77,4 +81,16 @@ variable "us_staging_vpce" {
 variable "eu_staging_vpce" {
   type        = string
   description = "Public DNS of the VPC endpoint of the solution deployed in eu-staging."
+}
+
+# api ids
+
+variable "us_staging_api_id" {
+  type        = string
+  description = "API ID of the API Gateway deployed in us-staging."
+}
+
+variable "eu_staging_api_id" {
+  type        = string
+  description = "API ID of the API Gateway deployed in eu-staging."
 }
