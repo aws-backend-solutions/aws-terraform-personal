@@ -145,7 +145,7 @@ resource "aws_api_gateway_deployment" "primary_aws_integration_tenant_mgmt_api_d
 
   depends_on = [
     aws_api_gateway_integration.aws_integration_tenant_mgmt_api_health_integration,
-    aws_api_gateway_integration.aws_integration_tenant_mgmt_api_tenants_integration
+    aws_api_gateway_integration.aws_integration_tenant_mgmt_api_router_integration
   ]
   
   lifecycle {
