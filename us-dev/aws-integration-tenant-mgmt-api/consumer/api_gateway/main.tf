@@ -3,7 +3,7 @@
 resource "aws_iam_policy" "aws_integration_tenant_mgmt_api_policy" {
   name        = "${var.prefix_name}-api-policy"
   description = "Policy to allow invoking the API Gateway and VPC read-only access"
-  
+
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -36,11 +36,11 @@ resource "aws_iam_role" "aws_integration_tenant_mgmt_api_sqs_role" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
-      Effect    = "Allow",
+      Effect = "Allow",
       Principal = {
         Service = "apigateway.amazonaws.com"
       },
-      Action    = "sts:AssumeRole"
+      Action = "sts:AssumeRole"
     }]
   })
 }
@@ -80,11 +80,11 @@ resource "aws_api_gateway_method" "aws_integration_tenant_mgmt_api_health_method
 }
 
 resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_health_integration" {
-  rest_api_id             = var.primary_aws_integration_tenant_mgmt_api_id
-  resource_id             = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_health_resource.id
-  http_method             = aws_api_gateway_method.aws_integration_tenant_mgmt_api_health_method.http_method
-  type                    = "MOCK"
-  request_templates       = {
+  rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
+  resource_id = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_health_resource.id
+  http_method = aws_api_gateway_method.aws_integration_tenant_mgmt_api_health_method.http_method
+  type        = "MOCK"
+  request_templates = {
     "application/json" = "{\"statusCode\": 200}"
   }
 }
@@ -149,8 +149,44 @@ resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_tenants_
 
   request_templates = {
     "application/json" = jsonencode({
-      "Action": "SendMessage",
-      "MessageBody": "$input.json('$')"
+      "Action" : "SendMessage",
+      "MessageBody" : "$input.json('$')"
+    })
+  }
+}
+
+resource "aws_api_gateway_integration_response" "aws_integration_tenant_mgmt_api_tenants_integration_200" {
+  http_method = aws_api_gateway_method.aws_integration_tenant_mgmt_api_tenants_method.http_method
+  resource_id = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_tenants_resource.id
+  rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
+  status_code = "200"
+
+  response_templates = {
+    "application/json" = jsonencode({
+      message = "Data successfully queued",
+      input = {
+        tenant_codes = "$input.json('$.tenant_code')",
+        source_env   = "$input.json('$.source_env')",
+        target_env   = "$input.json('$.target_env')"
+      }
+    })
+  }
+}
+
+resource "aws_api_gateway_integration_response" "error_integration_response_404" {
+  http_method = aws_api_gateway_method.aws_integration_tenant_mgmt_api_tenants_method.http_method
+  resource_id = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_tenants_resource.id
+  rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
+  status_code = "404"
+
+  response_templates = {
+    "application/json" = jsonencode({
+      error_message = "Resource not found",
+      input = {
+        tenant_codes = "$input.json('$.tenant_code')",
+        source_env   = "$input.json('$.source_env')",
+        target_env   = "$input.json('$.target_env')"
+      }
     })
   }
 }
@@ -170,7 +206,7 @@ resource "aws_api_gateway_deployment" "primary_aws_integration_tenant_mgmt_api_d
     aws_api_gateway_integration.aws_integration_tenant_mgmt_api_health_integration,
     aws_api_gateway_integration.aws_integration_tenant_mgmt_api_tenants_integration
   ]
-  
+
   lifecycle {
     create_before_destroy = true
   }
