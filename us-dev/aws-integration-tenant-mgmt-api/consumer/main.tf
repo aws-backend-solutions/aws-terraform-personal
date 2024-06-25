@@ -38,6 +38,8 @@ module "lambda" {
   primary_aws_backend_private_subnet1_id = data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet1_id
   primary_aws_backend_private_subnet2_id = data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet2_id
   primary_aws_backend_security_group2_id = data.terraform_remote_state.modules.outputs.primary_aws_backend_security_group2_id
+  us_staging_vpce                        = var.us_staging_vpce
+  eu_staging_vpce                        = var.eu_staging_vpce
 }
 
 data "aws_caller_identity" "current" {}

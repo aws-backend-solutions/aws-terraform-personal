@@ -32,7 +32,8 @@ resource "aws_lambda_function" "aws_integration_tenant_mgmt_router_function" {
 
   environment {
     variables = {
-      stage_name = var.stage_name
+      us_staging_vpce = var.us_staging_vpce
+      eu_staging_vpce = var.eu_staging_vpce
     }
   }
 

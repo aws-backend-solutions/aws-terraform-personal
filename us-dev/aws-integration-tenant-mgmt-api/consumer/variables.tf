@@ -19,6 +19,18 @@ variable "project_tag" {
   description = "Provide the repository name. Used for tagging the resources created."
 }
 
+########## aws-integration-tenant-mgmt-api/consumer/lambda ##########
+
+variable "us_staging_vpce" {
+  type        = string
+  description = "Public DNS of the VPC endpoint of the solution deployed in us-staging."
+}
+
+variable "eu_staging_vpce" {
+  type        = string
+  description = "Public DNS of the VPC endpoint of the solution deployed in eu-staging."
+}
+
 ########## aws-integration-tenant-mgmt-api/consumer/api_gateway ##########
 
 variable "stage_name" {

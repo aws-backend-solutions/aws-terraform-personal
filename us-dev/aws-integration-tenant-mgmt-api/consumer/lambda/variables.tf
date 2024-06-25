@@ -43,3 +43,13 @@ variable "primary_aws_backend_security_group2_id" {
   type        = string
   description = "Designated security group of lambdas in primary-aws-backend-vpc."
 }
+
+variable "us_staging_vpce" {
+  type        = string
+  description = "Public DNS of the VPC endpoint of the solution deployed in us-staging."
+}
+
+variable "eu_staging_vpce" {
+  type        = string
+  description = "Public DNS of the VPC endpoint of the solution deployed in eu-staging."
+}
