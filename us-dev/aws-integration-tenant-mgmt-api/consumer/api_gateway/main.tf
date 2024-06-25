@@ -144,15 +144,13 @@ resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_tenants_
   rest_api_id             = var.primary_aws_integration_tenant_mgmt_api_id
   type                    = "AWS"
   integration_http_method = "POST"
-  uri                     = var.aws_integration_tenant_mgmt_sqs_queue_arn
+  uri                     = "${var.aws_integration_tenant_mgmt_sqs_queue_arn}/SendMessage"
 
   request_templates = {
-    "application/json" = <<EOF
-    {
+    "application/json" = jsonencode({
       "Action": "SendMessage",
-      "MessageBody": $input.json('$')
-    }
-    EOF
+      "MessageBody": "$input.json('$')"
+    })
   }
 }
 
