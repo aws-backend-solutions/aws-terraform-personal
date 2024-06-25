@@ -51,7 +51,7 @@ data "aws_caller_identity" "current" {}
 module "api_gateway" {
   source                                                   = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/api_gateway"
   prefix_name                                              = var.prefix_name
-  aws_region = var.aws_region
+  aws_region                                               = var.aws_region
   environment_tag                                          = var.environment_tag
   project_tag                                              = var.project_tag
   stage_name                                               = var.stage_name
@@ -60,5 +60,5 @@ module "api_gateway" {
   primary_aws_integration_tenant_mgmt_api_id               = data.terraform_remote_state.modules.outputs.primary_aws_integration_tenant_mgmt_api_id
   primary_aws_integration_tenant_mgmt_api_root_resource_id = data.terraform_remote_state.modules.outputs.primary_aws_integration_tenant_mgmt_api_root_resource_id
   aws_integration_tenant_mgmt_sqs_queue_arn                = module.sqs.aws_integration_tenant_mgmt_sqs_queue_arn
-  aws_integration_tenant_mgmt_sqs_queue_name                = module.sqs.aws_integration_tenant_mgmt_sqs_queue_name
+  aws_integration_tenant_mgmt_sqs_queue_name               = module.sqs.aws_integration_tenant_mgmt_sqs_queue_name
 }
