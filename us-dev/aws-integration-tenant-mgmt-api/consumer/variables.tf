@@ -25,23 +25,3 @@ variable "stage_name" {
   type        = string
   description = "Stage where this solution will be deployed."
 }
-
-##### /us-staging
-
-variable "us_staging_path_part" {
-  type = string
-}
-
-variable "us_staging_aws_integration_tenant_mgmt_api_id" {
-  type = string
-}
-
-##### /eu-staging
-
-variable "eu_staging_path_part" {
-  type = string
-}
-
-variable "eu_staging_aws_integration_tenant_mgmt_api_id" {
-  type = string
-}
