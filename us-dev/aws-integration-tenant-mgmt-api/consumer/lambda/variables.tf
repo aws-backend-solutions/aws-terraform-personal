@@ -44,22 +44,7 @@ variable "primary_aws_backend_security_group2_id" {
   description = "Designated security group of lambdas in primary-aws-backend-vpc."
 }
 
-##### /us-staging
-
-variable "us_staging_path_part" {
+variable "aws_integration_tenant_mgmt_sqs_queue_arn" {
   type        = string
-}
-
-variable "us_staging_aws_integration_tenant_mgmt_api_id" {
-  type        = string
-}
-
-##### /eu-staging
-
-variable "eu_staging_path_part" {
-  type        = string
-}
-
-variable "eu_staging_aws_integration_tenant_mgmt_api_id" {
-  type        = string
+  description = "The SQS Queue ARN for the primary API Gateway of primary_aws_integration_tenant_mgmt_api."
 }

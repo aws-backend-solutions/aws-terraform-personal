@@ -29,35 +29,34 @@ data "terraform_remote_state" "modules" {
   }
 }
 
+module "sqs" {
+  source      = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/sqs"
+  prefix_name = var.prefix_name
+}
+
 module "lambda" {
-  source                                                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/lambda"
-  prefix_name                                                = var.prefix_name
-  environment_tag                                            = var.environment_tag
-  project_tag                                                = var.project_tag
-  stage_name                                                 = var.stage_name
-  primary_aws_backend_private_subnet1_id                     = data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet1_id
-  primary_aws_backend_private_subnet2_id                     = data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet2_id
-  primary_aws_backend_security_group2_id                     = data.terraform_remote_state.modules.outputs.primary_aws_backend_security_group2_id
-  us_staging_path_part                                       = var.us_staging_path_part
-  us_staging_aws_integration_tenant_mgmt_api_id              = var.us_staging_aws_integration_tenant_mgmt_api_id
-  eu_staging_path_part                                       = var.eu_staging_path_part
-  eu_staging_aws_integration_tenant_mgmt_api_id              = var.eu_staging_aws_integration_tenant_mgmt_api_id
+  source                                    = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/lambda"
+  prefix_name                               = var.prefix_name
+  environment_tag                           = var.environment_tag
+  project_tag                               = var.project_tag
+  stage_name                                = var.stage_name
+  primary_aws_backend_private_subnet1_id    = data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet1_id
+  primary_aws_backend_private_subnet2_id    = data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet2_id
+  primary_aws_backend_security_group2_id    = data.terraform_remote_state.modules.outputs.primary_aws_backend_security_group2_id
+  aws_integration_tenant_mgmt_sqs_queue_arn = module.sqs.aws_integration_tenant_mgmt_sqs_queue_arn
 }
 
 data "aws_caller_identity" "current" {}
 
 module "api_gateway" {
-  source                                                     = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/api_gateway"
-  prefix_name                                                = var.prefix_name
-  environment_tag                                            = var.environment_tag
-  project_tag                                                = var.project_tag
-  stage_name                                                 = var.stage_name
-  primary_aws_backend_vpc_endpoint_id                        = data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_endpoint_id
-  aws_account_id                                             = data.aws_caller_identity.current.account_id
-  primary_aws_integration_tenant_mgmt_api_id                 = data.terraform_remote_state.modules.outputs.primary_aws_integration_tenant_mgmt_api_id
-  primary_aws_integration_tenant_mgmt_api_root_resource_id   = data.terraform_remote_state.modules.outputs.primary_aws_integration_tenant_mgmt_api_root_resource_id
-  us_staging_path_part                                       = var.us_staging_path_part
-  aws_integration_tenant_mgmt_function_us_staging_invoke_arn = module.lambda.aws_integration_tenant_mgmt_function_us_staging_invoke_arn
-  eu_staging_path_part                                       = var.eu_staging_path_part
-  aws_integration_tenant_mgmt_function_eu_staging_invoke_arn = module.lambda.aws_integration_tenant_mgmt_function_eu_staging_invoke_arn
+  source                                                   = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/aws-integration-tenant-mgmt-api/consumer/api_gateway"
+  prefix_name                                              = var.prefix_name
+  environment_tag                                          = var.environment_tag
+  project_tag                                              = var.project_tag
+  stage_name                                               = var.stage_name
+  primary_aws_backend_vpc_endpoint_id                      = data.terraform_remote_state.modules.outputs.primary_aws_backend_vpc_endpoint_id
+  aws_account_id                                           = data.aws_caller_identity.current.account_id
+  primary_aws_integration_tenant_mgmt_api_id               = data.terraform_remote_state.modules.outputs.primary_aws_integration_tenant_mgmt_api_id
+  primary_aws_integration_tenant_mgmt_api_root_resource_id = data.terraform_remote_state.modules.outputs.primary_aws_integration_tenant_mgmt_api_root_resource_id
+  aws_integration_tenant_mgmt_sqs_queue_arn                = module.sqs.aws_integration_tenant_mgmt_sqs_queue_arn
 }

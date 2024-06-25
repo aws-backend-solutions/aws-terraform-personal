@@ -43,22 +43,7 @@ variable "primary_aws_integration_tenant_mgmt_api_root_resource_id" {
   description = "Root resource ID for primary-aws-integration-tenant-mgmt-api"
 }
 
-##### /us-staging
-
-variable "aws_integration_tenant_mgmt_function_us_staging_invoke_arn" {
+variable "aws_integration_tenant_mgmt_sqs_queue_arn" {
   type        = string
-}
-
-variable "us_staging_path_part" {
-  type = string
-}
-
-##### /eu-staging
-
-variable "aws_integration_tenant_mgmt_function_eu_staging_invoke_arn" {
-  type        = string
-}
-
-variable "eu_staging_path_part" {
-  type = string
+  description = "The SQS Queue ARN for the primary API Gateway of primary_aws_integration_tenant_mgmt_api."
 }

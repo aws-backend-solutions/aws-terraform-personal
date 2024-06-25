@@ -19,96 +19,44 @@ resource "aws_iam_role" "aws_integration_tenant_mgmt_function_role" {
   ]
 }
 
-##### /us-staging
+data "aws_iam_policy_document" "aws_integration_tenant_mgmt_function_sqs_document" {
+  statement {
+    actions = [
+      "sqs:ReceiveMessage",
+      "sqs:DeleteMessage",
+      "sqs:GetQueueAttributes"
+    ]
+    resources = [
+      var.aws_integration_tenant_mgmt_sqs_queue_arn
+    ]
+  }
+}
 
-resource "aws_lambda_function" "aws_integration_tenant_mgmt_function_us_staging" {
-  function_name = "${var.prefix_name}-${var.lambda_function_name}-${var.us_staging_path_part}"
-  description   = "Lambda function that triggers the API endpoint in ${var.us_staging_path_part} to create tenants."
+resource "aws_iam_policy" "aws_integration_tenant_mgmt_function_sqs_policy" {
+  name        = "${var.prefix_name}-sqs-policy"
+  description = "Allow Lambda to interact with SQS"
+  policy      = data.aws_iam_policy_document.aws_integration_tenant_mgmt_function_sqs_document.json
+}
+
+resource "aws_iam_role_policy_attachment" "aws_integration_tenant_mgmt_function_sqs_policy_attachment" {
+  policy_arn = aws_iam_policy.aws_integration_tenant_mgmt_function_sqs_policy.arn
+  role       = aws_iam_role.aws_integration_tenant_mgmt_function_role.name
+}
+
+##### /router lambda
+
+resource "aws_lambda_function" "aws_integration_tenant_mgmt_function_router" {
+  function_name = "${var.prefix_name}-router-function"
+  description   = "Lambda function that routes requests to appropriate VPC endpoints for ${var.prefix_name}."
   handler       = "app.lambda_handler"
   runtime       = "python3.9"
   timeout       = 60
   role          = aws_iam_role.aws_integration_tenant_mgmt_function_role.arn
-  filename      = "${path.module}/code/${var.prefix_name}-${var.lambda_function_name}-consumer.zip"
-
-  environment {
-    variables = {
-      api_id     = var.us_staging_aws_integration_tenant_mgmt_api_id
-      stage_name = var.stage_name
-      path_part  = var.us_staging_path_part
-    }
-  }
-
-  tags = {
-    CostCenter  = var.cost_center_tag
-    Environment = var.environment_tag
-    Project     = var.project_tag
-  }
-
-  vpc_config {
-    security_group_ids = [
-      var.primary_aws_backend_security_group2_id
-    ]
-    subnet_ids = [
-      var.primary_aws_backend_private_subnet1_id,
-      var.primary_aws_backend_private_subnet2_id
-    ]
-  }
+  filename      = "${path.module}/code/${var.prefix_name}-router-function.zip"
 }
 
-resource "aws_cloudwatch_log_group" "aws_integration_tenant_mgmt_function_us_staging_log_group" {
-  name = "/aws/lambda/${aws_lambda_function.aws_integration_tenant_mgmt_function_us_staging.function_name}"
-}
-
-resource "aws_lambda_permission" "aws_integration_tenant_mgmt_function_us_staging_invoke_permission" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.aws_integration_tenant_mgmt_function_us_staging.arn
-  principal     = "apigateway.amazonaws.com"
-}
-
-##### /eu-staging
-
-resource "aws_lambda_function" "aws_integration_tenant_mgmt_function_eu_staging" {
-  function_name = "${var.prefix_name}-${var.lambda_function_name}-${var.eu_staging_path_part}"
-  description   = "Lambda function that triggers the API endpoint in ${var.eu_staging_path_part} to create tenants."
-  handler       = "app.lambda_handler"
-  runtime       = "python3.9"
-  timeout       = 60
-  role          = aws_iam_role.aws_integration_tenant_mgmt_function_role.arn
-  filename      = "${path.module}/code/${var.prefix_name}-${var.lambda_function_name}-consumer.zip"
-
-  environment {
-    variables = {
-      api_id     = var.eu_staging_aws_integration_tenant_mgmt_api_id
-      stage_name = var.stage_name
-      path_part  = var.eu_staging_path_part
-    }
-  }
-
-  tags = {
-    CostCenter  = var.cost_center_tag
-    Environment = var.environment_tag
-    Project     = var.project_tag
-  }
-
-  vpc_config {
-    security_group_ids = [
-      var.primary_aws_backend_security_group2_id
-    ]
-    subnet_ids = [
-      var.primary_aws_backend_private_subnet1_id,
-      var.primary_aws_backend_private_subnet2_id
-    ]
-  }
-}
-
-resource "aws_cloudwatch_log_group" "aws_integration_tenant_mgmt_function_eu_staging_log_group" {
-  name = "/aws/lambda/${aws_lambda_function.aws_integration_tenant_mgmt_function_eu_staging.function_name}"
-}
-
-resource "aws_lambda_permission" "aws_integration_tenant_mgmt_function_eu_staging_invoke_permission" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.aws_integration_tenant_mgmt_function_eu_staging.arn
-  principal     = "apigateway.amazonaws.com"
+resource "aws_lambda_event_source_mapping" "aws_integration_tenant_mgmt_function_mapping" {
+  event_source_arn = var.aws_integration_tenant_mgmt_sqs_queue_arn
+  function_name    = aws_lambda_function.aws_integration_tenant_mgmt_function_router.arn
+  batch_size       = 10
 }
