@@ -21,6 +21,31 @@ variable "project_tag" {
 
 ########## aws-integration-tenant-mgmt-api/consumer/lambda ##########
 
+variable "us_dev_domain" {
+  type        = string
+  description = "Oregon dev domain."
+}
+
+variable "us_staging_domain" {
+  type        = string
+  description = "Oregon staging domain."
+}
+
+variable "us_prod_domain" {
+  type        = string
+  description = "Oregon prod domain."
+}
+
+variable "eu_staging_domain" {
+  type        = string
+  description = "Frankfurt staging domain."
+}
+
+variable "eu_prod_domain" {
+  type        = string
+  description = "Frankfurt prod domain."
+}
+
 variable "us_staging_vpce" {
   type        = string
   description = "Public DNS of the VPC endpoint of the solution deployed in us-staging."

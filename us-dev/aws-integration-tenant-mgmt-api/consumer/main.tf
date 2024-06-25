@@ -38,6 +38,11 @@ module "lambda" {
   primary_aws_backend_private_subnet1_id = data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet1_id
   primary_aws_backend_private_subnet2_id = data.terraform_remote_state.modules.outputs.primary_aws_backend_private_subnet2_id
   primary_aws_backend_security_group2_id = data.terraform_remote_state.modules.outputs.primary_aws_backend_security_group2_id
+  us_dev_domain                          = var.us_dev_domain
+  us_staging_domain                      = var.us_staging_domain
+  us_prod_domain                         = var.us_prod_domain
+  eu_staging_domain                      = var.eu_staging_domain
+  eu_prod_domain                         = var.eu_prod_domain
   us_staging_vpce                        = var.us_staging_vpce
   eu_staging_vpce                        = var.eu_staging_vpce
 }
