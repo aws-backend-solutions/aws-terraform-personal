@@ -43,10 +43,16 @@ module "lambda" {
   us_prod_domain                         = var.us_prod_domain
   eu_staging_domain                      = var.eu_staging_domain
   eu_prod_domain                         = var.eu_prod_domain
+  us_dev_vpce                            = var.us_dev_vpce
   us_staging_vpce                        = var.us_staging_vpce
+  us_prod_vpce                           = var.us_prod_vpce
   eu_staging_vpce                        = var.eu_staging_vpce
+  eu_prod_vpce                           = var.eu_prod_vpce
+  us_dev_api_id                          = var.us_dev_api_id
   us_staging_api_id                      = var.us_staging_api_id
+  us_prod_api_id                         = var.us_prod_api_id
   eu_staging_api_id                      = var.eu_staging_api_id
+  eu_prod_api_id                         = var.eu_prod_api_id
 }
 
 data "aws_caller_identity" "current" {}

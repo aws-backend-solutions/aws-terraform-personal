@@ -15,13 +15,28 @@ def lambda_handler(event, context):
     source_env = payload['source_env']
     api_url = None
     api_id = None
+    stage_name = os.environ['stage_name']
 
-    if source_env == os.environ['us_staging_domain']:
+    if source_env == os.environ['us_dev_domain']:
+        api_url = os.environ['us_dev_vpce']
+        api_id =  os.environ['us_dev_api_id']
+
+    elif source_env == os.environ['us_staging_domain']:
         api_url = os.environ['us_staging_vpce']
         api_id =  os.environ['us_staging_api_id']
+
+    elif source_env == os.environ['us_prod_domain']:
+        api_url = os.environ['us_prod_vpce']
+        api_id =  os.environ['us_prod_api_id']
+
     elif source_env == os.environ['eu_staging_domain']:
         api_url = os.environ['eu_staging_vpce']
         api_id =  os.environ['eu_staging_api_id']
+
+    elif source_env == os.environ['eu_prod_domain']:
+        api_url = os.environ['eu_prod_vpce']
+        api_id =  os.environ['eu_prod_api_id']
+        
     else:
         return {
             "statusCode": 400,
@@ -36,7 +51,7 @@ def lambda_handler(event, context):
     }
 
     try:
-        response = requests.post(f"http://{api_url}", json=payload, headers=headers)
+        response = requests.post(f"https://{api_url}/{stage_name}/tenants", json=payload, headers=headers)
         logger.info(f"Successful response: {response}")
         
         return {

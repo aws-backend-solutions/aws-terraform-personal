@@ -73,9 +73,19 @@ variable "eu_prod_domain" {
 
 # vpc endpoints
 
+variable "us_dev_vpce" {
+  type        = string
+  description = "Public DNS of the VPC endpoint of the solution deployed in us-dev."
+}
+
 variable "us_staging_vpce" {
   type        = string
-  description = "Public DNS of the VPC endpoint of the solution deployed in us-staging."
+  description = "Public DNS of the VPC endpoint of the solution deployed in eu-staging."
+}
+
+variable "us_prod_vpce" {
+  type        = string
+  description = "Public DNS of the VPC endpoint of the solution deployed in us-prod."
 }
 
 variable "eu_staging_vpce" {
@@ -83,14 +93,34 @@ variable "eu_staging_vpce" {
   description = "Public DNS of the VPC endpoint of the solution deployed in eu-staging."
 }
 
+variable "eu_prod_vpce" {
+  type        = string
+  description = "Public DNS of the VPC endpoint of the solution deployed in eu-prod."
+}
+
 # api ids
+
+variable "us_dev_api_id" {
+  type        = string
+  description = "Public DNS of the VPC endpoint of the solution deployed in us-dev."
+}
 
 variable "us_staging_api_id" {
   type        = string
-  description = "API ID of the API Gateway deployed in us-staging."
+  description = "Public DNS of the VPC endpoint of the solution deployed in eu-staging."
+}
+
+variable "us_prod_api_id" {
+  type        = string
+  description = "Public DNS of the VPC endpoint of the solution deployed in us-prod."
 }
 
 variable "eu_staging_api_id" {
   type        = string
-  description = "API ID of the API Gateway deployed in eu-staging."
+  description = "Public DNS of the VPC endpoint of the solution deployed in eu-staging."
+}
+
+variable "eu_prod_api_id" {
+  type        = string
+  description = "Public DNS of the VPC endpoint of the solution deployed in eu-prod."
 }
