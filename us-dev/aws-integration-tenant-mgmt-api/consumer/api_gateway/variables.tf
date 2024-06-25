@@ -2,6 +2,11 @@ variable "prefix_name" {
   type = string
 }
 
+variable "aws_region" {
+  type        = string
+  description = "Designated AWS_REGION where this solution will be deployed."
+}
+
 variable "cost_center_tag" {
   type        = string
   description = "Used for tagging the resources created."
@@ -46,4 +51,9 @@ variable "primary_aws_integration_tenant_mgmt_api_root_resource_id" {
 variable "aws_integration_tenant_mgmt_sqs_queue_arn" {
   type        = string
   description = "The SQS Queue ARN for the primary API Gateway of primary_aws_integration_tenant_mgmt_api."
+}
+
+variable "aws_integration_tenant_mgmt_sqs_queue_name" {
+  type        = string
+  description = "The SQS Queue name for the primary API Gateway of primary_aws_integration_tenant_mgmt_api."
 }
