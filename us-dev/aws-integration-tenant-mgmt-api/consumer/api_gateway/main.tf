@@ -173,24 +173,6 @@ resource "aws_api_gateway_integration_response" "aws_integration_tenant_mgmt_api
   }
 }
 
-resource "aws_api_gateway_integration_response" "error_integration_response_404" {
-  http_method = aws_api_gateway_method.aws_integration_tenant_mgmt_api_tenants_method.http_method
-  resource_id = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_tenants_resource.id
-  rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
-  status_code = "404"
-
-  response_templates = {
-    "application/json" = jsonencode({
-      error_message = "Resource not found",
-      input = {
-        tenant_codes = "$input.json('$.tenant_code')",
-        source_env   = "$input.json('$.source_env')",
-        target_env   = "$input.json('$.target_env')"
-      }
-    })
-  }
-}
-
 # deployment - only needs to be created once
 
 resource "aws_api_gateway_stage" "primary_aws_integration_tenant_mgmt_api_stage" {
