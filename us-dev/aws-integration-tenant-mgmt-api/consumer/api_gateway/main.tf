@@ -84,6 +84,7 @@ resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_health_i
   resource_id = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_health_resource.id
   http_method = aws_api_gateway_method.aws_integration_tenant_mgmt_api_health_method.http_method
   type        = "MOCK"
+  
   request_templates = {
     "application/json" = "{\"statusCode\": 200}"
   }
@@ -94,13 +95,18 @@ resource "aws_api_gateway_method_response" "aws_integration_tenant_mgmt_api_heal
   resource_id = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_health_resource.id
   http_method = aws_api_gateway_method.aws_integration_tenant_mgmt_api_health_method.http_method
   status_code = "200"
+
+  response_models = {
+    "application/json" = "Empty"
+  }
 }
 
 resource "aws_api_gateway_integration_response" "aws_integration_tenant_mgmt_api_health_integration_response" {
   rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
   resource_id = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_health_resource.id
   http_method = aws_api_gateway_method.aws_integration_tenant_mgmt_api_health_method.http_method
-  status_code = aws_api_gateway_method_response.aws_integration_tenant_mgmt_api_health_method_response.status_code
+  status_code  = "200"
+
   response_templates = {
     "application/json" = jsonencode({
       message = "OK"
@@ -152,6 +158,17 @@ resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_tenants_
       "Action" : "SendMessage",
       "MessageBody" : "$input.json('$')"
     })
+  }
+}
+
+resource "aws_api_gateway_method_response" "aws_integration_tenant_mgmt_api_tenants_method_response_200" {
+  rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
+  resource_id = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_tenants_resource.id
+  http_method = aws_api_gateway_method.aws_integration_tenant_mgmt_api_tenants_method.http_method
+  status_code = "200"
+  
+  response_models = {
+    "application/json" = "Empty"
   }
 }
 
