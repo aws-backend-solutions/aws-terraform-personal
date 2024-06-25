@@ -14,7 +14,7 @@ def lambda_handler(event, context):
     payload = json.loads(body)
     source_env = payload['source_env']
     api_url = None
-    api_id
+    api_id = None
 
     if source_env == os.environ['us_staging_domain']:
         api_url = os.environ['us_staging_vpce']
