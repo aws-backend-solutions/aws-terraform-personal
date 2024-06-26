@@ -46,8 +46,7 @@ resource "aws_kms_key" "aws_integration_tenant_mgmt_kms_key" {
 }
 
 resource "aws_kms_alias" "aws_integration_tenant_mgmt_kms_alias" {
-  # name          = "alias/${var.prefix_name}-kms-alias"
-  name          = "alias/test-kms-alias"
+  name          = "alias/${var.prefix_name}-${var.aws_region}-kms-alias"
   target_key_id = aws_kms_key.aws_integration_tenant_mgmt_kms_key.id
 }
 
