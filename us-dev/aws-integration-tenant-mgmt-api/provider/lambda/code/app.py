@@ -110,35 +110,42 @@ def process_all_tenant_codes(id_value, source_value, target_value, new_password)
 def validate_payload(body_dict):
     id = []
     target = None
-    source = body_dict['source_env']
+    source = None
     valid_domains = []
 
-    required_params = ['tenant_code', 'source_env','target_env']
+    required_params = ['tenant_code', 'source_env', 'target_env']
     missing_params = []
-
-    if source in [os.environ['OREGON_DEV'], os.environ['OREGON_STAGING'], os.environ['OREGON_PROD']]:
-        valid_domains = [os.environ['FRANKFURT_STAGING'], os.environ['FRANKFURT_PROD']]
-    elif source in [os.environ['FRANKFURT_STAGING'], os.environ['FRANKFURT_PROD']]:
-        valid_domains = [os.environ['OREGON_DEV'], os.environ['OREGON_STAGING'], os.environ['OREGON_PROD']]
-    else:
-        missing_params.append(f"'source_env is invalid.")
 
     for key in required_params:
         if key not in body_dict:
             missing_params.append(f"'{key}' is a mandatory field.")
         else:
             value = body_dict[key]
-            if key == 'tenant_code' and value:
+
+            if key == 'source_env' and value:
+                if value in [os.environ['OREGON_DEV'], os.environ['OREGON_STAGING'], os.environ['OREGON_PROD']]:
+                    source = value
+                    valid_domains = [os.environ['FRANKFURT_STAGING'], os.environ['FRANKFURT_PROD']]
+                elif value in [os.environ['FRANKFURT_STAGING'], os.environ['FRANKFURT_PROD']]:
+                    source = value
+                    valid_domains = [os.environ['OREGON_DEV'], os.environ['OREGON_STAGING'], os.environ['OREGON_PROD']]
+                else:
+                    missing_params.append(f"'source_env' is invalid.")
+            
+            elif key == 'tenant_code' and value:
                 if isinstance(value, list) and len(value) == 2:
                     id = value
                 else:
                     missing_params.append("'tenant_code' must be a list containing exactly two values.")
-            elif key == 'source_env' and value:
-                source = value
-            elif key == 'target_env' and value in valid_domains:
-                target = value
+            
+            elif key == 'target_env' and value:
+                if value in valid_domains:
+                    target = value
+                else:
+                    missing_params.append(f"'target_env' is invalid or not in the valid domains: {valid_domains}")
+            
             else:
-                missing_params.append(f"'{key}' is invalid or empty.")
+                missing_params.append(f"'{key}' is empty or invalid.")
 
     if missing_params:
         return create_response(400, {'errors': missing_params})
