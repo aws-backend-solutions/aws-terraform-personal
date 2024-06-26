@@ -29,11 +29,6 @@ variable "lambda_function_name" {
 
 # db variables
 
-variable "mongodb_domain" {
-  type        = string
-  description = "Domain address of where the solution will be deployed."
-}
-
 variable "us_dev_domain" {
   type        = string
   description = "Domain address of the us-dev."

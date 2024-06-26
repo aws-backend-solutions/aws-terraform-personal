@@ -32,7 +32,7 @@ def lambda_handler(event, context):
         if validate_payload_response['statusCode'] == 200:
             validate_payload_response_dict = json.loads(validate_payload_response['body'])
 
-            id_value, target_value = validate_payload_response_dict['tenant_code'], validate_payload_response_dict['target_env']
+            id_value, source_value, target_value = validate_payload_response_dict['tenant_code'], validate_payload_response_dict['target_env']
 
             if isinstance(id_value, str):
                 id_value = list(id_value)
@@ -42,7 +42,7 @@ def lambda_handler(event, context):
                 final_body = []
 
                 for tenant_code in id_value:
-                    response_json = process_all_tenant_codes(tenant_code, target_value, new_password)
+                    response_json = process_all_tenant_codes(tenant_code, source_value, target_value, new_password)
                     response_json = json.dumps(response_json)
                     response_dict = json.loads(response_json)
                     final_status.append(response_dict['statusCode'])
@@ -74,7 +74,7 @@ def lambda_handler(event, context):
         traceback.print_exc()
         return create_response(500, {'errors': error_message})
 
-def process_all_tenant_codes(id_value, target_value, new_password):
+def process_all_tenant_codes(id_value, source_value, target_value, new_password):
     client_conn_response = client_conn()  # Establishing connection to MongoDB
 
     if not client_conn_response:
@@ -97,7 +97,7 @@ def process_all_tenant_codes(id_value, target_value, new_password):
     decrypted_tenant_response_dict = json.loads(decrypted_tenant_response['body'])
 
     update_source_tenant_response = update_source_tenant(
-        decrypted_tenant_response_dict['value'], id_value)  # Update the tenant
+        decrypted_tenant_response_dict['value'], id_value, source_value)  # Update the tenant
 
     if update_source_tenant_response['statusCode'] != 200:
         return update_source_tenant_response
@@ -110,17 +110,18 @@ def process_all_tenant_codes(id_value, target_value, new_password):
 def validate_payload(body_dict):
     id = []
     target = None
+    source = body_dict['source_env']
     valid_domains = []
 
-    required_params = ['tenant_code', 'target_env']
+    required_params = ['tenant_code', 'source_env','target_env']
     missing_params = []
 
-    if os.environ['MONGODB_DOMAIN'] in [os.environ['OREGON_DEV'], os.environ['OREGON_STAGING'], os.environ['OREGON_PROD']]:
+    if source in [os.environ['OREGON_DEV'], os.environ['OREGON_STAGING'], os.environ['OREGON_PROD']]:
         valid_domains = [os.environ['FRANKFURT_STAGING'], os.environ['FRANKFURT_PROD']]
-    elif os.environ['MONGODB_DOMAIN'] in [os.environ['FRANKFURT_STAGING'], os.environ['FRANKFURT_PROD']]:
+    elif source in [os.environ['FRANKFURT_STAGING'], os.environ['FRANKFURT_PROD']]:
         valid_domains = [os.environ['OREGON_DEV'], os.environ['OREGON_STAGING'], os.environ['OREGON_PROD']]
     else:
-        missing_params.append(f"'target_env is invalid.")
+        missing_params.append(f"'source_env is invalid.")
 
     for key in required_params:
         if key not in body_dict:
@@ -140,7 +141,7 @@ def validate_payload(body_dict):
     if missing_params:
         return create_response(400, {'errors': missing_params})
     
-    obj = {key: value for key, value in zip(required_params, [id, target])}
+    obj = {key: value for key, value in zip(required_params, [id, source, target])}
     return create_response(200, obj)
 
 def client_conn():
@@ -251,7 +252,7 @@ def create_target_tenant(payload, target_env, new_password):
         traceback.print_exc()
         return create_response(response.status_code, response_text)
 
-def update_source_tenant(payload, tenant_code):
+def update_source_tenant(payload, tenant_code, source_value):
     domain_name = os.environ['MONGODB_DOMAIN']
     api_url = f"{domain_name}{os.environ['API_ENDPOINT']}/{tenant_code}"
     username = None

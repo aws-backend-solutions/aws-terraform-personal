@@ -44,7 +44,6 @@ module "lambda" {
   environment_tag                            = var.environment_tag
   project_tag                                = var.project_tag
   lambda_function_name                       = var.lambda_function_name
-  mongodb_domain                             = var.mongodb_domain
   mongodb_url                                = var.mongodb_url
   mongodb_name                               = var.mongodb_name
   env_secret                                 = var.env_secret

@@ -47,7 +47,6 @@ resource "aws_lambda_function" "aws_integration_tenant_mgmt_function" {
 
   environment {
     variables = {
-      MONGODB_DOMAIN: var.mongodb_domain
       MONGODB_URI: var.mongodb_url
       MONGODB_NAME: var.mongodb_name
       ENV_SECRET: var.env_secret
