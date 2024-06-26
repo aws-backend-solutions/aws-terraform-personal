@@ -8,22 +8,26 @@ import traceback
 from bson import Decimal128, json_util
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-try:
-    client = pymongo.MongoClient(host=os.environ['MONGODB_URI']+os.environ['MONGODB_NAME'])
-except Exception as e:
-    print(f"Failed to establish MongoDB connection during initialization: {str(e)}")
+logger = logging.getLogger()
+logger.setLevel("INFO")
 
 def lambda_handler(event, context):
+    print(event)
+
     try:
-        print(event)
-        
-        conn_status = check_conn(client)
-        if conn_status['statusCode'] != 200:
-            return conn_status
-            
+        client = pymongo.MongoClient(host=os.environ['MONGODB_URI']+os.environ['MONGODB_NAME'])
+    except Exception as e:
+        logger.error(f"Failed to establish MongoDB connection during initialization: {str(e)}")
+        client = None
+
+    if client is None:
+        error_message = "MongoDB client is not initialized."
+        logger.error(error_message)
+        return create_response(500, {'errors': error_message})
+    else:
+        print(client)
+
+    try:
         database_name = os.environ.get('MONGODB_NAME')
         db = client[database_name]
         # body_dict = json.loads(event['body'])
@@ -64,9 +68,6 @@ def lambda_handler(event, context):
         traceback.print_exc()
         return create_response(404, {'errors': error_message})
     
-def check_conn(client):
-    return create_response(200 if client.admin.command('ping')['ok'] == 1 else 500, {'message': 'MongoDB server is reachable' if client.admin.command('ping')['ok'] == 1 else 'MongoDB server is not reachable'})
-
 def extract_values_from_event(body_dict):
     collection_value = None
     other_key = None
