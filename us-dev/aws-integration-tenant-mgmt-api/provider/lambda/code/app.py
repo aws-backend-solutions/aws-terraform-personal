@@ -133,6 +133,8 @@ def validate_payload(body_dict):
                     id = value
                 else:
                     missing_params.append("'tenant_code' must be a list containing exactly two values.")
+            elif key == 'source_env' and value:
+                source = value
             elif key == 'target_env' and value in valid_domains:
                 target = value
             else:
@@ -186,7 +188,6 @@ def generate_password(length=20):
 def decrypt_function(payload, new_password):
     source_secret = os.environ['ENV_SECRET']
     kms_key = os.environ['KMS_KEY']
-    userName = None
 
     if isinstance(payload, dict):
         try:
