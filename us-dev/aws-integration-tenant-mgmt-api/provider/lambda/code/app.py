@@ -32,7 +32,7 @@ def lambda_handler(event, context):
         if validate_payload_response['statusCode'] == 200:
             validate_payload_response_dict = json.loads(validate_payload_response['body'])
 
-            id_value, source_value, target_value = validate_payload_response_dict['tenant_code'], validate_payload_response_dict['target_env']
+            id_value, source_value, target_value = validate_payload_response_dict['tenant_code'], validate_payload_response_dict['source_env'], validate_payload_response_dict['target_env']
 
             if isinstance(id_value, str):
                 id_value = list(id_value)
