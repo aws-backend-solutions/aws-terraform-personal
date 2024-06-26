@@ -10,59 +10,59 @@ logger.setLevel("INFO")
 def lambda_handler(event, context):
     print(event)
 
-    body = event['body']
-    payload = json.loads(body)
-    source_env = payload['source_env']
-    api_url = None
-    api_id = None
-    stage_name = os.environ['stage_name']
-
-    if source_env == os.environ['us_dev_domain']:
-        api_url = os.environ['us_dev_vpce']
-        api_id =  os.environ['us_dev_api_id']
-
-    elif source_env == os.environ['us_staging_domain']:
-        api_url = os.environ['us_staging_vpce']
-        api_id =  os.environ['us_staging_api_id']
-
-    elif source_env == os.environ['us_prod_domain']:
-        api_url = os.environ['us_prod_vpce']
-        api_id =  os.environ['us_prod_api_id']
-
-    elif source_env == os.environ['eu_staging_domain']:
-        api_url = os.environ['eu_staging_vpce']
-        api_id =  os.environ['eu_staging_api_id']
-
-    elif source_env == os.environ['eu_prod_domain']:
-        api_url = os.environ['eu_prod_vpce']
-        api_id =  os.environ['eu_prod_api_id']
-        
-    else:
-        return {
-            "statusCode": 400,
-            "body": json.dumps({"error": "Invalid source_env value."}),
-        }
-
-    logger.info(f"Private API URL: {api_url}")
-
-    headers = {
-        "Content-Type": "application/json",
-        "x-apigw-api-id": api_id
-    }
-
     try:
+        body = event.get('body', '{}')
+        payload = json.loads(body)
+        source_env = payload.get('source_env')
+        stage_name = os.environ['stage_name']
+
+        if not source_env:
+            return create_response(400, {"errors": ["'source_env' is a mandatory field."]})
+
+        api_url, api_id = get_api_details(source_env)
+
+        if not api_url or not api_id:
+            return create_response(400, {"errors": ["'source_env' is invalid."]})
+
+        logger.info(f"Private API URL: {api_url}")
+
+        headers = {
+            "Content-Type": "application/json",
+            "x-apigw-api-id": api_id
+        }
+
         response = requests.post(f"https://{api_url}/{stage_name}/tenants", json=payload, headers=headers)
-        logger.info(f"Successful response: {response}")
-        
-        return {
-            "statusCode": response.status_code,
-            "body": response.text,
-            "headers": dict(response.headers)
-        }
+        logger.info(f"Successful response: {response.status_code}")
+
+        return create_response(response.status_code, json.loads(response.text))
+
     except requests.exceptions.RequestException as e:
-        logger.error(f"Error response: {e}")
-        
-        return {
-            "statusCode": 500,
-            "body": json.dumps({"error": str(e)}),
-        }
+        logger.error(f"RequestException: {e}")
+        return create_response(500, {"errors": [str(e)]})
+
+    except ValueError as e:
+        logger.error(f"ValueError: {e}")
+        return create_response(400, {"errors": [str(e)]})
+
+    except Exception as e:
+        logger.error(f"Exception: {e}")
+        return create_response(500, {"errors": [str(e)]})
+
+def get_api_details(source_env):
+    if source_env == os.environ.get('us_staging_domain'):
+        return os.environ.get('us_staging_vpce'), os.environ.get('us_staging_api_id')
+    elif source_env == os.environ.get('eu_staging_domain'):
+        return os.environ.get('eu_staging_vpce'), os.environ.get('eu_staging_api_id')
+    else:
+        return None, None
+
+def create_response(statusCode, body):
+    response = {
+        "statusCode": statusCode,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": json.dumps(body),
+        "isBase64Encoded": False
+    }
+    return response
