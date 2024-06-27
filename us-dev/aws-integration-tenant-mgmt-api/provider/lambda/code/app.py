@@ -38,6 +38,7 @@ def lambda_handler(event, context):
                 id_value = list(id_value)
                 
             if isinstance(id_value, list):
+                id_value.sort(key=lambda x: 'ops' not in x)
                 final_status = []
                 final_body = []
 
@@ -128,7 +129,10 @@ def validate_payload(body_dict):
             
             elif key == 'tenant_code' and value:
                 if isinstance(value, list) and len(value) == 2:
-                    id = value
+                    if any(isinstance(v, str) and v.startswith('ops_') for v in value) and any(isinstance(v, str) and v.startswith('cust_') for v in value):
+                        id = value
+                    else:
+                        missing_params.append("'tenant_code' must contain one value starting with 'ops_' and one value starting with 'cust_'.")
                 else:
                     missing_params.append("'tenant_code' must be a list containing exactly two values.")
             
