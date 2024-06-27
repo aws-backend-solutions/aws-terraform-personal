@@ -261,7 +261,7 @@ def create_target_tenant(payload, target_env, new_password):
         return create_response(response.status_code, response_text)
 
 def update_source_tenant(payload, tenant_code, source_value):
-    domain_name = os.environ['MONGODB_DOMAIN']
+    domain_name = source_value
     api_url = f"{domain_name}{os.environ['API_ENDPOINT']}/{tenant_code}"
     username = None
     password = None
