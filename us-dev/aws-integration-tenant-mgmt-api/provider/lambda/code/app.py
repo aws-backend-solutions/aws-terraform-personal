@@ -25,7 +25,6 @@ def lambda_handler(event, context):
     try:
         print(event)
 
-        new_password = generate_password(20)
         body_dict = json.loads(event['body'])
         validate_payload_response = validate_payload(body_dict) # 1. Extracting data from the event payload
 
@@ -38,29 +37,56 @@ def lambda_handler(event, context):
                 id_value = list(id_value)
                 
             if isinstance(id_value, list):
-                id_value.sort(key=lambda x: 'ops' not in x)
+                id_value.sort(key=lambda x: (not x.startswith('cust_'), x))
                 final_status = []
-                final_body = []
+                final_body_success = []
+                final_body_error = []
+
+                client_conn_response = client_conn()  # Establishing connection to MongoDB
+
+                if not client_conn_response:
+                    return {'statusCode': 500, 'message': 'Failed to establish database connection'}
+
+                col = client_conn_response[1]
+
+                read_from_db_response = read_from_db(col, id_value)  # Query the db based off the collection value
+
+                if read_from_db_response['statusCode'] != 200:
+                    return read_from_db_response
+
+                read_from_db_response_dict = json.loads(read_from_db_response['body'])
 
                 for tenant_code in id_value:
-                    response_json = process_all_tenant_codes(tenant_code, source_value, target_value, new_password)
+                    new_password = generate_password(20)
+                    response_json = process_all_tenant_codes(read_from_db_response_dict[tenant_code], tenant_code, source_value, target_value, new_password)
                     response_json = json.dumps(response_json)
                     response_dict = json.loads(response_json)
                     final_status.append(response_dict['statusCode'])
 
                     response_body_dict = json.loads(response_dict['body'])
                     activity_id = response_body_dict.get('activityId', None)
-                    errors = response_body_dict.get('errors', [])
-                    final_body.append({
-                        "activityId": activity_id,
-                        "tenantCode": tenant_code,
-                        "errors": errors
-                    })
+
+                    if response_dict['statusCode'] == 200:
+                        message = response_body_dict.get('message', [])
+                        final_body_success.append({
+                            "activityId": activity_id,
+                            "tenantCode": tenant_code,
+                            "message": message
+                        })
+                    else:
+                        errors = response_body_dict.get('errors', [])
+                        final_body_error.append({
+                            "activityId": activity_id,
+                            "tenantCode": tenant_code,
+                            "errors": errors
+                        })
 
                 if all(value == 200 for value in final_status):
-                    return create_response(200, final_body)
+                    return create_response(200, final_body_success)
+                elif any(value == 200 for value in final_status):
+                    return create_response(500, final_body_success+final_body_error)
                 else:
-                    return create_response(500, final_body)
+                    return create_response(500, final_body_error)
             else:
                 error_message = f"Invalid tenant_code data type, only accepts <class 'list'>: {str(e)}"
                 logger.error(error_message)
@@ -75,30 +101,15 @@ def lambda_handler(event, context):
         traceback.print_exc()
         return create_response(500, {'errors': error_message})
 
-def process_all_tenant_codes(id_value, source_value, target_value, new_password):
-    client_conn_response = client_conn()  # Establishing connection to MongoDB
-
-    if not client_conn_response:
-        return {'statusCode': 500, 'message': 'Failed to establish database connection'}
-
-    col = client_conn_response[1]
-
-    read_from_db_response = read_from_db(col, id_value)  # Query the db based off the collection value
-
-    if read_from_db_response['statusCode'] != 200:
-        return read_from_db_response
-
-    read_from_db_response_dict = json.loads(read_from_db_response['body'])
-
-    decrypted_tenant_response = decrypt_function(read_from_db_response_dict, new_password)  # Decrypt the db response
+def process_all_tenant_codes(payload, id_value, source_value, target_value, new_password):
+    decrypted_tenant_response = decrypt_function(payload, new_password)  # Decrypt the db response
 
     if decrypted_tenant_response['statusCode'] != 200:
         return decrypted_tenant_response
 
     decrypted_tenant_response_dict = json.loads(decrypted_tenant_response['body'])
 
-    create_target_tenant_response = create_target_tenant(
-        decrypted_tenant_response_dict['value'], id_value, source_value, target_value, new_password)  # Create the tenant in target_env
+    create_target_tenant_response = create_target_tenant(decrypted_tenant_response_dict['value'], id_value, source_value, target_value, new_password)  # Create the tenant in target_env
 
     return create_target_tenant_response
 
@@ -167,17 +178,24 @@ def client_conn():
         traceback.print_exc()
         return create_response(500, {'errors': error_message})
  
-def read_from_db(collection, id_value):
+def read_from_db(collection, id_values):
     try:
-        result = collection.find_one({'_id': id_value})
+        results = {}
+        values = []
+        
+        for id_value in id_values:
+            result = collection.find_one({'_id': id_value})
+            
+            if result:
+                result = json.loads(json_util.dumps(result))
+                results[id_value] = result
+            else:
+                values.append(id_value)
 
-        if result:
-            result = json.loads(json_util.dumps(result))
-
-            return create_response(200, result)
+        if len(results) == 2:
+            return create_response(200, results)
         else:
-            print(f"No document found with tenant_code: {id_value}")
-            return create_response(400, {'errors': f"No document found with tenant_code: {id_value}"})
+            return create_response(400, {'errors': f"No document(s) found with tenant_code: {values}"})
         
     except Exception as e:
         error_message = f"An error occurred: {str(e)}"
@@ -252,14 +270,16 @@ def create_target_tenant(payload, id_value, source_env, target_env, new_password
     
     if response.status_code == 200:
         response_text['tenantPassword'] = new_password
+        logger.info(f"Tenant creation to target_env response: {response_text}")
 
-        update_source_tenant_response = update_source_tenant(
-        payload, id_value, source_env)  # Update the tenant
+        update_source_tenant_response = update_source_tenant(payload, id_value, source_env)  # Update the tenant
+        logger.info(f"Update creation in source_env response: {update_source_tenant_response}")
 
         if update_source_tenant_response['statusCode'] != 200:
             return update_source_tenant_response
-        else:
-            return create_response(response.status_code, response_text)
+
+        return create_response(response.status_code, response_text)
+    
     else:
         logger.error(response.text)
         traceback.print_exc()
@@ -332,7 +352,7 @@ def store_secret(secret_name, encrypted_password, key_id):
             SecretBinary=encrypted_password,
             KmsKeyId=key_id
         )
-        print(f"Secret {secret_name} stored successfully.")
+        logger.info(f"Secret {secret_name} stored successfully.")
     except ClientError as e:
         error_message = f"An error occured: {str(e)}"
         logger.error(error_message)
