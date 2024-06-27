@@ -68,10 +68,12 @@ def lambda_handler(event, context):
 
                     if response_dict['statusCode'] == 200:
                         message = response_body_dict.get('message', [])
+                        tenantPassword = response_body_dict.get('tenantPassword', [])
                         final_body_success.append({
                             "activityId": activity_id,
                             "tenantCode": tenant_code,
-                            "message": message
+                            "message": message,
+                            'tenantPassword': tenantPassword
                         })
                     else:
                         errors = response_body_dict.get('errors', [])
