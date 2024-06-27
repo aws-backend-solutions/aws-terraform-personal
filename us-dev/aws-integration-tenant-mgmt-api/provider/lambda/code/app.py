@@ -96,14 +96,8 @@ def process_all_tenant_codes(id_value, source_value, target_value, new_password)
 
     decrypted_tenant_response_dict = json.loads(decrypted_tenant_response['body'])
 
-    update_source_tenant_response = update_source_tenant(
-        decrypted_tenant_response_dict['value'], id_value, source_value)  # Update the tenant
-
-    if update_source_tenant_response['statusCode'] != 200:
-        return update_source_tenant_response
-
     create_target_tenant_response = create_target_tenant(
-        decrypted_tenant_response_dict['value'], target_value, new_password)  # Create the tenant in target_env
+        decrypted_tenant_response_dict['value'], id_value, source_value, target_value, new_password)  # Create the tenant in target_env
 
     return create_target_tenant_response
 
@@ -225,7 +219,7 @@ def decrypt_function(payload, new_password):
     else:
         return create_response(400, {'message': 'Invalid payload format. Expected dictionary.'})
 
-def create_target_tenant(payload, target_env, new_password):
+def create_target_tenant(payload, id_value, source_env, target_env, new_password):
     api_url = f"{target_env}{os.environ['API_ENDPOINT']}"
     username = None
     password = None
@@ -254,7 +248,14 @@ def create_target_tenant(payload, target_env, new_password):
     
     if response.status_code == 200:
         response_text['tenantPassword'] = new_password
-        return create_response(response.status_code, response_text)
+
+        update_source_tenant_response = update_source_tenant(
+        payload, id_value, source_env)  # Update the tenant
+
+        if update_source_tenant_response['statusCode'] != 200:
+            return update_source_tenant_response
+        else:
+            return create_response(response.status_code, response_text)
     else:
         logger.error(response.text)
         traceback.print_exc()
