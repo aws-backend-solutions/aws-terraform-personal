@@ -15,7 +15,7 @@ def lambda_handler(event, context):
     print(event)
 
     try:
-        client = pymongo.MongoClient(host=os.environ['MONGODB_URI']+os.environ['MONGODB_NAME'])
+        client = pymongo.MongoClient(host=os.environ['MONGODB_URI'])
     except Exception as e:
         logger.error(f"Failed to establish MongoDB connection during initialization: {str(e)}")
         client = None

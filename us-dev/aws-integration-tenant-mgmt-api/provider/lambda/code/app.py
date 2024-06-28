@@ -166,11 +166,10 @@ def validate_payload(body_dict):
 
 def client_conn():
     try:
-        client = pymongo.MongoClient(host=os.environ['MONGODB_URI']+os.environ['MONGODB_NAME'])
+        client = pymongo.MongoClient(host=os.environ['MONGODB_URI'])
         db = os.environ.get('MONGODB_NAME')
         client_db = client[db]
         client_col = client_db[os.environ.get('COLLECTION_NAME')]
-
 
         return client, client_col
 
