@@ -225,7 +225,7 @@ def decrypt_function(payload, new_password):
                             if inner_key == 'userPassword' and key == 'tenant':
                                 value['userPassword'] = new_password # Generates new password
                                 encrypted_password = encrypt(new_password, kms_key) # Encrypt the password using KMS
-                                # store_secret(userName, encrypted_password, kms_key) # Store the newly created and encrypted password in secrets manager for future use
+                                store_secret(userName, encrypted_password, kms_key) # Store the newly created and encrypted password in secrets manager for future use
                                 continue
                             if inner_key == 'userPassword' and key != 'tenant':
                                 if 'userPasswordSalt' in value:
