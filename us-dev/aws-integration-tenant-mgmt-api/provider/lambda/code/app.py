@@ -238,9 +238,9 @@ def decrypt_function(payload, new_password):
             error_message = f"An error occurred during password decryption: {str(e)}"
             logger.error(error_message)
             traceback.print_exc()
-            return create_response(500, {'message': error_message})
+            return create_response(500, {'errors': error_message})
     else:
-        return create_response(400, {'message': 'Invalid payload format. Expected dictionary.'})
+        return create_response(400, {'errors': 'Invalid payload format. Expected dictionary.'})
 
 def create_target_tenant(payload, id_value, source_env, target_env, new_password):
     api_url = f"{target_env}{os.environ['API_ENDPOINT']}"
@@ -284,7 +284,7 @@ def create_target_tenant(payload, id_value, source_env, target_env, new_password
     else:
         logger.error(response.text)
         traceback.print_exc()
-        return create_response(response.status_code, response_text)
+        return create_response(response.status_code, {'errors': response_text})
 
 def update_source_tenant(payload, tenant_code, source_value):
     domain_name = source_value
@@ -319,7 +319,7 @@ def update_source_tenant(payload, tenant_code, source_value):
     else:
         logger.error(response.text)
         traceback.print_exc()
-        return create_response(response.status_code, response_text)
+        return create_response(response.status_code, {'errors': response_text})
 
 def encrypt(text_to_encrypt, key_id):
     """Encrypts a password using AWS KMS."""
