@@ -8,7 +8,7 @@ terraform {
 
   backend "s3" {
     bucket         = "aws-backend-tf-state"
-    key            = "aws-integration-tenant-mgmt-api/provider/terraform-eu-staging.tfstate"
+    key            = "aws-integration-tenant-mgmt-api/provider/terraform.tfstate"
     region         = "us-west-2"
     encrypt        = true
     dynamodb_table = "aws-backend-tf-lockid"
@@ -24,7 +24,7 @@ data "terraform_remote_state" "modules" {
 
   config = {
     bucket = "aws-backend-tf-state"
-    key    = "modules/provider/terraform-eu-staging.tfstate"
+    key    = "modules/provider/terraform.tfstate"
     region = "us-west-2"
   }
 }
