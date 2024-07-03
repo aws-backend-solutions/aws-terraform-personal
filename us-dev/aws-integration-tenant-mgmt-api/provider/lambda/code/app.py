@@ -64,30 +64,32 @@ def lambda_handler(event, context):
                     final_status.append(response_dict['statusCode'])
 
                     response_body_dict = json.loads(response_dict['body'])
-                    activity_id = response_body_dict.get('activityId', None)
+                    logger.info(f"Final response: {response_body_dict}")
 
                     if response_dict['statusCode'] == 200:
+                        activity_id = response_body_dict.get('activityId', None)
                         message = response_body_dict.get('message', [])
-                        tenantPassword = response_body_dict.get('tenantPassword', [])
                         final_body_success.append({
                             "activityId": activity_id,
                             "tenantCode": tenant_code,
                             "message": message,
-                            'tenantPassword': tenantPassword
+                            "tenantPassword": new_password
                         })
                     else:
                         errors = response_body_dict.get('errors', [])
                         final_body_error.append({
-                            "activityId": activity_id,
                             "tenantCode": tenant_code,
-                            "errors": errors
+                            "message": errors
                         })
 
                 if all(value == 200 for value in final_status):
+                    logger.info(f"Final results are all {final_status}")
                     return create_response(200, final_body_success)
                 elif any(value == 200 for value in final_status):
+                    logger.info(f"Final results are all {final_status}")
                     return create_response(500, final_body_success+final_body_error)
                 else:
+                    logger.info(f"Final results are all {final_status}")
                     return create_response(500, final_body_error)
             else:
                 error_message = f"Invalid tenant_code data type, only accepts <class 'list'>: {str(e)}"
@@ -211,7 +213,6 @@ def generate_password(length=20):
 
 def decrypt_function(payload, new_password):
     source_secret = os.environ['ENV_SECRET']
-    kms_key = os.environ['KMS_KEY']
 
     if isinstance(payload, dict):
         try:
@@ -220,12 +221,8 @@ def decrypt_function(payload, new_password):
                 for key, value in value_obj.items():
                     if isinstance(value, dict):
                         for inner_key, inner_value in value.items():
-                            if inner_key == 'userName' and key == 'tenant':
-                                userName = str(uuid.uuid4()) # this should be inner_value, uuid is used for testing only
                             if inner_key == 'userPassword' and key == 'tenant':
                                 value['userPassword'] = new_password # Generates new password
-                                encrypted_password = encrypt(new_password, kms_key) # Encrypt the password using KMS
-                                store_secret(userName, encrypted_password, kms_key) # Store the newly created and encrypted password in secrets manager for future use
                                 continue
                             if inner_key == 'userPassword' and key != 'tenant':
                                 if 'userPasswordSalt' in value:
@@ -246,6 +243,7 @@ def create_target_tenant(payload, id_value, source_env, target_env, new_password
     api_url = f"{target_env}{os.environ['API_ENDPOINT']}"
     username = None
     password = None
+    kms_key = os.environ['KMS_KEY']
 
     if target_env == os.environ['OREGON_DEV']:
         username = os.environ['OREGON_DEV_USR']
@@ -272,6 +270,9 @@ def create_target_tenant(payload, id_value, source_env, target_env, new_password
     if response.status_code == 200:
         response_text['tenantPassword'] = new_password
         logger.info(f"Tenant creation to target_env response: {response_text}")
+        
+        encrypted_password = encrypt(new_password, kms_key) # Encrypt the password using KMS
+        store_secret(id_value, encrypted_password, kms_key) # Store the newly created and encrypted password in secrets manager for future use
 
         update_source_tenant_response = update_source_tenant(payload, id_value, source_env)  # Update the tenant
         logger.info(f"Update creation in source_env response: {update_source_tenant_response}")
