@@ -107,6 +107,7 @@ def query_by_id(collection, other_key, other_value):
             check_and_mask_keys(document, provider_cred_params)
             check_and_mask_keys(document, provider_agreements_params)
 
+        logger.info(result)
         return create_response(200, result)
     else:
         error_message = f"No document found with {other_key}: {other_value}"
