@@ -40,11 +40,3 @@ module "vpc" {
   eu_staging_peer_vpc_id         = var.eu_staging_peer_vpc_id
   eu_staging_peer_vpc_cidr_block = var.eu_staging_peer_vpc_cidr_block
 }
-
-module "api_gateway" {
-  source                              = "github.com/aws-backend-solutions/aws-terraform-personal/us-dev/modules/consumer/api_gateway"
-  prefix_name                         = var.prefix_name
-  aws_region                          = var.aws_region
-  environment_tag                     = var.environment_tag
-  primary_aws_backend_vpc_endpoint_id = module.vpc.primary_aws_backend_vpc_endpoint_id
-}

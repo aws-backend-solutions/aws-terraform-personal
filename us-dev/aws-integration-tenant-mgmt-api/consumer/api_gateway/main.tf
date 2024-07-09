@@ -1,3 +1,36 @@
+resource "aws_api_gateway_rest_api" "aws_integration_tenant_mgmt_api" {
+  name          = "${var.prefix_name}-api"
+  endpoint_configuration {
+    types            = ["PRIVATE"]
+    vpc_endpoint_ids = [var.primary_aws_backend_vpc_endpoint_id]
+  }
+
+  tags = {
+    CostCenter  = var.cost_center_tag
+    Environment = var.environment_tag
+  }
+}
+
+resource "aws_api_gateway_rest_api_policy" "api_gateway_policy" {
+  rest_api_id = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": "execute-api:Invoke",
+        "Resource": [
+          "execute-api:/*"
+        ]
+      }
+    ]
+  }
+EOF
+}
+
 resource "aws_iam_policy" "aws_integration_tenant_mgmt_api_policy" {
   name        = "${var.prefix_name}-api-policy"
   description = "Policy to allow invoking the API Gateway and VPC read-only access"
@@ -9,7 +42,7 @@ resource "aws_iam_policy" "aws_integration_tenant_mgmt_api_policy" {
         Sid      = "AllowInvokeAPI",
         Effect   = "Allow",
         Action   = "execute-api:Invoke",
-        Resource = "arn:aws:execute-api:us-west-2:${var.aws_account_id}:${var.primary_aws_integration_tenant_mgmt_api_id}/*"
+        Resource = "arn:aws:execute-api:us-west-2:${var.aws_account_id}:${aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id}/*"
       },
       {
         Sid    = "AllowVPCReadOnlyAccess",
@@ -52,20 +85,20 @@ resource "aws_iam_role_policy_attachment" "aws_integration_tenant_mgmt_api_attac
 ##### /health
 
 resource "aws_api_gateway_resource" "aws_integration_tenant_mgmt_api_health_resource" {
-  rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
-  parent_id   = var.primary_aws_integration_tenant_mgmt_api_root_resource_id
+  rest_api_id = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
+  parent_id   = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.root_resource_id
   path_part   = "health"
 }
 
 resource "aws_api_gateway_method" "aws_integration_tenant_mgmt_api_health_method" {
-  rest_api_id   = var.primary_aws_integration_tenant_mgmt_api_id
+  rest_api_id   = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
   resource_id   = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_health_resource.id
   http_method   = "GET"
   authorization = "AWS_IAM"
 }
 
 resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_health_integration" {
-  rest_api_id             = var.primary_aws_integration_tenant_mgmt_api_id
+  rest_api_id             = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
   resource_id             = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_health_resource.id
   http_method             = aws_api_gateway_method.aws_integration_tenant_mgmt_api_health_method.http_method
   type                    = "MOCK"
@@ -75,14 +108,14 @@ resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_health_i
 }
 
 resource "aws_api_gateway_method_response" "aws_integration_tenant_mgmt_api_health_method_response" {
-  rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
+  rest_api_id = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
   resource_id = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_health_resource.id
   http_method = aws_api_gateway_method.aws_integration_tenant_mgmt_api_health_method.http_method
   status_code = "200"
 }
 
 resource "aws_api_gateway_integration_response" "aws_integration_tenant_mgmt_api_health_integration_response" {
-  rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
+  rest_api_id = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
   resource_id = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_health_resource.id
   http_method = aws_api_gateway_method.aws_integration_tenant_mgmt_api_health_method.http_method
   status_code = aws_api_gateway_method_response.aws_integration_tenant_mgmt_api_health_method_response.status_code
@@ -96,13 +129,13 @@ resource "aws_api_gateway_integration_response" "aws_integration_tenant_mgmt_api
 ##### /router resource
 
 resource "aws_api_gateway_resource" "aws_integration_tenant_mgmt_api_router_resource" {
-  rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
-  parent_id   = var.primary_aws_integration_tenant_mgmt_api_root_resource_id
+  rest_api_id = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
+  parent_id   = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.root_resource_id
   path_part   = "tenants"
 }
 
 resource "aws_api_gateway_method" "aws_integration_tenant_mgmt_api_router_method" {
-  rest_api_id   = var.primary_aws_integration_tenant_mgmt_api_id
+  rest_api_id   = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
   resource_id   = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_router_resource.id
   http_method   = "POST"
   authorization = "AWS_IAM"
@@ -113,7 +146,7 @@ resource "aws_api_gateway_method" "aws_integration_tenant_mgmt_api_router_method
 }
 
 resource "aws_api_gateway_method_settings" "aws_integration_tenant_mgmt_api_router_method_settings" {
-  rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
+  rest_api_id = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
   stage_name  = aws_api_gateway_stage.primary_aws_integration_tenant_mgmt_api_stage.stage_name
   method_path = "*/*"
 
@@ -126,7 +159,7 @@ resource "aws_api_gateway_method_settings" "aws_integration_tenant_mgmt_api_rout
 resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_router_integration" {
   http_method             = aws_api_gateway_method.aws_integration_tenant_mgmt_api_router_method.http_method
   resource_id             = aws_api_gateway_resource.aws_integration_tenant_mgmt_api_router_resource.id
-  rest_api_id             = var.primary_aws_integration_tenant_mgmt_api_id
+  rest_api_id             = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
   type                    = "AWS_PROXY"
   integration_http_method = "POST"
   uri                     = var.aws_integration_tenant_mgmt_router_function_invoke_arn
@@ -136,12 +169,12 @@ resource "aws_api_gateway_integration" "aws_integration_tenant_mgmt_api_router_i
 
 resource "aws_api_gateway_stage" "primary_aws_integration_tenant_mgmt_api_stage" {
   deployment_id = aws_api_gateway_deployment.primary_aws_integration_tenant_mgmt_api_deployment.id
-  rest_api_id   = var.primary_aws_integration_tenant_mgmt_api_id
+  rest_api_id   = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
   stage_name    = var.stage_name
 }
 
 resource "aws_api_gateway_deployment" "primary_aws_integration_tenant_mgmt_api_deployment" {
-  rest_api_id = var.primary_aws_integration_tenant_mgmt_api_id
+  rest_api_id = aws_api_gateway_rest_api.aws_integration_tenant_mgmt_api.id
 
   depends_on = [
     aws_api_gateway_integration.aws_integration_tenant_mgmt_api_health_integration,
